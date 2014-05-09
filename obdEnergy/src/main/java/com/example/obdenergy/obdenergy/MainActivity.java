@@ -47,6 +47,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*If this is the first time running the app, get user data*/
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         Boolean hasRun = settings.getBoolean("my_first_time", false);
         Console.log("Run "+hasRun);
@@ -58,6 +59,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             startActivity(intent);
         }
         else {Console.log(classID+" Not the first time! "+hasRun);}
+
+        //TODO: upload sharedPrefs data to Profile class
     }
 
 

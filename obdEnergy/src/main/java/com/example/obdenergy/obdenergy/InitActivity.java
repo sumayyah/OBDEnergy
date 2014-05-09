@@ -57,12 +57,8 @@ public class InitActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
 
-        Console.log("Clicked done");
-
         //Check that all fields are filled in
         if( checkNull(makeField) == false || checkNull(modelField) == false || checkNull(yearField) == false || checkNull(capacityField) == false || checkNull(citympg) == false || checkNull(highwaympg) == false){
-
-            Console.log("one of the fields is null");
 
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -84,7 +80,6 @@ public class InitActivity extends Activity implements View.OnClickListener{
         }
         else {
 
-            Console.log("nothing null");
             settings.edit().putString("car_make", makeField.getText().toString());
             settings.edit().putString("car_model", modelField.getText().toString());
             settings.edit().putString("car_year", yearField.getText().toString());
@@ -92,7 +87,6 @@ public class InitActivity extends Activity implements View.OnClickListener{
             settings.edit().putString("city_mpg", citympg.getText().toString());
             settings.edit().putString("highway_mpg", highwaympg.getText().toString());
 
-//        Intent intent = new Intent(this, MainActivity.class);
             finish();
         }
 
