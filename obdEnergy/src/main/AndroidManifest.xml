@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         tools:ignore="HardcodedDebugMode">
         <activity
-            android:name="com.example.obdenergy.obdenergy.MainActivity"
+            android:name=".MainActivity"
             android:label="OBDEnergy"
             android:theme="@style/Theme.AppCompat">
             <intent-filter>
@@ -24,8 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".InitActivity"
+        <activity android:name=".Activities.InitActivity"
                   android:theme="@android:style/Theme.Dialog">
+
+        </activity>
+        <activity android:name=".Activities.FuelSurveyActivity"
+            android:theme="@android:style/Theme.Dialog">
 
         </activity>
     </application>

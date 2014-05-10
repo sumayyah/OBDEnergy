@@ -1,4 +1,4 @@
-package com.example.obdenergy.obdenergy;
+package com.example.obdenergy.obdenergy.Activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,9 +6,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.example.obdenergy.obdenergy.Profile;
+import com.example.obdenergy.obdenergy.R;
 
 import java.io.FileWriter;
 
@@ -27,14 +31,12 @@ public class InitActivity extends Activity implements View.OnClickListener{
 
     private final String PREFS_NAME = "MyCarData";
     SharedPreferences settings;
+    Profile userProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.init_activity_layout);
-        Console.log("Creating INit");
-
-        Intent intent = getIntent();
 
         settings = getSharedPreferences(PREFS_NAME, 0);
 
@@ -50,7 +52,6 @@ public class InitActivity extends Activity implements View.OnClickListener{
         doneButton = (Button)(findViewById(R.id.doneButton));
 
         doneButton.setOnClickListener(this);
-
 
     }
 
@@ -80,12 +81,15 @@ public class InitActivity extends Activity implements View.OnClickListener{
         }
         else {
 
-            settings.edit().putString("car_make", makeField.getText().toString());
-            settings.edit().putString("car_model", modelField.getText().toString());
-            settings.edit().putString("car_year", yearField.getText().toString());
-            settings.edit().putString("tank_capacity", capacityField.getText().toString());
-            settings.edit().putString("city_mpg", citympg.getText().toString());
-            settings.edit().putString("highway_mpg", highwaympg.getText().toString());
+            settings.edit().putString("car_make", makeField.getText().toString()).commit();
+            settings.edit().putString("car_model", modelField.getText().toString()).commit();
+            settings.edit().putString("car_year", yearField.getText().toString()).commit();
+            settings.edit().putString("tank_capacity", capacityField.getText().toString()).commit();
+            settings.edit().putString("city_mpg", citympg.getText().toString()).commit();
+            settings.edit().putString("highway_mpg", highwaympg.getText().toString()).commit();
+
+            Intent intent = new Intent();
+            setResult(Activity.RESULT_OK, intent);
 
             finish();
         }

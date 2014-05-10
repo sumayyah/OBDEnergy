@@ -9,8 +9,29 @@
     tools:context="com.example.obdenergy.obdenergy.MainActivity">
 
     <TextView
+        android:id="@+id/hello"
         android:text="@string/hello_world"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <TextView
+        android:id="@+id/data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/hello"/>
+
+    <Button
+        android:id="@+id/startButton"
+        android:tag="start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="START"
+        android:layout_below="@id/data"/>
+    <Button
+        android:id="@+id/stopButton"
+        android:tag="stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="STOP"
+        android:layout_below="@id/startButton"/>
 </RelativeLayout>

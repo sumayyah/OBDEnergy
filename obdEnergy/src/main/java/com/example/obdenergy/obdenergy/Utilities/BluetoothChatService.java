@@ -1,4 +1,4 @@
-package com.example.obdenergy.obdenergy;
+package com.example.obdenergy.obdenergy.Utilities;
 
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
@@ -10,6 +10,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+
+import com.example.obdenergy.obdenergy.MainActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,7 +60,7 @@ public class BluetoothChatService {
      */
     public BluetoothChatService(Context context, Handler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
-        Console.log(classID +"Adapter: " + mAdapter);
+        Console.log(classID + "Adapter: " + mAdapter);
         //mAdapter = MainActivity.mBluetoothAdapter;
         mState = STATE_NONE;
         mHandler = handler;
