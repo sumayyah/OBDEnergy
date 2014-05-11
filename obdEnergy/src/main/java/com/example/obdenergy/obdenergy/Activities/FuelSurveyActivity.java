@@ -21,7 +21,7 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
     private EditText milesField;
     private RadioGroup radioGroup;
     private RadioButton radioButton;
-    private Button doneButton;
+    private Button doneButtonFSA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -30,12 +30,13 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
 
         milesField = (EditText)(findViewById(R.id.milesField));
         radioGroup = (RadioGroup)(findViewById(R.id.radioGroup));
-        doneButton = (Button)(findViewById(R.id.doneButtonFSA));
+        doneButtonFSA = (Button)(findViewById(R.id.doneButtonFSA));
+        doneButtonFSA.setOnClickListener(this);
 
         Intent intent = new Intent();
-        Data dataPoint = (Data)intent.getParcelableExtra("DATAPOINT");
+        Data dataPoint = intent.getParcelableExtra("DATAPOINT");
 
-//        Console.log("Getting data from Main! "+dataPoint.getGallons()+" gallons "+dataPoint.getMiles()+" miles");
+        Console.log("Getting data from Main! "+dataPoint.getGallons()+" gallons "+dataPoint.getMiles()+" miles");
 
     }
 

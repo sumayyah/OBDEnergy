@@ -3,6 +3,8 @@ package com.example.obdenergy.obdenergy;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.obdenergy.obdenergy.Utilities.Console;
+
 import java.util.ArrayList;
 
 /**
@@ -22,6 +24,7 @@ public class Data implements Parcelable{
         this.gallons = gallons;
         this.miles = miles;
         this.timestamp = timestamp;
+        Console.log("Created data point");
     }
 
     public Data(Parcel in){
