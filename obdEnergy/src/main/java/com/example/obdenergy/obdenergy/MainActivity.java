@@ -14,10 +14,9 @@ import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Activities.FuelSurveyActivity;
 import com.example.obdenergy.obdenergy.Activities.InitActivity;
+import com.example.obdenergy.obdenergy.Activities.MetricActivity;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
-import com.example.obdenergy.obdenergy.Data;
-import com.example.obdenergy.obdenergy.Profile;
-import com.example.obdenergy.obdenergy.R;
+
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener{
@@ -111,6 +110,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void collectData(){
+        Boolean fuelDataGiven = false;
+        Console.log("Collect data called");
         Long time = System.currentTimeMillis()/1000;
         String timeString = time.toString();
 
@@ -118,14 +119,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         String miles = "300";
 
         Data currentData = new Data(gallons, miles, timeString);
+        Console.log("Collected data "+currentData.getGallons()+" "+currentData.getMiles());
 
         //TODO: check if fuel PID works, or not - then send to screens. For now open asking act anyway
 
-        Intent intent = new Intent(this, FuelSurveyActivity.class);
-        intent.putExtra("DATAPOINT", currentData);
+        if(!fuelDataGiven){
+            Intent intent = new Intent(this, FuelSurveyActivity.class);
+            startActivity(intent);
+        }
+        else{
+            Intent intent = new Intent(this, MetricActivity.class);
+            intent.putExtra("DATAPOINT", currentData);
 
-        Console.log("Collected data "+currentData.getGallons()+" "+currentData.getGallons());
-        startActivity(intent);
+            startActivity(intent);
+        }
+
+
 
     }
 

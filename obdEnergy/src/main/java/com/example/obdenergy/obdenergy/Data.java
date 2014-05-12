@@ -31,6 +31,7 @@ public class Data implements Parcelable{
         gallons = in.readString();
         miles = in.readString();
         timestamp = in.readString();
+        street = in.readString();
     }
 
     public String getGallons() {return gallons;}
@@ -54,4 +55,14 @@ public class Data implements Parcelable{
         out.writeString(street);
         out.writeString(timestamp);
     }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Data createFromParcel(Parcel in) {
+            return new Data(in);
+        }
+
+        public Data[] newArray(int size) {
+            return new Data[size];
+        }
+    };
 }

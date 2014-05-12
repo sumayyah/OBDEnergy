@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/fuelContainer"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FUEL: "/>
+
+        <TextView
+            android:id="@+id/fuelData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/carbonContainer"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KG CARBON: "/>
+        <TextView
+            android:id="@+id/carbonData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50 KG CO2"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/treesContainer"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TREES: "/>
+
+        <TextView
+            android:id="@+id/metricData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50 TREES KILLED"/>
+
+    </LinearLayout>
+</LinearLayout>

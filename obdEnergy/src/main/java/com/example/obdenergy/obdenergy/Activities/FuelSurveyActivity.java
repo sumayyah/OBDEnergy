@@ -33,11 +33,6 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
         doneButtonFSA = (Button)(findViewById(R.id.doneButtonFSA));
         doneButtonFSA.setOnClickListener(this);
 
-        Intent intent = new Intent();
-        Data dataPoint = intent.getParcelableExtra("DATAPOINT");
-
-        Console.log("Getting data from Main! "+dataPoint.getGallons()+" gallons "+dataPoint.getMiles()+" miles");
-
     }
 
     @Override
@@ -48,8 +43,22 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
                 int selectedRadioButton = radioGroup.getCheckedRadioButtonId();
                 radioButton = (RadioButton)(findViewById(selectedRadioButton));
 
+                Long time = System.currentTimeMillis()/1000;
+                String timeString = time.toString();
+
                 String text = (String) radioButton.getText();
                 Console.log("Got button! It's "+text);
+
+                String miles = milesField.getText().toString();
+
+                Data datapoint = new Data("0 gals", miles, timeString);
+                datapoint.setStreet(text.toString());
+
+                Intent intent = new Intent(this, MetricActivity.class);
+                intent.putExtra("DATAPOINT", datapoint);
+                startActivity(intent);
+
+                finish();
                 break;
             default:
                 break;

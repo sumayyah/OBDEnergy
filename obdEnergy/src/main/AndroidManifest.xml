@@ -32,6 +32,9 @@
             android:theme="@android:style/Theme.Dialog">
 
         </activity>
+        <activity android:name=".Activities.MetricActivity">
+
+        </activity>
     </application>
 
 </manifest>
