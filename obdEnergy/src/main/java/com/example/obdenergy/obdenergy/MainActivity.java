@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
+//import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.obdenergy.obdenergy.Activities.Devices;
 import com.example.obdenergy.obdenergy.Activities.FuelSurveyActivity;
 import com.example.obdenergy.obdenergy.Activities.InitActivity;
 import com.example.obdenergy.obdenergy.Activities.MetricActivity;
@@ -19,7 +20,7 @@ import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener{
+public class MainActivity extends Activity implements View.OnClickListener{
 
     private final String classID = "MainActivity";
 
@@ -36,7 +37,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
-    private static final int REQUEST_CODE = 1;
+    private static final int REQUEST_CREATE_PROFILE = 4;
 
 
     // Key names received from the BluetoothChatService Handler
@@ -52,7 +53,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public static final int MESSAGE_TOAST = 5;
     private static final int GET_DATA = 0;
 
-    private final String PREFS_NAME = "MyCarData";
+    private final String USER_DATA_FILE = "MyCarData";
 
     Profile userProfile;
     SharedPreferences userData;
@@ -60,43 +61,68 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private TextView data;
     private Button startButton;
     private Button stopButton;
+    private Button connectButton;
+
+    private Boolean fuelDataGiven = false;
+    private String initFuel = "";
+    private String initDistance = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Console.log(classID+" on create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         data = (TextView)(findViewById(R.id.data));
         startButton = (Button)(findViewById(R.id.startButton));
         stopButton = (Button)(findViewById(R.id.stopButton));
+        connectButton = (Button)(findViewById(R.id.connectButton));
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
+        connectButton.setOnClickListener(this);
 
         /*If this is the first time running the app, get user data*/
-        userData = getSharedPreferences(PREFS_NAME, 0);
+        userData = getSharedPreferences(USER_DATA_FILE, 0);
         Boolean hasRun = userData.getBoolean("my_first_time", false);
 
         if(!hasRun){
-            Console.log(classID + "FIRST TIME!!");
             userData.edit().putBoolean("my_first_time", true).commit();
             Intent intent = new Intent(this, InitActivity.class);
-            startActivityForResult(intent, REQUEST_CODE);
+            startActivityForResult(intent, REQUEST_CREATE_PROFILE);
         }
-        else {
-            Console.log(classID+" Not the first time! "+hasRun);
-            createProfile();
-        }
+        else {createProfile();}
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
 
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE){
+        Console.log(classID+" Activity result");
+
+        //TODO: request secure connects and enable bluetooth
+
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CREATE_PROFILE){
             createProfile();
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //TODO: check bTooth enabled
+        //TODO: once enabled, setup Chat
+    }
+
+    private void setupChat(){
+        Console.log(classID+" setting up chat");
+
+        //TODO: set up chat service handler, output buffer, adn initial message
+    }
+
     private void createProfile(){
+        Console.log(classID+" creating user profile object from stored data");
         String make = userData.getString("car_make", "");
         String model = userData.getString("car_model", "");
         String year = userData.getString("car_year", "");
@@ -110,32 +136,43 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void collectData(){
-        Boolean fuelDataGiven = false;
-        Console.log("Collect data called");
+
+        Console.log(classID+" collecting Data");
+
         Long time = System.currentTimeMillis()/1000;
         String timeString = time.toString();
 
-        String gallons = "10";
-        String miles = "300";
+        String tankCapacity = userData.getString("tank_capacity", "");
+        Intent intent = null;
 
-        Data currentData = new Data(gallons, miles, timeString);
-        Console.log("Collected data "+currentData.getGallons()+" "+currentData.getMiles());
+        if(fuelDataGiven){
 
-        //TODO: check if fuel PID works, or not - then send to screens. For now open asking act anyway
+            //TODO: get fuel level + distance
 
-        if(!fuelDataGiven){
-            Intent intent = new Intent(this, FuelSurveyActivity.class);
+            //TODO: calculate gallons = fuel-initfuel/256*100*tankcapacity
+            //TODO: Calculate miles = distance - initdistance
+           //TODO: create Data currentData = new Data(gallons, miles, timeString)
+
+            intent = new Intent(this, MetricActivity.class);
+            intent.putExtra("DATAPOINT", currentData);
             startActivity(intent);
         }
         else{
-            Intent intent = new Intent(this, MetricActivity.class);
-            intent.putExtra("DATAPOINT", currentData);
-
+            intent = new Intent(this, FuelSurveyActivity.class);
             startActivity(intent);
         }
 
+    }
 
+    private void startDataTransfer(){
 
+        //TODO: Check protocol
+
+        Long time = System.currentTimeMillis()/1000;
+        String timeString = time.toString();
+        //TODO:get initfuel + initdistance
+
+        //TODO: if fuel data given -> fuelDataGiven = true, else false
     }
 
     @Override
@@ -160,11 +197,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        Console.log(classID+" button clicked");
         switch (v.getId()){
+            case R.id.connectButton:
+                Console.log(classID+" connect");
+                Intent intent = new Intent(MainActivity.this, Devices.class);
+                startActivityForResult(intent, REQUEST_CONNECT_DEVICE_SECURE);
+                break;
             case R.id.startButton:
+                Console.log(classID+" start");
+                startDataTransfer();
                 break;
             case R.id.stopButton:
-                Console.log("Stop button clicked! ");
+                Console.log(classID+" stop");
                 collectData();
                 break;
         }

@@ -28,6 +28,9 @@ public class MetricActivity extends Activity{
         Bundle extras = getIntent().getExtras();
         Data data = (Data) extras.getParcelable("DATAPOINT");
 
+        //TODO: calculate kilos of carbon with CM1
+        //TODO: calculate trees with EPA
+
         fuelData.setText(data.getGallons()+" Gals used");
         carbonData.setText(data.getMiles()+" miles driven on "+data.getStreet());
     }
