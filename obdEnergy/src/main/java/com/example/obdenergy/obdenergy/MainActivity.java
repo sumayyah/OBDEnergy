@@ -149,9 +149,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
             //TODO: get fuel level + distance
 
-            //TODO: calculate gallons = fuel-initfuel/256*100*tankcapacity
+            //TODO: String gallons = Calculations.getGallons(initfuel, finalfuel, tankcapacity)
             //TODO: Calculate miles = distance - initdistance
            //TODO: create Data currentData = new Data(gallons, miles, timeString)
+
+            String gallons = "10", miles = "300";
+
+            Data currentData = new Data(gallons, miles, timeString);
 
             intent = new Intent(this, MetricActivity.class);
             intent.putExtra("DATAPOINT", currentData);
@@ -163,6 +167,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
 
     }
+
+
 
     private void startDataTransfer(){
 
