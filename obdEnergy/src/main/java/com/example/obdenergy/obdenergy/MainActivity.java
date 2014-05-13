@@ -2,10 +2,13 @@ package com.example.obdenergy.obdenergy;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.SharedPreferences;
 //import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,13 +28,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private final String classID = "MainActivity";
 
     // Name of the connected device
-    private String mConnectedDeviceName = null;
+    private String ConnectedDeviceName = null;
     // String buffer for outgoing messages
-    private static StringBuffer mOutStringBuffer;
+    private static StringBuffer WriteStringBuffer;
     // Local Bluetooth adapter
-    static BluetoothAdapter mBluetoothAdapter = null;
+    static BluetoothAdapter BluetoothAdapter = null;
     // Member object for the chat services
-    private static BluetoothChatService mChatService = null;
+    private static BluetoothChatService ChatService = null;
 
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
@@ -83,6 +86,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
         stopButton.setOnClickListener(this);
         connectButton.setOnClickListener(this);
 
+        BluetoothAdapter =BluetoothAdapter.getDefaultAdapter();
+
+        /*Check if device supports Bluetooth*/
+        if(BluetoothAdapter==null) Console.log(classID+" Bluetooth is not supported in device."); //TODO: Show alert
+        else Console.log(classID+" Bluetooth is supported in device.");
+
+
         /*If this is the first time running the app, get user data*/
         userData = getSharedPreferences(USER_DATA_FILE, 0);
         Boolean hasRun = userData.getBoolean("my_first_time", false);
@@ -95,31 +105,113 @@ public class MainActivity extends Activity implements View.OnClickListener{
         else {createProfile();}
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
 
-        Console.log(classID+" Activity result");
-
-        //TODO: request secure connects and enable bluetooth
-
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CREATE_PROFILE){
-            createProfile();
-        }
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        //TODO: check bTooth enabled
-        //TODO: once enabled, setup Chat
+        Console.log(classID+" onStart");
+
+         /*Check if Bluetooth is enabled. If not, present that option to the user*/
+        if (!BluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            Console.log(classID+" Bluetooth is not enabled, request sent");
+        }else {
+            Console.log(classID+" Bluetooth is enabled");
+            if(ChatService == null) setupChat();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+
+        Console.log(classID+" Activity result");
+
+        //TODO: add connectStatus textview
+
+        switch (requestCode){
+            case REQUEST_CONNECT_DEVICE_SECURE:
+
+                if (resultCode == Activity.RESULT_OK) {
+//                    connectStatus.setText("Connecting...");
+                    connectDevice(data, true);
+                }
+                break;
+            case REQUEST_CONNECT_DEVICE_INSECURE:
+
+                if (resultCode == Activity.RESULT_OK) {
+//                    connectStatus.setText("Connecting...");
+                    connectDevice(data, false);
+                }
+                break;
+            case REQUEST_CREATE_PROFILE:
+                if(resultCode == Activity.RESULT_OK) createProfile();
+                break;
+            case REQUEST_ENABLE_BT:
+
+                if (resultCode == Activity.RESULT_OK) {
+                    // Bluetooth is now enabled, so set up a chat session
+                    setupChat();
+                } else {
+                    // User did not enable Bluetooth or an error occurred
+                    Console.log(classID+" BT not enabled");
+                    finish();
+                }
+        }
     }
 
     private void setupChat(){
-        Console.log(classID+" setting up chat");
+        Console.log(classID+" Setting up chat");
 
-        //TODO: set up chat service handler, output buffer, adn initial message
+        ChatService = new BluetoothChatService(this, BTHandler);
+
+        /*Initialize outgoing string buffer with null string*/
+        WriteStringBuffer = new StringBuffer("");
+
+        /*Send initial messages*/
+        sendMessage(""+"\r");
+        sendMessage("ATE0");
+
     }
+
+    private final Handler BTHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case MESSAGE_STATE_CHANGE:
+
+                    switch (msg.arg1){
+
+                        case BluetoothChatService.STATE_CONNECTED:
+                            Console.log(classID + " Connected, calling onConnect");
+//                            connectStatus.setText("Connected to " + mConnectedDeviceName);
+//                            onConnect(); //TODO: test and call only if setupChat doesn't work at this
+                            break;
+                        case BluetoothChatService.STATE_CONNECTING:
+//                            connectStatus.setText("Connecting...");
+                        case BluetoothChatService.STATE_LISTEN:
+                        case BluetoothChatService.STATE_NONE:
+                    }
+                    break;
+                case MESSAGE_WRITE:
+                    Console.log(classID+" Write command given");
+                    break;
+                case MESSAGE_READ:
+//                    readMessage(msg); //TODO: add read message
+                    break;
+                case MESSAGE_DEVICE_NAME:
+
+//                    mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+                    break;
+                case MESSAGE_TOAST:
+                    Console.log(TOAST);
+                    break;
+            }
+        }
+    };
 
     private void createProfile(){
         Console.log(classID+" creating user profile object from stored data");
@@ -168,6 +260,27 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     }
 
+    private void sendMessage(String message){
+
+        /*Make sure we're connected*/
+        if(ChatService.getState() != BluetoothChatService.STATE_CONNECTED){
+            Console.log(classID+" Not connected");
+            return;
+        }
+
+        /*If there is actually a message*/
+        if(message.length() > 0){
+
+            byte[] toSend = message.getBytes();
+            ChatService.write(toSend);
+            Console.log(classID+" written "+message);
+            //TODO: Logwriter
+
+            /*Reset buffer*/
+            WriteStringBuffer.setLength(0);
+        }
+
+    }
 
 
     private void startDataTransfer(){
@@ -179,6 +292,22 @@ public class MainActivity extends Activity implements View.OnClickListener{
         //TODO:get initfuel + initdistance
 
         //TODO: if fuel data given -> fuelDataGiven = true, else false
+    }
+
+    private void connectDevice(Intent data, boolean secure){
+
+        //TODO: different things for secure and insecure connections. Also what is extra info?
+
+        // Get the device MAC address and info
+        String address = data.getExtras().getString(Devices.EXTRA_DEVICE_ADDRESS);
+        String info = data.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
+
+//        connectStatus.setText("Connected to: "+info+" "+address)
+
+        // Get the BluetoothDevice object
+        BluetoothDevice device = BluetoothAdapter.getRemoteDevice(address);
+        // Attempt to connect to the device
+        ChatService.connect(device, secure);
     }
 
     @Override

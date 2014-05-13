@@ -20,6 +20,20 @@ public class Calculations {
         return finalGallonString;
     }
 
+    public String getGallons(String mpg, String miles){
+        String finalGallonString = "";
+
+        int mpgNum = Integer.parseInt(mpg);
+        int milesNum = Integer.parseInt(miles);
+        float multiplier = 1/mpgNum; //Should this be double?
+
+        float finalGallons = milesNum*multiplier;
+
+        finalGallonString = String.valueOf(finalGallons);
+
+        return finalGallonString;
+    }
+
     public String getCarbon(int gallonsUsed){
         String finalCarbon = "";
 

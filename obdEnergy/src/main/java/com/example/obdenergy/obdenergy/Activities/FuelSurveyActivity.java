@@ -51,7 +51,8 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
 
                 String miles = milesField.getText().toString();
 
-                //TODO: calculate gallons from mpg*miles
+                //TODO: get mpg baed on radio button
+                //TODO: getGallons(mpg, miles)
 
                 Data datapoint = new Data("0 gals", miles, timeString);
                 datapoint.setStreet(text.toString());
