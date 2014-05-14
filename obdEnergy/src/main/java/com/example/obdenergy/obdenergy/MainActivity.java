@@ -306,6 +306,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private void startInstantFuelReadings() {
         //TODO: create timer/runnable
+
+//        Handler fuelHandler = new Handler();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        }).start();
     }
 
     private void createMetricActivity() {
