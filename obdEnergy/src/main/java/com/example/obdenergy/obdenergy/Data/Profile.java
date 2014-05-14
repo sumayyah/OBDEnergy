@@ -8,21 +8,21 @@ import android.os.Parcelable;
  */
 public class Profile implements Parcelable{
 
-    private String make;
-    private String model;
-    private String year;
-    private String capacity;
-    private String citympg;
-    private String highwaympg;
+    private static String make;
+    private static String model;
+    private static String year;
+    private static String capacity;
+    private static String citympg;
+    private static String highwaympg;
 
-    public Profile(String make, String model, String year, String capacity, String citympg, String highwaympg){
-        this.make = make;
-        this.model = model;
-        this.year = year;
-        this.capacity = capacity;
-        this.citympg = citympg;
-        this.highwaympg = highwaympg;
-    }
+//    public Profile(String make, String model, String year, String capacity, String citympg, String highwaympg){
+//        this.make = make;
+//        this.model = model;
+//        this.year = year;
+//        this.capacity = capacity;
+//        this.citympg = citympg;
+//        this.highwaympg = highwaympg;
+//    }
 
     public Profile(Parcel in){
         make = in.readString();
@@ -36,9 +36,27 @@ public class Profile implements Parcelable{
     public String getMake(){return make;}
     public String getModel(){return model;}
     public String getYear(){return year;}
-    public String getCapacity(){return capacity;}
-    public String getCitympg(){return citympg;}
-    public String getHighwaympg(){return highwaympg;}
+    public static String getCapacity(){return capacity;}
+    public static String getCitympg(){return citympg;}
+    public static String getHighwaympg(){return highwaympg;}
+
+    public static void setMake(String make) {
+        Profile.make = make;}
+    public static void setModel(String model) {
+        Profile.model = model;}
+    public static void setYear(String year){
+        Profile.year = year;}
+    public static void setCapacity(String capacity) {
+        Profile.capacity = capacity;}
+    public static void setCitympg(String citympg) {
+        Profile.citympg = citympg;}
+    public static void setHighwaympg(String highwaympg) {
+        Profile.highwaympg = highwaympg;}
+
+    public static String checkContents(){
+        String returnString = "Make "+make+" Model "+model+" Year "+year+" Capacity "+capacity+" CityMPG "+citympg+" HighwayMPG"+highwaympg;
+        return returnString;
+    }
 
     @Override
     public int describeContents() {

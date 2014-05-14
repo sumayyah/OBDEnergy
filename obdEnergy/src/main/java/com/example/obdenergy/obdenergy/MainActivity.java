@@ -20,7 +20,7 @@ import com.example.obdenergy.obdenergy.Activities.FuelSurveyActivity;
 import com.example.obdenergy.obdenergy.Activities.InitActivity;
 import com.example.obdenergy.obdenergy.Activities.MetricActivity;
 import com.example.obdenergy.obdenergy.Data.DisplayData;
-import com.example.obdenergy.obdenergy.Data.OBDData;
+import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 
@@ -66,12 +66,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
 
     private final String FUEL_REQUEST = "012F";
+    private final String CHECK_PROTOCOL = "ATDP";
     private final String USER_DATA_FILE = "MyCarData";
 
     Profile userProfile;
     SharedPreferences userData;
 
     private TextView data;
+    private TextView connectStatus;
     private Button startButton;
     private Button stopButton;
     private Button connectButton;
@@ -81,9 +83,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private Boolean stop = false;
     private String command = "";
 
-    private OBDData obdData;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -92,6 +91,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         setContentView(R.layout.activity_main);
 
         data = (TextView)(findViewById(R.id.displayData));
+        connectStatus = (TextView)(findViewById(R.id.connectStatus));
         startButton = (Button)(findViewById(R.id.startButton));
         stopButton = (Button)(findViewById(R.id.stopButton));
         connectButton = (Button)(findViewById(R.id.connectButton));
@@ -100,7 +100,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
         connectButton.setOnClickListener(this);
 
         BluetoothAdapter =BluetoothAdapter.getDefaultAdapter();
-        obdData = new OBDData();
 
         /*Check if device supports Bluetooth*/
         if(BluetoothAdapter==null) Console.log(classID+" Bluetooth is not supported in device."); //TODO: Show alert
@@ -112,7 +111,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         Boolean hasRun = userData.getBoolean("my_first_time", false);
 
         if(!hasRun){
-            userData.edit().putBoolean("my_first_time", false).commit(); //TODO: check if this should be true or false
+            userData.edit().putBoolean("my_first_time", true).commit(); //TODO: check if this should be true or false
             Intent intent = new Intent(this, InitActivity.class);
             startActivityForResult(intent, REQUEST_CREATE_PROFILE);
         }
@@ -147,14 +146,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
             case REQUEST_CONNECT_DEVICE_SECURE:
 
                 if (resultCode == Activity.RESULT_OK) {
-//                    connectStatus.setText("Connecting...");
+                    connectStatus.setText("Connecting...");
                     connectDevice(data, true);
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
 
                 if (resultCode == Activity.RESULT_OK) {
-//                    connectStatus.setText("Connecting...");
+                    connectStatus.setText("Connecting...");
                     connectDevice(data, false);
                 }
                 break;
@@ -200,11 +199,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     switch (msg.arg1){
                         case BluetoothChatService.STATE_CONNECTED:
                             Console.log(classID + " Connected, calling onConnect");
-//                            connectStatus.setText("Connected to " + mConnectedDeviceName);
+                            connectStatus.setText("Connected to " + ConnectedDeviceName);
 //                            onConnect(); //TODO: test and call only if setupChat doesn't work at this
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
-//                            connectStatus.setText("Connecting...");
+                            connectStatus.setText("Connecting...");
                         case BluetoothChatService.STATE_LISTEN:
                         case BluetoothChatService.STATE_NONE:
                     }
@@ -213,17 +212,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     Console.log(classID+" Write command given");
                     break;
                 case MESSAGE_READ:
-                    if(start == true && stop == false) {
-//                        readStartMessage(msg);
-                    }else if(start == false && stop == true){
-//                        readStopMessage(msg);
-                    }else {
-                        Console.log(classID+" Wrong bools, some button error");
-                    }
                     readMessage(msg);
                     break;
                 case MESSAGE_DEVICE_NAME:
-//                    mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+                    ConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                     break;
                 case MESSAGE_TOAST:
                     Console.log(TOAST);
@@ -234,9 +226,19 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private void readMessage(Message msg){
 
-        Console.log("Reading message! Command is "+command);
+        Console.log(classID+" Reading message! Command is "+command);
         byte[] readBuffer = (byte[]) msg.obj;
         String bufferString = new String(readBuffer, 0, msg.arg1);
+
+        if(command.equals(FUEL_REQUEST)){
+            if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
+                fuelDataGiven = false;
+                Console.log("Fuel data gets error return message");
+                return;
+            }
+        }else if(command.equals(CHECK_PROTOCOL)){
+            checkProtocol(bufferString);
+        }
 
         /*If we get 4 bytes of data returned*/
         if(bufferString!="" && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r?\n?")){
@@ -246,35 +248,45 @@ public class MainActivity extends Activity implements View.OnClickListener{
             String[] bytes = bufferString.split(" ");
 
             if((bytes[0]!=null) && (bytes[1]!=null) && (bytes[2]!=null) && (bytes[3]!=null)){
+                int PID = Integer.parseInt(bytes[1]);
                 String firstPart = bytes[2];
                 String secondPart = bytes[3];
                 String finalString = firstPart+secondPart;
-                Console.log("No null pieces! They're "+firstPart+" and "+secondPart+" makes "+finalString);
+                Console.log(classID+" No null pieces! They're "+firstPart+" and "+secondPart+" makes "+finalString);
 //                hexToInt(finalString);
 
             } else Console.log("NUll pieces in first regex check :(");
         }
         /*If we get 3 bytes of data returned*/
         else if (bufferString!="" && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r\n?")){
-            Console.log("Buffer String matches 4 digit pattern: "+bufferString);
+            Console.log(classID+" Buffer String matches 4 digit pattern: "+bufferString);
 
             bufferString.trim();
             String[] bytes = bufferString.split(" ");
 
-            if(((bytes[0]!=null) && (bytes[1]!=null) && (bytes[2]!=null)) && !bytes[2].equals("12") && !bytes[2].equals("80") && !bufferString.equals("NO DATA")){
+            if(((bytes[0]!=null) && (bytes[1]!=null) && (bytes[2]!=null))){
+                int PID = Integer.parseInt(bytes[1], 16);
                 String secondPart = bytes[2];
-                Console.log("No null pieces! It's "+secondPart+" fuel is "+ Calculations.getFuel(secondPart));
 
-//                hexToInt(secondPart);
+                switch (PID){
+                    case 47: //Fuel data
 
-//                response.append("\n"+"Command: "+command+"\n"+" Response: "+bufferString);
+                        Console.log(classID+" Fuel data recieved "+secondPart);
+                        if(start == true && stop == false ){
+                            Path.setInitFuel(secondPart);
+                            Console.log(classID+" set as initial fuel");
+                        }else if(start == false && stop == true){
+                            Path.setFinalFuel(secondPart);
+                            Console.log(classID+" set as final fuel");
+                            createMetricActivity();
+                        }else Console.log("Some other bool");
+                        break;
 
-            } else {
-                Console.log("Buffer string is mistaken, its "+bufferString);
-                if(command.equals(FUEL_REQUEST)){
-                    Console.log("FUel returns erroneous data, set to false");
-                    fuelDataGiven = false;
+                    case 13: //Speed data (KM/H)
+                        Console.log(classID+" Speed data recieved"+secondPart);
+                        break;
                 }
+
             }
         }
         else {
@@ -284,45 +296,67 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     }
 
+    private void createMetricActivity() {
+        String tankCapacity = Profile.getCapacity();
+        Intent intent = null;
+
+        String gallons = Calculations.getGallons(Path.getInitFuel(), Path.getFinalFuel(), tankCapacity);
+        String miles = "10";
+
+        DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTimestamp());
+
+        intent = new Intent(this, MetricActivity.class);
+        intent.putExtra("DATAPOINT", currentDisplayData);
+        startActivity(intent);
+    }
+
+    private void checkProtocol(String bufferString) {
+        //TODO: checkProtocol
+    }
+
     private void createProfile(){
         Console.log(classID+" creating user profile object from stored data");
         String make = userData.getString("car_make", "");
         String model = userData.getString("car_model", "");
         String year = userData.getString("car_year", "");
         String tank = userData.getString("tank_capacity", "");
-        String city = userData.getString("city_mpg", "");
-        String highway = userData.getString("highway_mpg", "");
+        String city = userData.getString("City", "");
+        String highway = userData.getString("Highway", "");
 
-        userProfile = new Profile(make, model, year, tank, city, highway);
+        Profile.setMake(make);
+        Profile.setModel(model);
+        Profile.setYear(year);
+        Profile.setCapacity(tank);
+        Profile.setCitympg(city);
+        Profile.setHighwaympg(highway);
 
-        data.setText("Car data "+make+" "+model+" "+year);
+        data.setText(Profile.checkContents());
     }
 
     private void collectData(){
 
-        Console.log(classID+" collecting DisplayData");
+        Console.log(classID+" collecting stop Data");
 
-        Long time = System.currentTimeMillis()/1000;
-        String timeString = time.toString();
-
-        String tankCapacity = userData.getString("tank_capacity", "");
+        String tankCapacity = Profile.getCapacity();
         Intent intent = null;
 
         if(fuelDataGiven){
 
-            //TODO: get fuel level + distance
+            Console.log("Fuel data given");
 
-            //TODO: String gallons = Calculations.getGallons(initfuel, finalfuel, tankcapacity)
+            //TODO: get distance
+            sendMessage(FUEL_REQUEST+"\r");
+
             //TODO: Calculate miles = distance - initdistance
-           //TODO: create DisplayData currentDisplayData = new DisplayData(gallons, miles, timeString)
-
-            String gallons = "10", miles = "300";
-
-            DisplayData currentDisplayData = new DisplayData(gallons, miles, timeString);
-
-            intent = new Intent(this, MetricActivity.class);
-            intent.putExtra("DATAPOINT", currentDisplayData);
-            startActivity(intent);
+//
+//            String gallons = Calculations.getGallons(Path.getInitFuel(), Path.getFinalFuel(), tankCapacity);
+//            String miles = "10";
+//
+//            DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTimestamp());
+//
+//            intent = new Intent(this, MetricActivity.class);
+//            intent.putExtra("DATAPOINT", currentDisplayData);
+//            startActivity(intent);
         }
         else{
             intent = new Intent(this, FuelSurveyActivity.class);
@@ -372,7 +406,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         String address = data.getExtras().getString(Devices.EXTRA_DEVICE_ADDRESS);
         String info = data.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
 
-//        connectStatus.setText("Connected to: "+info+" "+address)
+        connectStatus.setText("Connected to: "+info+" "+address);
 
         // Get the BluetoothDevice object
         BluetoothDevice device = BluetoothAdapter.getRemoteDevice(address);
@@ -414,7 +448,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 break;
             case R.id.startButton:
                 Console.log(classID+" start");
-                obdData.setInitTimestamp(timeString);
+                Path.setInitTimestamp(timeString);
                 start = true;
                 startDataTransfer();
                 break;
@@ -422,7 +456,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 Console.log(classID+" stop");
                 start = false;
                 stop = true;
-                obdData.setFinalTimestamp(timeString);
+                Path.setFinalTimestamp(timeString);
                 collectData();
                 break;
         }

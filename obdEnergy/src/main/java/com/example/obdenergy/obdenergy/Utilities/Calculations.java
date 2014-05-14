@@ -5,22 +5,21 @@ package com.example.obdenergy.obdenergy.Utilities;
  */
 public class Calculations {
 
-    public String getGallons(String initFuel, String finalFuel, String tankCapacity){
+    public static String getGallons(float initFuel, float finalFuel, String tankCapacity){
         String finalGallonString = "";
-        int initFuelNum = Integer.parseInt(initFuel);
-        int finalFuelNum = Integer.parseInt(finalFuel);
+        Console.log("Calculations - initfuel, final fuel, tankcapacity"+initFuel+" "+finalFuel+" "+tankCapacity);
         int tankCapacityNum = Integer.parseInt(tankCapacity);
 
-        int fuelVal = finalFuelNum - initFuelNum;
-        int percentage = (fuelVal/255);
-        int gallons = percentage*tankCapacityNum;
+        float fuelVal = finalFuel - initFuel;
+        float percentage = (fuelVal/255);
+        float gallons = percentage*tankCapacityNum;
 
         finalGallonString = String.valueOf(gallons);
 
         return finalGallonString;
     }
 
-    public String getGallons(String mpg, String miles){
+    public static String getGallons(String mpg, String miles){
         String finalGallonString = "";
 
         int mpgNum = Integer.parseInt(mpg);
@@ -66,7 +65,7 @@ public class Calculations {
         return finalString;
     }
 
-    private static int hexToInt(String hexString){
+    public static int hexToInt(String hexString){
 
         int value = Integer.parseInt(hexString, 16);
         return value;

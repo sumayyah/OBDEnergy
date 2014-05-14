@@ -28,7 +28,6 @@ public class InitActivity extends Activity implements View.OnClickListener{
 
     private final String USER_DATA_FILE = "MyCarData";
     SharedPreferences settings;
-    Profile userProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -46,6 +45,13 @@ public class InitActivity extends Activity implements View.OnClickListener{
         doneButton = (Button)(findViewById(R.id.doneButton));
 
         doneButton.setOnClickListener(this);
+
+        makeField.setText("Honda");
+        modelField.setText("Accord");
+        yearField.setText("1996");
+        capacityField.setText("15");
+        citympg.setText("22");
+        highwaympg.setText("33");
 
     }
 
@@ -79,8 +85,8 @@ public class InitActivity extends Activity implements View.OnClickListener{
             settings.edit().putString("car_model", modelField.getText().toString()).commit();
             settings.edit().putString("car_year", yearField.getText().toString()).commit();
             settings.edit().putString("tank_capacity", capacityField.getText().toString()).commit();
-            settings.edit().putString("city_mpg", citympg.getText().toString()).commit();
-            settings.edit().putString("highway_mpg", highwaympg.getText().toString()).commit();
+            settings.edit().putString("City", citympg.getText().toString()).commit();
+            settings.edit().putString("Highway", highwaympg.getText().toString()).commit();
 
             Intent intent = new Intent();
             setResult(Activity.RESULT_OK, intent);
