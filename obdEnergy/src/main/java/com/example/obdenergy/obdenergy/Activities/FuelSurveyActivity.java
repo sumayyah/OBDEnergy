@@ -48,46 +48,44 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.doneButtonFSA:
-                Console.log(classID+" Done Button clicked");
-                int selectedRadioButton = radioGroup.getCheckedRadioButtonId();
-                radioButton = (RadioButton)(findViewById(selectedRadioButton));
 
-                Long time = System.currentTimeMillis()/1000;
-                String timeString = time.toString();
-                String mpg = "";
+            Console.log(classID+" Done Button clicked");
 
-                String text = (String) radioButton.getText();
-                //TODO: Make sure user selects a button
+            int selectedRadioButton = radioGroup.getCheckedRadioButtonId();
+            radioButton = (RadioButton)(findViewById(selectedRadioButton));
 
-                String miles = milesField.getText().toString();
-                //TODO: getGallons(mpg, miles)
-                if(text.equals("City")){
-                    Console.log(classID+"City MPG is "+Profile.getCitympg());
-                    mpg = Profile.getCitympg();
-                }
-                else if(text.equals("Highway")){
-                    Console.log(classID+"Highway MPG is "+Profile.getHighwaympg());
-                    mpg = Profile.getHighwaympg();
-                }
-                else Console.log(classID+" wrong radio button data "+text);
+            /*Get parameters to pass to MetricActivity*/
+            Long time = System.currentTimeMillis()/1000;
+            String timeString = time.toString();
+            String mpg = "";
+            String miles = milesField.getText().toString();
 
-                String gallons = Calculations.getGallons(mpg, miles);
 
-                Console.log("User entered miles, mpg, gallons "+miles+" "+mpg+" "+gallons);
+            String text = (String) radioButton.getText();
+            //TODO: Make sure user selects a button
 
-                DisplayData datapoint = new DisplayData(gallons, miles, timeString);
-                datapoint.setStreet(text);
+            if(text.equals("City")){
+                Console.log(classID+"City MPG is "+Profile.getCitympg());
+                mpg = Profile.getCitympg();
+            }
+            else if(text.equals("Highway")){
+                Console.log(classID+"Highway MPG is "+Profile.getHighwaympg());
+                mpg = Profile.getHighwaympg();
+            }
+            else Console.log(classID+" wrong radio button data "+text);
 
-                Intent intent = new Intent(this, MetricActivity.class);
-                intent.putExtra("DATAPOINT", datapoint);
-                startActivity(intent);
+            String gallons = Calculations.getGallons(mpg, miles);
 
-                finish();
-                break;
-            default:
-                break;
-        }
+            Console.log("User entered miles, mpg, gallons "+miles+" "+mpg+" "+gallons);
+
+            DisplayData datapoint = new DisplayData(gallons, miles, timeString);
+            datapoint.setStreet(text);
+
+            Intent intent = new Intent(this, MetricActivity.class);
+            intent.putExtra("DATAPOINT", datapoint);
+            startActivity(intent);
+
+            finish();
+
     }
 }

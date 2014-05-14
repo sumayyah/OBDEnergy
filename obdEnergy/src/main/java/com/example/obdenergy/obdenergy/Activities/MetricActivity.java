@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Data.DisplayData;
 import com.example.obdenergy.obdenergy.R;
+import com.example.obdenergy.obdenergy.Utilities.Calculations;
 
 /**
  * Created by Sumayyah on 5/11/2014.
@@ -28,10 +29,15 @@ public class MetricActivity extends Activity{
         Bundle extras = getIntent().getExtras();
         DisplayData displayData = (DisplayData) extras.getParcelable("DATAPOINT");
 
-        //TODO: getCarbon(displayData.getGallons())
-        //TODO: getTrees(displayData.getGallons())
+        String gallons = displayData.getGallons();
 
-        fuelData.setText(displayData.getGallons()+" Gals used");
-        carbonData.setText(displayData.getMiles()+" miles driven on "+ displayData.getStreet());
+        //TODO: TEST carbonused and treesKilled
+
+        String carbonUsed = Calculations.getCarbon(Integer.parseInt(gallons));
+        String treesKilled = Calculations.getTrees(Integer.parseInt(gallons));
+
+        fuelData.setText(gallons+" Gals used");
+        carbonData.setText(displayData.getMiles()+" miles driven on "+ displayData.getStreet()+" using up "+carbonUsed+" kilos carbon");
+        treesData.setText(treesKilled+" Trees killed");
     }
 }

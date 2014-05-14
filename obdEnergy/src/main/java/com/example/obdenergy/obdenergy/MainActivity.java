@@ -71,7 +71,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private final String CHECK_PROTOCOL = "ATDP";
     private final String USER_DATA_FILE = "MyCarData";
 
-    Profile userProfile;
     SharedPreferences userData;
 
     private TextView data;
@@ -104,7 +103,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         BluetoothAdapter =BluetoothAdapter.getDefaultAdapter();
 
         /*Check if device supports Bluetooth*/
-        if(BluetoothAdapter==null) Console.log(classID+" Bluetooth is not supported in device."); //TODO: Show alert
+        if(BluetoothAdapter==null) Console.log(classID+" Bluetooth is not supported in device.");
         else Console.log(classID+" Bluetooth is supported in device.");
 
 
@@ -113,7 +112,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         Boolean hasRun = userData.getBoolean("my_first_time", false);
 
         if(!hasRun){
-            userData.edit().putBoolean("my_first_time", true).commit(); //TODO: check if this should be true or false
+            userData.edit().putBoolean("my_first_time", true).commit();
             Intent intent = new Intent(this, InitActivity.class);
             startActivityForResult(intent, REQUEST_CREATE_PROFILE);
         }
@@ -141,8 +140,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     public void onActivityResult(int requestCode, int resultCode, Intent data){
 
         Console.log(classID+" Activity result");
-
-        //TODO: add connectStatus textview
 
         switch (requestCode){
             case REQUEST_CONNECT_DEVICE_SECURE:
@@ -180,11 +177,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         ChatService = new BluetoothChatService(this, BTHandler);
 
-        /*Initialize outgoing string buffer with null string*/ //TODO: check if we need all three of these
+        /*Initialize outgoing string buffer with null string*/
         WriteStringBuffer = new StringBuffer("");
-
-
-
 
     }
 
@@ -240,6 +234,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
                 fuelDataGiven = false;
                 Console.log("Fuel data gets error return message");
+                startInstantFuelReadings();
                 return;
             }
         }else if(command.equals(CHECK_PROTOCOL)){
@@ -259,8 +254,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 String secondPart = bytes[3];
                 String finalString = firstPart+secondPart;
                 Console.log(classID+" No null pieces! They're "+firstPart+" and "+secondPart+" makes "+finalString);
-//                hexToInt(finalString);
 
+                switch(PID){
+                    case 16: //MAF - airflow rate
+                        break;
+                    default:
+                        break;
+                }
             } else Console.log("NUll pieces in first regex check :(");
         }
         /*If we get 3 bytes of data returned*/
@@ -277,6 +277,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 switch (PID){
                     case 47: //Fuel data
 
+                        //TODO: check for 0 fuel here, or error data
                         Console.log(classID+" Fuel data recieved "+secondPart);
                         if(start == true && stop == false ){
                             Path.setInitFuel(secondPart);
@@ -290,6 +291,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
                     case 13: //Speed data (KM/H)
                         Console.log(classID+" Speed data recieved"+secondPart);
+                        Path.addToSpeedArray(secondPart);
                         break;
                 }
 
@@ -302,11 +304,16 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     }
 
+    private void startInstantFuelReadings() {
+        //TODO: create timer/runnable
+    }
+
     private void createMetricActivity() {
         String tankCapacity = Profile.getCapacity();
         Intent intent = null;
 
         String gallons = Calculations.getGallons(Path.getInitFuel(), Path.getFinalFuel(), tankCapacity);
+        //TODO: get distance calculations from speedArray
         String miles = "10";
 
         DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTimestamp());

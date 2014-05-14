@@ -33,7 +33,7 @@ public class Calculations {
         return finalGallonString;
     }
 
-    public String getCarbon(int gallonsUsed){
+    public static String getCarbon(int gallonsUsed){
         String finalCarbon = "";
 
         double multiplier = 8.85; //Kilos of carbon per gallon of gas
@@ -44,7 +44,7 @@ public class Calculations {
         return finalCarbon;
     }
 
-    public String getTrees(int gallonsUsed){
+    public static String getTrees(int gallonsUsed){
         String finalTreesKilled = "";
 
         double multiplier = 0.228; //Tree seedlings grown for 10 years, per gallon of gas

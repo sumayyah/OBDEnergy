@@ -2,6 +2,8 @@ package com.example.obdenergy.obdenergy.Data;
 
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 
+import java.util.ArrayList;
+
 /**
  * Created by sumayyah on 5/13/14.
  */
@@ -15,6 +17,7 @@ public class Path {
     public static String finalTimestamp = "";
     public Boolean city = false;
     public Boolean highway = false;
+    public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
 
 //    public Path(){}
 
@@ -32,6 +35,10 @@ public class Path {
     public void setFinalDistance(String val){ finalDistance = val;}
     public static void setInitTimestamp(String val){ initTimestamp = val;}
     public static void setFinalTimestamp(String val){ finalTimestamp = val;}
+    public static void addToSpeedArray(String val){
+        int speedInt = Calculations.hexToInt(val);
+        speedArray.add(speedInt);
+    }
 
     public static float getInitFuel(){ return initFuel; }
     public static float getFinalFuel(){ return finalFuel; }

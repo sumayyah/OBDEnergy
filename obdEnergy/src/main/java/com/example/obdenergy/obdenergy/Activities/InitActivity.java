@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.R;
 
 /**
@@ -46,13 +45,17 @@ public class InitActivity extends Activity implements View.OnClickListener{
 
         doneButton.setOnClickListener(this);
 
+        setDefaults();
+
+    }
+
+    private void setDefaults() {
         makeField.setText("Honda");
         modelField.setText("Accord");
         yearField.setText("1996");
         capacityField.setText("15");
         citympg.setText("22");
         highwaympg.setText("33");
-
     }
 
     @Override
