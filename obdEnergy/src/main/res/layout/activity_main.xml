@@ -24,7 +24,7 @@
         android:layout_below="@+id/connectButton"/>
 
     <TextView
-        android:id="@+id/data"
+        android:id="@+id/displayData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/hello"/>
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="START"
-        android:layout_below="@id/data"/>
+        android:layout_below="@id/displayData"/>
     <Button
         android:id="@+id/stopButton"
         android:tag="stop"

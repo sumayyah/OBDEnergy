@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.obdenergy.obdenergy.Profile;
+import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.R;
 
 /**

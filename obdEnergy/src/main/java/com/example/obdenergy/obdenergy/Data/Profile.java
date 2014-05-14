@@ -1,6 +1,5 @@
-package com.example.obdenergy.obdenergy;
+package com.example.obdenergy.obdenergy.Data;
 
-import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
 

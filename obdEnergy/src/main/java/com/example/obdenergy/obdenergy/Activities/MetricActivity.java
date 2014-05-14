@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.example.obdenergy.obdenergy.Data;
+import com.example.obdenergy.obdenergy.Data.DisplayData;
 import com.example.obdenergy.obdenergy.R;
 
 /**
@@ -26,12 +26,12 @@ public class MetricActivity extends Activity{
         treesData = (TextView)(findViewById(R.id.metricData));
 
         Bundle extras = getIntent().getExtras();
-        Data data = (Data) extras.getParcelable("DATAPOINT");
+        DisplayData displayData = (DisplayData) extras.getParcelable("DATAPOINT");
 
-        //TODO: getCarbon(data.getGallons())
-        //TODO: getTrees(data.getGallons())
+        //TODO: getCarbon(displayData.getGallons())
+        //TODO: getTrees(displayData.getGallons())
 
-        fuelData.setText(data.getGallons()+" Gals used");
-        carbonData.setText(data.getMiles()+" miles driven on "+data.getStreet());
+        fuelData.setText(displayData.getGallons()+" Gals used");
+        carbonData.setText(displayData.getMiles()+" miles driven on "+ displayData.getStreet());
     }
 }

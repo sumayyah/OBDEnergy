@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.example.obdenergy.obdenergy.Data;
+import com.example.obdenergy.obdenergy.Data.DisplayData;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
@@ -54,7 +54,7 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
                 //TODO: get mpg baed on radio button
                 //TODO: getGallons(mpg, miles)
 
-                Data datapoint = new Data("0 gals", miles, timeString);
+                DisplayData datapoint = new DisplayData("0 gals", miles, timeString);
                 datapoint.setStreet(text.toString());
 
                 Intent intent = new Intent(this, MetricActivity.class);

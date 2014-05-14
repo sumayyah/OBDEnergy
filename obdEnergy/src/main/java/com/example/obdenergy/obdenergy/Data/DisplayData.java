@@ -1,4 +1,4 @@
-package com.example.obdenergy.obdenergy;
+package com.example.obdenergy.obdenergy.Data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by sumayyah on 5/8/14.
  */
-public class Data implements Parcelable{
+public class DisplayData implements Parcelable{
 
 
     private String gallons;
@@ -20,14 +20,14 @@ public class Data implements Parcelable{
     private ArrayList<String> speed;
 
 
-    public Data(String gallons, String miles, String timestamp){
+    public DisplayData(String gallons, String miles, String timestamp){
         this.gallons = gallons;
         this.miles = miles;
         this.timestamp = timestamp;
         Console.log("Created data point");
     }
 
-    public Data(Parcel in){
+    public DisplayData(Parcel in){
         gallons = in.readString();
         miles = in.readString();
         timestamp = in.readString();
@@ -57,12 +57,12 @@ public class Data implements Parcelable{
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public Data createFromParcel(Parcel in) {
-            return new Data(in);
+        public DisplayData createFromParcel(Parcel in) {
+            return new DisplayData(in);
         }
 
-        public Data[] newArray(int size) {
-            return new Data[size];
+        public DisplayData[] newArray(int size) {
+            return new DisplayData[size];
         }
     };
 }

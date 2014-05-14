@@ -56,7 +56,17 @@ public class Calculations {
         return finalTreesKilled;
     }
 
-    private int hexToInt(String hexString){
+    public static String getFuel(String hexString){
+        String finalString = "";
+
+        int intFuel = hexToInt(hexString);
+        float finalFuel = (intFuel/255);
+        finalString = String.valueOf(finalFuel);
+
+        return finalString;
+    }
+
+    private static int hexToInt(String hexString){
 
         int value = Integer.parseInt(hexString, 16);
         return value;
