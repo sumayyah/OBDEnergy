@@ -1,8 +1,10 @@
 package com.example.obdenergy.obdenergy;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 //import android.support.v7.app.ActionBarActivity;
@@ -182,10 +184,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
         WriteStringBuffer = new StringBuffer("");
 
 
+
+
+    }
+
+    private void onConnect(){
         /*Send initial messages*/
         sendMessage(""+"\r"); //TODO: check if these shold be sent before start button press
         sendMessage("ATE0");
-
     }
 
     private final Handler BTHandler = new Handler(){
@@ -200,7 +206,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                         case BluetoothChatService.STATE_CONNECTED:
                             Console.log(classID + " Connected, calling onConnect");
                             connectStatus.setText("Connected to " + ConnectedDeviceName);
-//                            onConnect(); //TODO: test and call only if setupChat doesn't work at this
+                            onConnect(); //TODO: test and call only if setupChat doesn't work at this
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
                             connectStatus.setText("Connecting...");
@@ -370,6 +376,22 @@ public class MainActivity extends Activity implements View.OnClickListener{
         /*Make sure we're connected*/
         if((ChatService.getState() != BluetoothChatService.STATE_CONNECTED)){
             Console.log(classID+" Not connected");
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+            alertDialogBuilder.setTitle("ERROR");
+
+            alertDialogBuilder.setMessage("No Bluetooth device connected. Please connect some Bluetooth device and retry.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                        //If the user clicks Ok, shut down alert
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
             return;
         }
 
