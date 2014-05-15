@@ -84,6 +84,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private Boolean stop = false;
     private String command = "";
 
+    private Thread fuelThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -99,6 +101,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
         connectButton.setOnClickListener(this);
+
+        final Handler fuelHandler = new Handler();
 
         BluetoothAdapter =BluetoothAdapter.getDefaultAdapter();
 
@@ -307,13 +311,28 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private void startInstantFuelReadings() {
         //TODO: create timer/runnable
 
-//        Handler fuelHandler = new Handler();
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        }).start();
+
+        fuelThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!stopCommand) {
+                    try {
+                        Thread.sleep(3000);
+                        fuelHandler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // TODO Auto-generated method stub
+                                text.append("\n"+"Hello World "+stopCommand);
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        // TODO: handle exception
+                    }
+                }
+            }
+        });
+        fuelThread.start();
     }
 
     private void createMetricActivity() {
