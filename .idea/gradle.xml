@@ -7,8 +7,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="C:\Users\Sumayyah\Documents\GitHub\OBDEnergy" />
-            <option value="C:\Users\Sumayyah\Documents\GitHub\OBDEnergy\obdEnergy" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/obdEnergy" />
           </set>
         </option>
       </GradleProjectSettings>
