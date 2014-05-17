@@ -102,7 +102,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
         stopButton.setOnClickListener(this);
         connectButton.setOnClickListener(this);
 
-        final Handler fuelHandler = new Handler();
 
         BluetoothAdapter =BluetoothAdapter.getDefaultAdapter();
 
@@ -311,11 +310,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private void startInstantFuelReadings() {
         //TODO: create timer/runnable
 
+        final Handler fuelHandler = new Handler();
+
 
         fuelThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!stopCommand) {
+                while (!stop) {
                     try {
                         Thread.sleep(3000);
                         fuelHandler.post(new Runnable() {
@@ -323,7 +324,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
                             @Override
                             public void run() {
                                 // TODO Auto-generated method stub
-                                text.append("\n"+"Hello World "+stopCommand);
+                                //TODO:Get MAF
+                                //TODO: Get speed
+                                Console.log("Sending message speed!");
                             }
                         });
                     } catch (InterruptedException e) {
