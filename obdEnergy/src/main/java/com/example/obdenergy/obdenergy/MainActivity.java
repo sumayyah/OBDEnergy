@@ -67,8 +67,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private static final int GET_DATA = 0;
 
 
-    private final String FUEL_REQUEST = "012F";
+    private final String FUEL_REQUEST = "012F"; //Returns % of tank
     private final String CHECK_PROTOCOL = "ATDP";
+    private final String SPEED_REQUEST = "010D"; //Returns km/h
     private final String USER_DATA_FILE = "MyCarData";
 
     SharedPreferences userData;
@@ -101,8 +102,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
         connectButton.setOnClickListener(this);
-
-        final Handler fuelHandler = new Handler();
 
         BluetoothAdapter =BluetoothAdapter.getDefaultAdapter();
 
@@ -311,23 +310,24 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private void startInstantFuelReadings() {
         //TODO: create timer/runnable
 
+        final Handler fuelHandler = new Handler();
 
         fuelThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!stopCommand) {
+                while (!stop) {
                     try {
                         Thread.sleep(3000);
                         fuelHandler.post(new Runnable() {
 
                             @Override
                             public void run() {
-                                // TODO Auto-generated method stub
-                                text.append("\n"+"Hello World "+stopCommand);
+                                // TODO sendMessage(MAF, SPEED);
                             }
                         });
                     } catch (InterruptedException e) {
-                        // TODO: handle exception
+                        Console.log(classID+" Thread crash!");
+                        e.printStackTrace();
                     }
                 }
             }
