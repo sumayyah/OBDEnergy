@@ -19,6 +19,21 @@ public class Calculations {
         return finalGallonString;
     }
 
+    public static String getGallons(double initMAF, double finalMAF, String initTime, String finalTime){
+        String finalGallonString = "";
+
+        //TODO: calculate time + redo System.gettime with java timestamps.
+        int timeTaken = 3; //In seconds - TODO: double check time in formula - time taken per MAF reading?
+        double initFuel = 1/(14.75*6.26*initMAF+timeTaken);
+        double finalFuel = 1/(14.75*6.26*finalMAF+timeTaken);
+
+        double fuelUsed = finalFuel - initFuel;
+
+        finalGallonString = String.valueOf(fuelUsed);
+
+        return finalGallonString; //TODO: double check - does formula give back gallons?
+    }
+
     public static String getGallons(String mpg, String miles){
         String finalGallonString = "";
 
@@ -33,7 +48,7 @@ public class Calculations {
         return finalGallonString;
     }
 
-    public static String getCarbon(int gallonsUsed){
+    public static String getCarbon(double gallonsUsed){
         String finalCarbon = "";
 
         double multiplier = 8.85; //Kilos of carbon per gallon of gas
@@ -62,6 +77,17 @@ public class Calculations {
         float finalFuel = (intFuel/255);
         finalString = String.valueOf(finalFuel);
 
+        return finalString;
+    }
+
+    public static String getMAF(String val1, String val2){
+        String finalString = "";
+
+        double byte1 = hexToInt(val1);
+        double byte2 = hexToInt(val2);
+
+        double value = ((byte1*256)+byte2)/100;
+        finalString = String.valueOf(value);
         return finalString;
     }
 

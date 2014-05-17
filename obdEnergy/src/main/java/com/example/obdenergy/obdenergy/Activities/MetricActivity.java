@@ -33,7 +33,7 @@ public class MetricActivity extends Activity{
 
         //TODO: TEST carbonused and treesKilled
 
-        String carbonUsed = Calculations.getCarbon(Integer.parseInt(gallons));
+        String carbonUsed = Calculations.getCarbon(Double.parseDouble(gallons));
         String treesKilled = Calculations.getTrees(Integer.parseInt(gallons));
 
         fuelData.setText(gallons+" Gals used");
