@@ -65,7 +65,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     public static final int MESSAGE_TOAST = 5;
     private static final int GET_DATA = 0;
 
-
     private final String FUEL_REQUEST = "012F"; //Returns % of tank
     private final String MAF_REQUEST = "0110"; // Returns mass airflow in grams/sec
     private final String CHECK_PROTOCOL = "ATDP"; //Returns string of protocol type
@@ -103,6 +102,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
         connectButton.setOnClickListener(this);
+
 
         BluetoothAdapter =BluetoothAdapter.getDefaultAdapter();
 
@@ -204,7 +204,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                         case BluetoothChatService.STATE_CONNECTED:
                             Console.log(classID + " Connected, calling onConnect");
                             connectStatus.setText("Connected to " + ConnectedDeviceName);
-                            onConnect();
+                            onConnect(); //TODO: test and call only if setupChat doesn't work at this
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
                             connectStatus.setText("Connecting...");
@@ -238,7 +238,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
                 fuelDataGiven = false;
                 Console.log("Fuel data gets error return message");
-                sendMAFRequest();
+                startInstantFuelReadings();
                 return;
             }
         }else if(command.equals(CHECK_PROTOCOL)){
@@ -261,15 +261,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
                 switch(PID){
                     case 16: //MAF - airflow rate
-                        Console.log(classID+"MAF Fuel data recieved "+finalString);
-                        if(start == true && stop == false ){
-                            Path.setInitMAF(firstPart, secondPart);
-                            Console.log(classID+" set as MAF initial fuel");
-                        }else if(start == false && stop == true){
-                            Path.setFinalMAF(firstPart, secondPart);
-                            Console.log(classID+" set as MAF final fuel");
-                            createMetricActivity(PID);
-                        }else Console.log("Some other bool");
                         break;
                     default:
                         break;
@@ -298,7 +289,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                         }else if(start == false && stop == true){
                             Path.setFinalFuel(secondPart);
                             Console.log(classID+" set as final fuel");
-                            createMetricActivity(PID);
+                            createMetricActivity();
                         }else Console.log("Some other bool");
                         break;
 
@@ -317,60 +308,51 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     }
 
+
     private void sendMAFRequest() {
         sendMessage(MAF_REQUEST+"\r");
     }
 
-    private void instantReadings(){
+    private void startInstantFuelReadings() {
+        //TODO: create timer/runnable
 
-//        final Handler fuelHandler = new Handler();
-//
-//        fuelThread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (!stop) {
-//                    try {
-//                        Thread.sleep(3000);
-//                        fuelHandler.post(new Runnable() {
-//
-//                            @Override
-//                            public void run() {
-//                                // TODO sendMessage(MAF, SPEED);
-//                            }
-//                        });
-//                    } catch (InterruptedException e) {
-//                        Console.log(classID+" Thread crash!");
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
-//        fuelThread.start();
+        final Handler fuelHandler = new Handler();
+
+
+        fuelThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!stop) {
+                    try {
+                        Thread.sleep(3000);
+                        fuelHandler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // TODO Auto-generated method stub
+                                //TODO:Get MAF
+                                //TODO: Get speed
+                                Console.log("Sending message speed!");
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        // TODO: handle exception
+                    }
+                }
+            }
+        });
+        fuelThread.start();
     }
 
-    private void createMetricActivity(int PID) {
+    private void createMetricActivity() {
         String tankCapacity = Profile.getCapacity();
         Intent intent = null;
-        String gallons = "";
 
-        switch(PID){
-            case 47: //Using fuel level data
-                Console.log(classID+" setting up Metric Act with fuel data");
-                gallons = Calculations.getGallons(Path.getInitFuel(), Path.getFinalFuel(), tankCapacity);
-                break;
-            case 16: //Using MAF data
-                Console.log(classID+" setting up Metric Act with MAF data");
-                gallons = Calculations.getGallons(Path.getInitMAF(), Path.getFinalMAF(), Path.getInitTime(), Path.getfinalTime());
-                break;
-            default:
-                Console.log(classID+" Create metric activity wrong PID");
-                break;
-        }
-
+        String gallons = Calculations.getGallons(Path.getInitFuel(), Path.getFinalFuel(), tankCapacity);
         //TODO: get distance calculations from speedArray
         String miles = "10";
 
-        DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTime());
+        DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTimestamp());
 
         intent = new Intent(this, MetricActivity.class);
         intent.putExtra("DATAPOINT", currentDisplayData);
@@ -419,8 +401,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
 //
 //            Console.log("Fuel data given");
 //
+
 //            //TODO: get distance
 //            sendMessage(FUEL_REQUEST+"\r");
+
+//            DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTimestamp());
 //
 //            //TODO: Calculate miles = distance - initdistance
 ////
@@ -552,4 +537,28 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
     }
 
+    //
+//    private void setupStartChat(){
+//
+//        Console.log(classID+" Set up startChat");
+//
+//        StartChatService = new BluetoothChatService(this, BTStartHandler);
+//
+//        /*Initialize outgoing string buffer with null string*/
+//        WriteStartStringBuffer = new StringBuffer("");
+//
+//        /*Send initial messages*/
+//        sendMessage(""+"\r");
+//        sendMessage("ATE0");
+//
+//    }
+//    private void setupStopChat(){
+//
+//        Console.log(classID+" Set up stopChat");
+//
+//        StopChatService = new BluetoothChatService(this, BTStopHandler);
+//
+//        /*Initialize outgoing string buffer with null string*/
+//        WriteStartStringBuffer = new StringBuffer("");
+//    }
 }
