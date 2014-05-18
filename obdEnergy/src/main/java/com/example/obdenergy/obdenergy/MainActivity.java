@@ -7,7 +7,6 @@ import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-//import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,16 +17,16 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Activities.Devices;
-import com.example.obdenergy.obdenergy.Activities.FuelSurveyActivity;
 import com.example.obdenergy.obdenergy.Activities.InitActivity;
 import com.example.obdenergy.obdenergy.Activities.MetricActivity;
 import com.example.obdenergy.obdenergy.Data.DisplayData;
 import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
-
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+
+//import android.support.v7.app.ActionBarActivity;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
@@ -68,9 +67,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
 
     private final String FUEL_REQUEST = "012F"; //Returns % of tank
-    private final String MAF_REQEUST = "0110"; // Returns mass airflow in grams/sec
+    private final String MAF_REQUEST = "0110"; // Returns mass airflow in grams/sec
     private final String CHECK_PROTOCOL = "ATDP"; //Returns string of protocol type
     private final String SPEED_REQUEST = "010D"; //Returns km/h
+    private final String CHANGE_PROTOCOL = "ATSPA3"; //Changes protocol to ISO 9141-2
     private final String USER_DATA_FILE = "MyCarData";
 
     SharedPreferences userData;
@@ -318,7 +318,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     private void sendMAFRequest() {
-        sendMessage(MAF_REQEUST+"\r");
+        sendMessage(MAF_REQUEST+"\r");
     }
 
     private void instantReadings(){
@@ -378,7 +378,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     private void checkProtocol(String bufferString) {
-        //TODO: checkProtocol
+        //TODO: TEST checkProtocol
+        if(!bufferString.equals("ISO 9141-2")){
+            Console.log(classID+" Not ISO 9141, its' "+bufferString);
+            sendMessage(CHANGE_PROTOCOL+"\r");
+        }
     }
 
     private void createProfile(){
@@ -407,28 +411,32 @@ public class MainActivity extends Activity implements View.OnClickListener{
         String tankCapacity = Profile.getCapacity();
         Intent intent = null;
 
-        if(fuelDataGiven){
+        sendMessage(FUEL_REQUEST+"\r");
 
-            Console.log("Fuel data given");
+        //TODO: check if this is necessary
 
-            //TODO: get distance
-            sendMessage(FUEL_REQUEST+"\r");
-
-            //TODO: Calculate miles = distance - initdistance
+//        if(fuelDataGiven){
 //
-//            String gallons = Calculations.getGallons(Path.getInitFuel(), Path.getFinalFuel(), tankCapacity);
-//            String miles = "10";
+//            Console.log("Fuel data given");
 //
-//            DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTime());
+//            //TODO: get distance
+//            sendMessage(FUEL_REQUEST+"\r");
 //
-//            intent = new Intent(this, MetricActivity.class);
-//            intent.putExtra("DATAPOINT", currentDisplayData);
+//            //TODO: Calculate miles = distance - initdistance
+////
+////            String gallons = Calculations.getGallons(Path.getInitFuel(), Path.getFinalFuel(), tankCapacity);
+////            String miles = "10";
+////
+////            DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTime());
+////
+////            intent = new Intent(this, MetricActivity.class);
+////            intent.putExtra("DATAPOINT", currentDisplayData);
+////            startActivity(intent);
+//        }
+//        else{
+//            intent = new Intent(this, FuelSurveyActivity.class);
 //            startActivity(intent);
-        }
-        else{
-            intent = new Intent(this, FuelSurveyActivity.class);
-            startActivity(intent);
-        }
+//        }
 
     }
 
@@ -473,8 +481,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private void startDataTransfer(){
 
-        //TODO: Check protocol
-
+        sendMessage(CHECK_PROTOCOL+"\r");
 
         //TODO:get initfuel + initdistance with sendmessage
         /*Send request for initial fuel data*/

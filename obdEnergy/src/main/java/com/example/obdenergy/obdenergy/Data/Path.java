@@ -9,9 +9,9 @@ import java.util.ArrayList;
  */
 public class Path {
 
-    public static float initFuel = (float) 0.0;
+    public static double initFuel = (double) 0.0;
     public static double initMAF = (double) 0.0;
-    public static float finalFuel = (float) 0.0;
+    public static double finalFuel = (double) 0.0;
     public static double finalMAF = (double) 0.0;
     public String initDistance = "";
     public String finalDistance = "";
@@ -26,7 +26,7 @@ public class Path {
 
     public static void setInitFuel(String val){
         int temp1 = Calculations.hexToInt(val);
-        float temp = Float.parseFloat(String.valueOf(temp1));
+        double temp = Double.parseDouble(String.valueOf(temp1));
         initFuel = temp;
     }
     public static void setInitMAF(String val1, String val2){
@@ -36,7 +36,7 @@ public class Path {
     }
     public static void setFinalFuel(String val){
         int temp1 = Calculations.hexToInt(val);
-        float temp = Float.parseFloat(String.valueOf(temp1));
+        double temp = Double.parseDouble(String.valueOf(temp1));
         finalFuel = temp;
     }
     public static void setFinalMAF(String val1, String val2){
@@ -53,8 +53,8 @@ public class Path {
         speedArray.add(speedInt);
     }
 
-    public static float getInitFuel(){return initFuel; }
-    public static float getFinalFuel(){return finalFuel;}
+    public static double getInitFuel(){return initFuel; }
+    public static double getFinalFuel(){return finalFuel;}
     public static double getInitMAF(){return initMAF;}
     public static double getFinalMAF(){return finalMAF;}
     public String getInitDistance(){ return initDistance; }
