@@ -1,10 +1,8 @@
 package com.example.obdenergy.obdenergy;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Activities.Devices;
+import com.example.obdenergy.obdenergy.Activities.FuelSurveyActivity;
 import com.example.obdenergy.obdenergy.Activities.InitActivity;
 import com.example.obdenergy.obdenergy.Activities.MetricActivity;
 import com.example.obdenergy.obdenergy.Data.DisplayData;
@@ -69,7 +68,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private final String MAF_REQUEST = "0110"; // Returns mass airflow in grams/sec
     private final String CHECK_PROTOCOL = "ATDP"; //Returns string of protocol type
     private final String SPEED_REQUEST = "010D"; //Returns km/h
-    private final String CHANGE_PROTOCOL = "ATSPA3"; //Changes protocol to ISO 9141-2
+    private final String CHANGE_PROTOCOL = "ATSP3"; //Changes protocol to ISO 9141-2
     private final String USER_DATA_FILE = "MyCarData";
 
     SharedPreferences userData;
@@ -234,15 +233,27 @@ public class MainActivity extends Activity implements View.OnClickListener{
         byte[] readBuffer = (byte[]) msg.obj;
         String bufferString = new String(readBuffer, 0, msg.arg1);
 
-        if(command.equals(FUEL_REQUEST)){
+        if(command.equals(FUEL_REQUEST) && start == true){ //TODO: check is the start necessary? Yes because stop will also call instant readings
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
                 fuelDataGiven = false;
                 Console.log("Fuel data gets error return message");
                 startInstantFuelReadings();
+                sendMAFRequest();
                 return;
             }
         }else if(command.equals(CHECK_PROTOCOL)){
             checkProtocol(bufferString);
+        }else if(command.equals(MAF_REQUEST) && start == true){
+            if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){ //If second line of defense - MAF - doesn't work, just get data from user for now
+                createMetricActivity(0);
+                return;
+            }
+        }else if(command.equals(CHANGE_PROTOCOL)){ //TODO: this may pop up when the buffer returns the random empties - TEST
+            if(!bufferString.equals("OK")){
+                String message = "Failed to change protocol to ISO 9141-2. Accuracy of data not guaranteed.";
+                Console.showAlert(this, message);
+            }
+
         }
 
         /*If we get 4 bytes of data returned*/
@@ -261,6 +272,15 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
                 switch(PID){
                     case 16: //MAF - airflow rate
+                        Console.log(classID+"MAF Fuel data recieved "+finalString);
+                        if(start && !stop){
+                            Path.setInitMAF(firstPart, secondPart);
+                            Console.log(classID+" set as MAF initial fuel");
+                        }else if(!start && stop){
+                            Path.setFinalMAF(firstPart, secondPart);
+                            Console.log(classID+" set as MAF final fuel");
+                            createMetricActivity(PID);
+                        }else Console.log("Some other bool");
                         break;
                     default:
                         break;
@@ -268,7 +288,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             } else Console.log("NUll pieces in first regex check :(");
         }
         /*If we get 3 bytes of data returned*/
-        else if (bufferString!="" && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r\n?")){
+        else if (!bufferString.equals("") && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r\n?")){
             Console.log(classID+" Buffer String matches 4 digit pattern: "+bufferString);
 
             bufferString.trim();
@@ -283,13 +303,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
                         //TODO: check for 0 fuel here, or error data
                         Console.log(classID+" Fuel data recieved "+secondPart);
-                        if(start == true && stop == false ){
+                        if(start && !stop){
                             Path.setInitFuel(secondPart);
                             Console.log(classID+" set as initial fuel");
-                        }else if(start == false && stop == true){
+                        }else if(!start && stop){
                             Path.setFinalFuel(secondPart);
                             Console.log(classID+" set as final fuel");
-                            createMetricActivity();
+                            createMetricActivity(PID);
                         }else Console.log("Some other bool");
                         break;
 
@@ -344,15 +364,33 @@ public class MainActivity extends Activity implements View.OnClickListener{
         fuelThread.start();
     }
 
-    private void createMetricActivity() {
+    private void createMetricActivity(int PID) {
         String tankCapacity = Profile.getCapacity();
         Intent intent = null;
+        String gallons = "";
 
-        String gallons = Calculations.getGallons(Path.getInitFuel(), Path.getFinalFuel(), tankCapacity);
+        switch(PID){
+            case 0: //No usable fuel data returned, go for the default
+                intent = new Intent(this, FuelSurveyActivity.class);
+                startActivity(intent);
+                break;
+            case 47: //Using fuel level data
+                Console.log(classID+" setting up Metric Act with fuel data");
+                gallons = Calculations.getGallons(Path.getInitFuel(), Path.getFinalFuel(), tankCapacity);
+                break;
+            case 16: //Using MAF data
+                Console.log(classID+" setting up Metric Act with MAF data");
+                gallons = Calculations.getGallons(Path.getInitMAF(), Path.getFinalMAF(), Path.getInitTime(), Path.getfinalTime());
+                break;
+            default:
+                Console.log(classID+" Create metric activity wrong PID");
+                break;
+        }
+
         //TODO: get distance calculations from speedArray
         String miles = "10";
 
-        DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTimestamp());
+        DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTime());
 
         intent = new Intent(this, MetricActivity.class);
         intent.putExtra("DATAPOINT", currentDisplayData);
@@ -389,9 +427,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private void collectData(){
 
         Console.log(classID+" collecting stop Data");
-
-        String tankCapacity = Profile.getCapacity();
-        Intent intent = null;
 
         sendMessage(FUEL_REQUEST+"\r");
 
@@ -430,22 +465,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         /*Make sure we're connected*/
         if((ChatService.getState() != BluetoothChatService.STATE_CONNECTED)){
             Console.log(classID+" Not connected");
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-            alertDialogBuilder.setTitle("ERROR");
-
-            alertDialogBuilder.setMessage("No Bluetooth device connected. Please connect some Bluetooth device and retry.")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-                        //If the user clicks Ok, shut down alert
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
+            String msg = "No Bluetooth device connected. Please connect some Bluetooth device and retry.";
+            Console.showAlert(this, msg);
             return;
         }
 
@@ -466,7 +487,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private void startDataTransfer(){
 
-        sendMessage(CHECK_PROTOCOL+"\r");
+        //TODO: Queue this?
+        //sendMessage(CHECK_PROTOCOL+"\r");
 
         //TODO:get initfuel + initdistance with sendmessage
         /*Send request for initial fuel data*/
@@ -537,28 +559,5 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
     }
 
-    //
-//    private void setupStartChat(){
-//
-//        Console.log(classID+" Set up startChat");
-//
-//        StartChatService = new BluetoothChatService(this, BTStartHandler);
-//
-//        /*Initialize outgoing string buffer with null string*/
-//        WriteStartStringBuffer = new StringBuffer("");
-//
-//        /*Send initial messages*/
-//        sendMessage(""+"\r");
-//        sendMessage("ATE0");
-//
-//    }
-//    private void setupStopChat(){
-//
-//        Console.log(classID+" Set up stopChat");
-//
-//        StopChatService = new BluetoothChatService(this, BTStopHandler);
-//
-//        /*Initialize outgoing string buffer with null string*/
-//        WriteStartStringBuffer = new StringBuffer("");
-//    }
+
 }
