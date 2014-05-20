@@ -1,8 +1,10 @@
 package com.example.obdenergy.obdenergy.Data;
 
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
+import com.example.obdenergy.obdenergy.Utilities.Console;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by sumayyah on 5/13/14.
@@ -17,6 +19,7 @@ public class Path {
     public String finalDistance = "";
     public static String initTimestamp = "";
     public static String finalTimestamp = "";
+    public static StorageDate storageTime;
     public Boolean city = false;
     public Boolean highway = false;
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
@@ -46,8 +49,11 @@ public class Path {
     }
     public void setInitDistance(String val){ initDistance = val;}
     public void setFinalDistance(String val){ finalDistance = val;}
-    public static void setInitTimestamp(String val){ initTimestamp = val;}
-    public static void setFinalTimestamp(String val){ finalTimestamp = val;}
+    public static void setInitTimestamp(String val){ initTimestamp = val;
+        Console.log("Set init timestamp "+val);}
+    public static void setFinalTimestamp(String val){ finalTimestamp = val;
+        Console.log("Set final timestamp "+val);}
+    public static void setStorageTime(Calendar val){storageTime = new StorageDate(val);}
     public static void addToSpeedArray(String val){
         int speedInt = Calculations.hexToInt(val);
         speedArray.add(speedInt);
@@ -60,6 +66,7 @@ public class Path {
     public String getInitDistance(){ return initDistance; }
     public String getFinalDistance(){ return finalDistance; }
     public String getInitTimestamp(){ return initTimestamp; }
+//    public String getStorageTime(){return storageTime;}
     public static String getfinalTime(){ return finalTimestamp; }
     public static String getInitTime(){return initTimestamp;}
 }

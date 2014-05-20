@@ -21,9 +21,13 @@ import com.example.obdenergy.obdenergy.Activities.MetricActivity;
 import com.example.obdenergy.obdenergy.Data.DisplayData;
 import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
+import com.example.obdenergy.obdenergy.Data.StorageDate;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 //import android.support.v7.app.ActionBarActivity;
 
@@ -68,10 +72,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private final String MAF_REQUEST = "0110"; // Returns mass airflow in grams/sec
     private final String CHECK_PROTOCOL = "ATDP"; //Returns string of protocol type
     private final String SPEED_REQUEST = "010D"; //Returns km/h
+    private final String INIT_REQUEST = "ATE0"; //Returns OK
     private final String CHANGE_PROTOCOL = "ATSP3"; //Changes protocol to ISO 9141-2
     private final String USER_DATA_FILE = "MyCarData";
 
     SharedPreferences userData;
+    Calendar calendar = new GregorianCalendar();
 
     private TextView data;
     private TextView connectStatus;
@@ -89,7 +95,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Console.log(classID+" on create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -107,8 +112,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         /*Check if device supports Bluetooth*/
         if(BluetoothAdapter==null) Console.log(classID+" Bluetooth is not supported in device.");
-        else Console.log(classID+" Bluetooth is supported in device.");
-
 
         /*If this is the first time running the app, get user data*/
         userData = getSharedPreferences(USER_DATA_FILE, 0);
@@ -126,23 +129,18 @@ public class MainActivity extends Activity implements View.OnClickListener{
     protected void onStart() {
         super.onStart();
 
-        Console.log(classID+" onStart");
-
          /*Check if Bluetooth is enabled. If not, present that option to the user*/
         if (!BluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             Console.log(classID+" Bluetooth is not enabled, request sent");
         }else {
-            Console.log(classID+" Bluetooth is enabled");
             if(ChatService == null) setupChat();
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-
-        Console.log(classID+" Activity result");
 
         switch (requestCode){
             case REQUEST_CONNECT_DEVICE_SECURE:
@@ -176,7 +174,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     private void setupChat(){
-        Console.log(classID+" Setting up chat");
 
         ChatService = new BluetoothChatService(this, BTHandler);
 
@@ -187,7 +184,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private void onConnect(){
         /*Send initial messages*/
-        sendMessage(""+"\r"); //TODO: check if these shold be sent before start button press
+        sendMessage("" + "\r"); //TODO: check if these shold be sent before start button press
         sendMessage("ATE0");
     }
 
@@ -232,6 +229,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         Console.log(classID+" Reading message! Command is "+command);
         byte[] readBuffer = (byte[]) msg.obj;
         String bufferString = new String(readBuffer, 0, msg.arg1);
+        Console.log(classID+" Message is "+bufferString);
 
         if(command.equals(FUEL_REQUEST) && start == true){ //TODO: check is the start necessary? Yes because stop will also call instant readings
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
@@ -253,7 +251,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 String message = "Failed to change protocol to ISO 9141-2. Accuracy of data not guaranteed.";
                 Console.showAlert(this, message);
             }
-
+        }else if(command.equals(INIT_REQUEST)){
+            if(bufferString.equals("OK")){
+                Console.log(classID+" Init succeeded");
+                return;
+            }else Console.log("Init failed");
         }
 
         /*If we get 4 bytes of data returned*/
@@ -264,11 +266,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
             String[] bytes = bufferString.split(" ");
 
             if((bytes[0]!=null) && (bytes[1]!=null) && (bytes[2]!=null) && (bytes[3]!=null)){
-                int PID = Integer.parseInt(bytes[1]);
+                int PID = Integer.parseInt(bytes[1], 16);
                 String firstPart = bytes[2];
                 String secondPart = bytes[3];
                 String finalString = firstPart+secondPart;
-                Console.log(classID+" No null pieces! They're "+firstPart+" and "+secondPart+" makes "+finalString);
+                Console.log(classID+" No null pieces! They're "+firstPart+" and "+secondPart+" makes "+finalString+" PID "+PID+" From "+bytes[1]);
 
                 switch(PID){
                     case 16: //MAF - airflow rate
@@ -283,6 +285,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                         }else Console.log("Some other bool");
                         break;
                     default:
+                        Console.log(classID+" switch case done got some other PID");
                         break;
                 }
             } else Console.log("NUll pieces in first regex check :(");
@@ -368,6 +371,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         String tankCapacity = Profile.getCapacity();
         Intent intent = null;
         String gallons = "";
+        Console.log(classID+" Called createMetric acti with PID "+PID);
 
         switch(PID){
             case 0: //No usable fuel data returned, go for the default
@@ -428,35 +432,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         Console.log(classID+" collecting stop Data");
 
-        sendMessage(FUEL_REQUEST+"\r");
+        sendMAFRequest();
+//        if(!fuelDataGiven){
+//            sendMAFRequest();
+//        }else sendMessage(FUEL_REQUEST+"\r");
 
-        //TODO: check if this is necessary
-
-//        if(fuelDataGiven){
-//
-//            Console.log("Fuel data given");
-//
 
 //            //TODO: get distance
-//            sendMessage(FUEL_REQUEST+"\r");
-
-//            DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTimestamp());
-//
-//            //TODO: Calculate miles = distance - initdistance
-////
-////            String gallons = Calculations.getGallons(Path.getInitFuel(), Path.getFinalFuel(), tankCapacity);
-////            String miles = "10";
-////
-////            DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTime());
-////
-////            intent = new Intent(this, MetricActivity.class);
-////            intent.putExtra("DATAPOINT", currentDisplayData);
-////            startActivity(intent);
-//        }
-//        else{
-//            intent = new Intent(this, FuelSurveyActivity.class);
-//            startActivity(intent);
-//        }
 
     }
 
@@ -492,7 +474,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         //TODO:get initfuel + initdistance with sendmessage
         /*Send request for initial fuel data*/
-        sendMessage(FUEL_REQUEST+"\r");
+//        sendMessage(FUEL_REQUEST+"\r");
+        sendMAFRequest();
     }
 
     private void connectDevice(Intent data, boolean secure){
@@ -537,6 +520,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         Long time = System.currentTimeMillis()/1000;
         String timeString = time.toString();
 
+
+
         switch (v.getId()){
             case R.id.connectButton:
                 Console.log(classID+" connect");
@@ -553,6 +538,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 Console.log(classID+" stop");
                 start = false;
                 stop = true;
+                Path.setStorageTime(calendar);
+                StorageDate.printDate();
                 Path.setFinalTimestamp(timeString);
                 collectData();
                 break;

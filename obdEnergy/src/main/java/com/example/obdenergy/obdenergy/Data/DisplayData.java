@@ -24,7 +24,6 @@ public class DisplayData implements Parcelable{
         this.gallons = gallons;
         this.miles = miles;
         this.timestamp = timestamp;
-        Console.log("Created data point");
     }
 
     public DisplayData(Parcel in){

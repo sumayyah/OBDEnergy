@@ -88,7 +88,7 @@ public class BluetoothChatService {
      * Start the chat service. Specifically start AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume() */
     public synchronized void start() {
-        if (D) Console.log(classID +"start");
+//        if (D) Console.log(classID +"start");
 
         // Cancel any thread attempting to make a connection
         if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
@@ -115,7 +115,7 @@ public class BluetoothChatService {
      * @param secure Socket Security type - Secure (true) , Insecure (false)
      */
     public synchronized void connect(BluetoothDevice device, boolean secure) {
-        if (D) Console.log(classID +"connect to: " + device);
+//        if (D) Console.log(classID +"connect to: " + device);
 
         // Cancel any thread attempting to make a connection
         if (mState == STATE_CONNECTING) {
@@ -138,7 +138,7 @@ public class BluetoothChatService {
      */
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice
             device, final String socketType) {
-        if (D) Console.log(classID +"connected, Socket Type:" + socketType);
+//        if (D) Console.log(classID +"connected, Socket Type:" + socketType);
 
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
@@ -174,7 +174,7 @@ public class BluetoothChatService {
      * Stop all threads
      */
     public synchronized void stop() {
-        if (D) Console.log(classID +"stop");
+//        if (D) Console.log(classID +"stop");
 
         if (mConnectThread != null) {
             mConnectThread.cancel();
@@ -270,14 +270,14 @@ public class BluetoothChatService {
                             NAME_INSECURE, MY_UUID_INSECURE);
                 }
             } catch (IOException e) {
-                Console.log(classID +"Socket Type: " + mSocketType + "listen() failed");
+//                Console.log(classID +"Socket Type: " + mSocketType + "listen() failed");
             }
             mmServerSocket = tmp;
         }
 
         public void run() {
-            if (D) Console.log(classID +"Socket Type: " + mSocketType +
-                    "BEGIN mAcceptThread" + this);
+//            if (D) Console.log(classID +"Socket Type: " + mSocketType +
+//                    "BEGIN mAcceptThread" + this);
             setName("AcceptThread" + mSocketType);
 
             BluetoothSocket socket = null;
@@ -289,7 +289,7 @@ public class BluetoothChatService {
                     // successful connection or an exception
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
-                    Console.log(classID +"Socket Type: " + mSocketType + "accept() failed");
+//                    Console.log(classID +"Socket Type: " + mSocketType + "accept() failed");
                     break;
                 }
 
@@ -309,23 +309,25 @@ public class BluetoothChatService {
                                 try {
                                     socket.close();
                                 } catch (IOException e) {
-                                    Console.log(classID +"Could not close unwanted socket");
+                                    e.printStackTrace();
+//                                    Console.log(classID +"Could not close unwanted socket");
                                 }
                                 break;
                         }
                     }
                 }
             }
-            if (D) Console.log(classID +"END mAcceptThread, socket Type: " + mSocketType);
+//            if (D) Console.log(classID +"END mAcceptThread, socket Type: " + mSocketType);
 
         }
 
         public void cancel() {
-            if (D) Console.log(classID +"Socket Type" + mSocketType + "cancel " + this);
+//            if (D) Console.log(classID +"Socket Type" + mSocketType + "cancel " + this);
             try {
                 mmServerSocket.close();
             } catch (IOException e) {
-                Console.log(classID +"Socket Type" + mSocketType + "close() of server failed");
+                e.printStackTrace();
+//                Console.log(classID +"Socket Type" + mSocketType + "close() of server failed");
             }
         }
     }
@@ -370,13 +372,13 @@ public class BluetoothChatService {
                     //tmp = (BluetoothSocket) m.invoke(device, 1);
                 }
             } catch (IOException e) {
-                Console.log(classID +"Socket Type: " + mSocketType + "create() failed");
+//                Console.log(classID +"Socket Type: " + mSocketType + "create() failed");
             }
             mmSocket = tmp;
         }
 
         public void run() {
-            Console.log(classID +"BEGIN mConnectThread SocketType:" + mSocketType);
+//            Console.log(classID +"BEGIN mConnectThread SocketType:" + mSocketType);
             setName("ConnectThread" + mSocketType);
 
             // Always cancel discovery because it will slow down a connection
@@ -392,8 +394,8 @@ public class BluetoothChatService {
                 try {
                     mmSocket.close();
                 } catch (IOException e2) {
-                    Console.log(classID +"unable to close() " + mSocketType +
-                            " socket during connection failure");
+//                    Console.log(classID +"unable to close() " + mSocketType +
+//                            " socket during connection failure");
                 }
                 connectionFailed();
                 return;
@@ -412,7 +414,7 @@ public class BluetoothChatService {
             try {
                 mmSocket.close();
             } catch (IOException e) {
-                Console.log(classID +"close() of connect " + mSocketType + " socket failed");
+//                Console.log(classID +"close() of connect " + mSocketType + " socket failed");
             }
         }
     }
@@ -427,7 +429,7 @@ public class BluetoothChatService {
         private final OutputStream mmOutStream;
 
         public ConnectedThread(BluetoothSocket socket, String socketType) {
-            Console.log(classID +"create ConnectedThread: " + socketType);
+//            Console.log(classID +"create ConnectedThread: " + socketType);
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -437,7 +439,7 @@ public class BluetoothChatService {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) {
-                Console.log(classID +"temp sockets not created");
+//                Console.log(classID +"temp sockets not created");
             }
 
             mmInStream = tmpIn;
@@ -445,7 +447,7 @@ public class BluetoothChatService {
         }
 
         public void run() {
-            Console.log(classID +"BEGIN mConnectedThread");
+//            Console.log(classID +"BEGIN mConnectedThread");
             byte[] buffer = new byte[1024];
             int bytes;
 
@@ -473,7 +475,7 @@ public class BluetoothChatService {
 
 
                 } catch (IOException e) {
-                    Console.log(classID +"disconnected");
+//                    Console.log(classID +"disconnected");
                     connectionLost();
                     // Start the service over to restart listening mode
                     BluetoothChatService.this.start();
@@ -494,7 +496,7 @@ public class BluetoothChatService {
                 mHandler.obtainMessage(MainActivity.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
             } catch (IOException e) {
-                Console.log(classID +"Exception during write");
+//                Console.log(classID +"Exception during write");
             }
         }
 
@@ -502,7 +504,7 @@ public class BluetoothChatService {
             try {
                 mmSocket.close();
             } catch (IOException e) {
-                Console.log(classID +"close() of connect socket failed");
+//                Console.log(classID +"close() of connect socket failed");
             }
         }
 

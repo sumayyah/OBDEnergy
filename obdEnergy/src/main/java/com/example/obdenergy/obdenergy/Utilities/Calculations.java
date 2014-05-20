@@ -5,6 +5,8 @@ package com.example.obdenergy.obdenergy.Utilities;
  */
 public class Calculations {
 
+    private final static String classID = "Calculations ";
+
     public static String getGallons(double initFuel, double finalFuel, String tankCapacity){
         String finalGallonString = "";
         Console.log("Calculations - initfuel, final fuel, tankcapacity"+initFuel+" "+finalFuel+" "+tankCapacity);
@@ -22,14 +24,14 @@ public class Calculations {
     public static String getGallons(double initMAF, double finalMAF, String initTime, String finalTime){
         String finalGallonString = "";
 
-        //TODO: calculate time + redo System.gettime with java timestamps.
-        int timeTaken = 3; //In seconds - TODO: double check time in formula - time taken per MAF reading?
-        double initFuel = 1/(14.75*6.26*initMAF+timeTaken);
-        double finalFuel = 1/(14.75*6.26*finalMAF+timeTaken);
+        int timeTaken = (Integer.parseInt(finalTime))-(Integer.parseInt(initTime));
+        double initFuel = 1/(14.75*6.26*initMAF*timeTaken);
+        double finalFuel = 1/(14.75*6.26*finalMAF*timeTaken);
 
         double fuelUsed = finalFuel - initFuel;
 
         finalGallonString = String.valueOf(fuelUsed);
+        Console.log(classID+" init fuel "+initFuel+" - final fuel "+finalFuel+" equals "+finalGallonString+" from "+initTime+" to "+finalTime);
 
         return finalGallonString; //TODO: double check - does formula give back gallons?
     }
@@ -59,7 +61,7 @@ public class Calculations {
         return finalCarbon;
     }
 
-    public static String getTrees(int gallonsUsed){
+    public static String getTrees(double gallonsUsed){
         String finalTreesKilled = "";
 
         double multiplier = 0.228; //Tree seedlings grown for 10 years, per gallon of gas
@@ -88,6 +90,7 @@ public class Calculations {
 
         double value = ((byte1*256)+byte2)/100;
         finalString = String.valueOf(value);
+        Console.log(classID+"MAF is calculated "+finalString);
         return finalString;
     }
 
