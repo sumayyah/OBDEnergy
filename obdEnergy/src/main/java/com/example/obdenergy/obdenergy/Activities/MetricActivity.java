@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Data.DisplayData;
+import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 
@@ -39,5 +40,7 @@ public class MetricActivity extends Activity{
         fuelData.setText(gallons+" Gals used");
         carbonData.setText(displayData.getMiles()+" miles driven on "+ displayData.getStreet()+" using up "+carbonUsed+" kilos carbon");
         treesData.setText(treesKilled+" Trees killed");
+
+
     }
 }

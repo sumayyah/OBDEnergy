@@ -3,6 +3,8 @@ package com.example.obdenergy.obdenergy.Data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 /**
  * Created by sumayyah on 5/8/14.
  */
@@ -14,15 +16,9 @@ public class Profile implements Parcelable{
     private static String capacity;
     private static String citympg;
     private static String highwaympg;
+    public static ArrayList<Path> pathArray;
 
-//    public Profile(String make, String model, String year, String capacity, String citympg, String highwaympg){
-//        this.make = make;
-//        this.model = model;
-//        this.year = year;
-//        this.capacity = capacity;
-//        this.citympg = citympg;
-//        this.highwaympg = highwaympg;
-//    }
+
 
     public Profile(Parcel in){
         make = in.readString();

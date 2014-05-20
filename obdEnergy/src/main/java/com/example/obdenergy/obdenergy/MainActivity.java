@@ -77,6 +77,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private final String USER_DATA_FILE = "MyCarData";
 
     SharedPreferences userData;
+    Path path = new Path();
     Calendar calendar = new GregorianCalendar();
 
     private TextView data;
@@ -231,7 +232,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         String bufferString = new String(readBuffer, 0, msg.arg1);
         Console.log(classID+" Message is "+bufferString);
 
-        if(command.equals(FUEL_REQUEST) && start == true){ //TODO: check is the start necessary? Yes because stop will also call instant readings
+        if(command.equals(FUEL_REQUEST) && start){ //TODO: check is the start necessary? Yes because stop will also call instant readings
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
                 fuelDataGiven = false;
                 Console.log("Fuel data gets error return message");
@@ -241,7 +242,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             }
         }else if(command.equals(CHECK_PROTOCOL)){
             checkProtocol(bufferString);
-        }else if(command.equals(MAF_REQUEST) && start == true){
+        }else if(command.equals(MAF_REQUEST) && start){
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){ //If second line of defense - MAF - doesn't work, just get data from user for now
                 createMetricActivity(0);
                 return;
@@ -276,10 +277,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     case 16: //MAF - airflow rate
                         Console.log(classID+"MAF Fuel data recieved "+finalString);
                         if(start && !stop){
-                            Path.setInitMAF(firstPart, secondPart);
+                            path.setInitMAF(firstPart, secondPart);
                             Console.log(classID+" set as MAF initial fuel");
                         }else if(!start && stop){
-                            Path.setFinalMAF(firstPart, secondPart);
+                            path.setFinalMAF(firstPart, secondPart);
                             Console.log(classID+" set as MAF final fuel");
                             createMetricActivity(PID);
                         }else Console.log("Some other bool");
@@ -307,10 +308,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
                         //TODO: check for 0 fuel here, or error data
                         Console.log(classID+" Fuel data recieved "+secondPart);
                         if(start && !stop){
-                            Path.setInitFuel(secondPart);
+                            path.setInitFuel(secondPart);
                             Console.log(classID+" set as initial fuel");
                         }else if(!start && stop){
-                            Path.setFinalFuel(secondPart);
+                            path.setFinalFuel(secondPart);
                             Console.log(classID+" set as final fuel");
                             createMetricActivity(PID);
                         }else Console.log("Some other bool");
@@ -318,7 +319,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
                     case 13: //Speed data (KM/H)
                         Console.log(classID+" Speed data recieved"+secondPart);
-                        Path.addToSpeedArray(secondPart);
+                        path.addToSpeedArray(secondPart);
                         break;
                 }
 
@@ -380,11 +381,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 break;
             case 47: //Using fuel level data
                 Console.log(classID+" setting up Metric Act with fuel data");
-                gallons = Calculations.getGallons(Path.getInitFuel(), Path.getFinalFuel(), tankCapacity);
+                gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 break;
             case 16: //Using MAF data
                 Console.log(classID+" setting up Metric Act with MAF data");
-                gallons = Calculations.getGallons(Path.getInitMAF(), Path.getFinalMAF(), Path.getInitTime(), Path.getfinalTime());
+                gallons = Calculations.getGallons(path.getInitMAF(), path.getFinalMAF(), path.getInitTime(), path.getfinalTime());
                 break;
             default:
                 Console.log(classID+" Create metric activity wrong PID");
@@ -394,8 +395,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         //TODO: get distance calculations from speedArray
         String miles = "10";
 
-        DisplayData currentDisplayData = new DisplayData(gallons, miles, Path.getfinalTime());
-
+        DisplayData currentDisplayData = new DisplayData(gallons, miles, path.getfinalTime());
+        Profile.pathArray.add(path);
         intent = new Intent(this, MetricActivity.class);
         intent.putExtra("DATAPOINT", currentDisplayData);
         startActivity(intent);
@@ -530,7 +531,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 break;
             case R.id.startButton:
                 Console.log(classID+" start");
-                Path.setInitTimestamp(timeString);
+                path.setInitTimestamp(timeString);
                 start = true;
                 startDataTransfer();
                 break;
@@ -538,9 +539,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 Console.log(classID+" stop");
                 start = false;
                 stop = true;
-                Path.setStorageTime(calendar);
+                path.setStorageTime(calendar);
                 StorageDate.printDate();
-                Path.setFinalTimestamp(timeString);
+                path.setFinalTimestamp(timeString);
                 collectData();
                 break;
         }

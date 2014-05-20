@@ -27,22 +27,22 @@ public class Path {
 
 //    public Path(){}
 
-    public static void setInitFuel(String val){
+    public void setInitFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
         initFuel = temp;
     }
-    public static void setInitMAF(String val1, String val2){
+    public void setInitMAF(String val1, String val2){
         String strtemp = Calculations.getMAF(val1, val2);
         double temp = Double.parseDouble(String.valueOf(strtemp));
         initMAF = temp;
     }
-    public static void setFinalFuel(String val){
+    public void setFinalFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
         finalFuel = temp;
     }
-    public static void setFinalMAF(String val1, String val2){
+    public void setFinalMAF(String val1, String val2){
         String strtemp = Calculations.getMAF(val1, val2);
         double temp = Double.parseDouble(String.valueOf(strtemp));
         finalMAF = temp;
