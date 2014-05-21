@@ -31,7 +31,7 @@
                 android:id="@+id/milesField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Enter your car's make"
+                android:hint="Enter miles driven"
                 />
 
             <TextView
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/milesField"
                 android:layout_alignBaseline="@id/milesField"
-                android:text="Miles: "/>
+                android:text="Miles "/>
 
         </RelativeLayout>
 

@@ -20,12 +20,8 @@ public class Path {
     public static String initTimestamp = "";
     public static String finalTimestamp = "";
     public static StorageDate storageTime;
-    public Boolean city = false;
-    public Boolean highway = false;
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
     public static ArrayList<String> MAFArray = new ArrayList<String>();
-
-//    public Path(){}
 
     public void setInitFuel(String val){
         int temp1 = Calculations.hexToInt(val);
@@ -66,7 +62,6 @@ public class Path {
     public String getInitDistance(){ return initDistance; }
     public String getFinalDistance(){ return finalDistance; }
     public String getInitTimestamp(){ return initTimestamp; }
-//    public String getStorageTime(){return storageTime;}
     public static String getfinalTime(){ return finalTimestamp; }
     public static String getInitTime(){return initTimestamp;}
 }

@@ -10,10 +10,12 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.R;
@@ -35,19 +37,21 @@ public class Devices extends Activity{
     private ArrayAdapter<String> PairedDevicesArrayAdapter;
     private ArrayAdapter<String> NewDevicesArrayAdapter;
 
+    private ProgressBar progressBar;
+
     private TextView status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); //TODO: Use with actionBar, or else implement progress spinner
         setContentView(R.layout.bt_device_menu);
 
         // If user presses back button
         setResult(Activity.RESULT_CANCELED);
 
         status = (TextView)(findViewById(R.id.status));
+        progressBar = (ProgressBar)(findViewById(R.id.progressSpinner));
 
         // Initialize the button to perform device discovery
         Button scanButton = (Button) findViewById(R.id.scan_button);
@@ -117,6 +121,7 @@ public class Devices extends Activity{
     private void doDiscovery() {
 
         status.setText("Scanning");
+        progressBar.setVisibility(View.VISIBLE);
 
         // Turn on sub-title for new devices
         findViewById(R.id.new_devices_title).setVisibility(View.VISIBLE);

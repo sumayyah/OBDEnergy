@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Activities.Devices;
@@ -80,6 +81,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     Path path = new Path();
     Calendar calendar = new GregorianCalendar();
 
+
     private TextView data;
     private TextView connectStatus;
     private Button startButton;
@@ -91,6 +93,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private Boolean stop = false;
     private String command = "";
 
+    private ProgressBar progressBar;
+
     private Thread fuelThread;
 
     @Override
@@ -101,6 +105,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         data = (TextView)(findViewById(R.id.displayData));
         connectStatus = (TextView)(findViewById(R.id.connectStatus));
+        progressBar = (ProgressBar)(findViewById(R.id.progressSpinner));
         startButton = (Button)(findViewById(R.id.startButton));
         stopButton = (Button)(findViewById(R.id.stopButton));
         connectButton = (Button)(findViewById(R.id.connectButton));
@@ -148,6 +153,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
                 if (resultCode == Activity.RESULT_OK) {
                     connectStatus.setText("Connecting...");
+                    progressBar.setVisibility(View.VISIBLE);
                     connectDevice(data, true);
                 }
                 break;
@@ -155,6 +161,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
                 if (resultCode == Activity.RESULT_OK) {
                     connectStatus.setText("Connecting...");
+                    progressBar.setVisibility(View.VISIBLE);
                     connectDevice(data, false);
                 }
                 break;
@@ -185,7 +192,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private void onConnect(){
         /*Send initial messages*/
-        sendMessage("" + "\r"); //TODO: check if these shold be sent before start button press
+        sendMessage("" + "\r");
         sendMessage("ATE0");
     }
 
@@ -201,10 +208,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
                         case BluetoothChatService.STATE_CONNECTED:
                             Console.log(classID + " Connected, calling onConnect");
                             connectStatus.setText("Connected to " + ConnectedDeviceName);
-                            onConnect(); //TODO: test and call only if setupChat doesn't work at this
+                            progressBar.setVisibility(View.GONE);
+                            onConnect();
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
                             connectStatus.setText("Connecting...");
+                            progressBar.setVisibility(View.VISIBLE);
                         case BluetoothChatService.STATE_LISTEN:
                         case BluetoothChatService.STATE_NONE:
                     }
@@ -232,7 +241,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         String bufferString = new String(readBuffer, 0, msg.arg1);
         Console.log(classID+" Message is "+bufferString);
 
-        if(command.equals(FUEL_REQUEST) && start){ //TODO: check is the start necessary? Yes because stop will also call instant readings
+        if(command.equals(FUEL_REQUEST) && start){
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
                 fuelDataGiven = false;
                 Console.log("Fuel data gets error return message");
@@ -353,14 +362,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
                             @Override
                             public void run() {
-                                // TODO Auto-generated method stub
                                 //TODO:Get MAF
                                 //TODO: Get speed
                                 Console.log("Sending message speed!");
                             }
                         });
                     } catch (InterruptedException e) {
-                        // TODO: handle exception
+                        e.printStackTrace();
                     }
                 }
             }
@@ -432,6 +440,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private void collectData(){
 
         Console.log(classID+" collecting stop Data");
+
 
         sendMAFRequest();
 //        if(!fuelDataGiven){
@@ -517,6 +526,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onStop(){
+        super.onStop();
         SharedPreferences.Editor editor = userData.edit();
         //TODO: store path array here
     }
@@ -525,8 +535,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
         Console.log(classID+" button clicked");
         Long time = System.currentTimeMillis()/1000;
         String timeString = time.toString();
-
-
 
         switch (v.getId()){
             case R.id.connectButton:

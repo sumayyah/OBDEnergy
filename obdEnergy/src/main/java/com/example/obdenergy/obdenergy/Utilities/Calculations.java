@@ -7,6 +7,7 @@ public class Calculations {
 
     private final static String classID = "Calculations ";
 
+    /*Gets gallons used from fuel level data*/
     public static String getGallons(double initFuel, double finalFuel, String tankCapacity){
         String finalGallonString = "";
         Console.log("Calculations - initfuel, final fuel, tankcapacity"+initFuel+" "+finalFuel+" "+tankCapacity);
@@ -21,6 +22,7 @@ public class Calculations {
         return finalGallonString;
     }
 
+    /*Calculates gallons with Mass Airflow parameters*/
     public static String getGallons(double initMAF, double finalMAF, String initTime, String finalTime){
         String finalGallonString = "";
 
@@ -39,11 +41,9 @@ public class Calculations {
     public static String getGallons(String mpg, String miles){
         String finalGallonString = "";
 
-        int mpgNum = Integer.parseInt(mpg);
-        int milesNum = Integer.parseInt(miles);
-        double multiplier = 1/mpgNum; //Should this be double?
-
-        double finalGallons = milesNum*multiplier;
+        double mpgNum = Double.parseDouble(mpg);
+        double milesNum = Double.parseDouble(miles);
+        double finalGallons = milesNum/mpgNum;
 
         finalGallonString = String.valueOf(finalGallons);
 
@@ -70,16 +70,6 @@ public class Calculations {
         finalTreesKilled = String.valueOf(treesKilled);
 
         return finalTreesKilled;
-    }
-
-    public static String getFuel(String hexString){
-        String finalString = "";
-
-        int intFuel = hexToInt(hexString);
-        double finalFuel = (intFuel/255);
-        finalString = String.valueOf(finalFuel);
-
-        return finalString;
     }
 
     public static String getMAF(String val1, String val2){

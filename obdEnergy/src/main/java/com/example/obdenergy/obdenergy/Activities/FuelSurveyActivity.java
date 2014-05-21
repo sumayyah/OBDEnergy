@@ -54,15 +54,21 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
             int selectedRadioButton = radioGroup.getCheckedRadioButtonId();
             radioButton = (RadioButton)(findViewById(selectedRadioButton));
 
+
             /*Get parameters to pass to MetricActivity*/
             Long time = System.currentTimeMillis()/1000;
             String timeString = time.toString();
             String mpg = "";
             String miles = milesField.getText().toString();
 
-
+        //TODO: check all are checked - right now still exception
+            /*Check that all radio buttons are checked*/
+            RadioButton rb1 = (RadioButton)(findViewById(R.id.cityChoice));
+            RadioButton rb2 = (RadioButton)(findViewById(R.id.highwayChoice));
+            if(!rb1.isChecked() && !rb2.isChecked()){
+                Console.showAlert(this, "Please select either city or highway");
+            }
             String text = (String) radioButton.getText();
-            //TODO: Make sure user selects a button
 
             if(text.equals("City")){
                 Console.log(classID+"City MPG is "+Profile.getCitympg());
