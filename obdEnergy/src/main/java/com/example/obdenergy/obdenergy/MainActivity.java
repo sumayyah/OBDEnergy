@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,9 +31,8 @@ import com.example.obdenergy.obdenergy.Utilities.Console;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-//import android.support.v7.app.ActionBarActivity;
 
-public class MainActivity extends Activity implements View.OnClickListener{
+public class MainActivity extends ActionBarActivity implements View.OnClickListener{
 
     private final String classID = "MainActivity";
 
@@ -94,6 +94,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private String command = "";
 
     private ProgressBar progressBar;
+    private ProgressBar progressBar2;
 
     private Thread fuelThread;
 
@@ -106,6 +107,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         data = (TextView)(findViewById(R.id.displayData));
         connectStatus = (TextView)(findViewById(R.id.connectStatus));
         progressBar = (ProgressBar)(findViewById(R.id.progressSpinner));
+        progressBar2 = (ProgressBar)(findViewById(R.id.progressSpinner2));
         startButton = (Button)(findViewById(R.id.startButton));
         stopButton = (Button)(findViewById(R.id.stopButton));
         connectButton = (Button)(findViewById(R.id.connectButton));
@@ -546,6 +548,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 Console.log(classID+" start");
                 path.setInitTimestamp(timeString);
                 start = true;
+                startButton.setVisibility(View.GONE);
+                progressBar2.setVisibility(View.VISIBLE);
+                stopButton.setVisibility(View.VISIBLE);
                 startDataTransfer();
                 break;
             case R.id.stopButton:
@@ -555,6 +560,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 path.setStorageTime(calendar);
                 StorageDate.printDate();
                 path.setFinalTimestamp(timeString);
+                progressBar2.setVisibility(View.GONE);
                 collectData();
                 break;
         }

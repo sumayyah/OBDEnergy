@@ -40,31 +40,38 @@
         android:layout_below="@+id/statusLayout"
         />
 
-    <TextView
-        android:id="@+id/hello"
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/connectButton"/>
+
 
     <TextView
         android:id="@+id/displayData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/hello"/>
+        android:layout_below="@+id/connectButton"/>
+    <ProgressBar
+        android:id="@+id/progressSpinner2"
+        android:layout_width="wrap_content"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:layout_below="@+id/displayData"/>
 
     <Button
         android:id="@+id/startButton"
         android:tag="start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="20dp"
         android:text="START"
+        android:layout_centerInParent="true"
         android:layout_below="@id/displayData"/>
     <Button
         android:id="@+id/stopButton"
         android:tag="stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:text="STOP"
-        android:layout_below="@id/startButton"/>
+        android:visibility="gone"
+        android:layout_below="@id/progressSpinner2"/>
 </RelativeLayout>
