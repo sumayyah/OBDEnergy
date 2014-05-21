@@ -516,6 +516,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     @Override
+    public void onStop(){
+        SharedPreferences.Editor editor = userData.edit();
+        //TODO: store path array here
+    }
+    @Override
     public void onClick(View v) {
         Console.log(classID+" button clicked");
         Long time = System.currentTimeMillis()/1000;
