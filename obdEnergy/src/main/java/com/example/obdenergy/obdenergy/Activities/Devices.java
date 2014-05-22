@@ -98,6 +98,7 @@ public class Devices extends Activity{
             }
         } else {
             String noDevices = "No devices found";
+            progressBar.setVisibility(View.GONE);
             PairedDevicesArrayAdapter.add(noDevices);
         }
     }
@@ -178,6 +179,7 @@ public class Devices extends Activity{
                 if (NewDevicesArrayAdapter.getCount() == 0) {
                     String noDevices = "No devices found";//getResources().getText(R.string.none_found).toString();
                     status.setText("No devices found");
+                    progressBar.setVisibility(View.GONE);
                     NewDevicesArrayAdapter.add(noDevices);
                 }
             }

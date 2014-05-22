@@ -1,59 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--//TODO: once icons are same size, set inner LinearLayout weight to 2-->
     <LinearLayout
         android:id="@+id/fuelContainer"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
             android:text="FUEL: "/>
 
-        <TextView
-            android:id="@+id/fuelData"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+            <TextView
+                android:id="@+id/fuelData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="40sp"
+                android:text="100.00"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gallons of gas"/>
+            </LinearLayout>
+
+
 
         </LinearLayout>
     <LinearLayout
         android:id="@+id/carbonContainer"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:layout_gravity="center_vertical"
             android:text="KG CARBON: "/>
-        <TextView
-            android:id="@+id/carbonData"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="50 KG CO2"/>
+            android:layout_gravity="center_vertical">
+            <TextView
+                android:id="@+id/carbonData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="40sp"
+                android:text="50"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="kg carbon"/>
+            </LinearLayout>
+
 
     </LinearLayout>
     <LinearLayout
         android:id="@+id/treesContainer"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:layout_gravity="center_vertical"
             android:text="TREES: "/>
-
-        <TextView
-            android:id="@+id/metricData"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="50 TREES KILLED"/>
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/metricData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="40sp"
+                android:text="50"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="trees killed"/>
+            </LinearLayout>
+
+
 
     </LinearLayout>
 </LinearLayout>
