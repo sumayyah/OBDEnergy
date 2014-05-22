@@ -82,7 +82,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     Calendar calendar = new GregorianCalendar();
 
 
-    private TextView data;
     private TextView connectStatus;
     private Button startButton;
     private Button stopButton;
@@ -94,7 +93,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private String command = "";
 
     private ProgressBar progressBar;
-    private ProgressBar progressBar2;
 
     private Thread fuelThread;
 
@@ -104,10 +102,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        data = (TextView)(findViewById(R.id.displayData));
         connectStatus = (TextView)(findViewById(R.id.connectStatus));
         progressBar = (ProgressBar)(findViewById(R.id.progressSpinner));
-        progressBar2 = (ProgressBar)(findViewById(R.id.progressSpinner2));
         startButton = (Button)(findViewById(R.id.startButton));
         stopButton = (Button)(findViewById(R.id.stopButton));
         connectButton = (Button)(findViewById(R.id.connectButton));
@@ -156,6 +152,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 if (resultCode == Activity.RESULT_OK) {
                     connectStatus.setText("Connecting...");
                     progressBar.setVisibility(View.VISIBLE);
+                    connectButton.setVisibility(View.GONE);
                     connectDevice(data, true);
                 }
                 break;
@@ -164,6 +161,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 if (resultCode == Activity.RESULT_OK) {
                     connectStatus.setText("Connecting...");
                     progressBar.setVisibility(View.VISIBLE);
+                    connectButton.setVisibility(View.GONE);
                     connectDevice(data, false);
                 }
                 break;
@@ -216,6 +214,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         case BluetoothChatService.STATE_CONNECTING:
                             connectStatus.setText("Connecting...");
                             progressBar.setVisibility(View.VISIBLE);
+                            connectButton.setVisibility(View.GONE);
                         case BluetoothChatService.STATE_LISTEN:
                         case BluetoothChatService.STATE_NONE:
                     }
@@ -303,7 +302,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             } else Console.log("NUll pieces in first regex check :(");
         }
         /*If we get 3 bytes of data returned*/
-        else if (!bufferString.equals("") && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r\n?")){
+        else if (!bufferString.equals("") && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r?\n?")){
             Console.log(classID+" Buffer String matches 4 digit pattern: "+bufferString);
 
             bufferString.trim();
@@ -406,7 +405,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         String miles = "10";
 
         DisplayData currentDisplayData = new DisplayData(gallons, miles, path.getfinalTime());
-        Profile.pathArray.add(path);
         intent = new Intent(this, MetricActivity.class);
         intent.putExtra("DATAPOINT", currentDisplayData);
         startActivity(intent);
@@ -435,8 +433,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Profile.setCapacity(tank);
         Profile.setCitympg(city);
         Profile.setHighwaympg(highway);
-
-        data.setText(Profile.checkContents());
     }
 
     private void collectData(){
@@ -444,11 +440,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Console.log(classID+" collecting stop Data");
 
 
-        sendMAFRequest();
-//        if(!fuelDataGiven){
-//            sendMAFRequest();
-//        }else sendMessage(FUEL_REQUEST+"\r");
-
+//        sendMAFRequest();
+        if(!fuelDataGiven){
+            sendMAFRequest();
+        }else sendMessage(FUEL_REQUEST+"\r");
 
 //            //TODO: get distance
 
@@ -484,10 +479,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         //TODO: Queue this?
         //sendMessage(CHECK_PROTOCOL+"\r");
 
-        //TODO:get initfuel + initdistance with sendmessage
         /*Send request for initial fuel data*/
-//        sendMessage(FUEL_REQUEST+"\r");
-        sendMAFRequest();
+        sendMessage(FUEL_REQUEST+"\r");
+//        sendMAFRequest();
     }
 
     private void connectDevice(Intent data, boolean secure){
@@ -549,7 +543,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 path.setInitTimestamp(timeString);
                 start = true;
                 startButton.setVisibility(View.GONE);
-                progressBar2.setVisibility(View.VISIBLE);
                 stopButton.setVisibility(View.VISIBLE);
                 startDataTransfer();
                 break;
@@ -560,7 +553,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 path.setStorageTime(calendar);
                 StorageDate.printDate();
                 path.setFinalTimestamp(timeString);
-                progressBar2.setVisibility(View.GONE);
                 collectData();
                 break;
         }
