@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Data.DisplayData;
-import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 
@@ -32,6 +31,7 @@ public class MetricActivity extends Activity{
 
         String gallons = displayData.getGallons();
 
+        //TODO: check for null values
         String carbonUsed = Calculations.getCarbon(Double.parseDouble(gallons));
         String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));
 

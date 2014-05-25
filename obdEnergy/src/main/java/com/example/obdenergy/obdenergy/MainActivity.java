@@ -539,12 +539,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivityForResult(intent, REQUEST_CONNECT_DEVICE_SECURE);
                 break;
             case R.id.startButton:
-                Console.log(classID+" start");
-                path.setInitTimestamp(timeString);
-                start = true;
-                startButton.setVisibility(View.GONE);
-                stopButton.setVisibility(View.VISIBLE);
-                startDataTransfer();
+                if(MESSAGE_STATE_CHANGE == (BluetoothAdapter.STATE_CONNECTED)){
+                    Console.log(classID+" start");
+                    path.setInitTimestamp(timeString);
+                    start = true;
+                    startButton.setVisibility(View.GONE);
+                    stopButton.setVisibility(View.VISIBLE);
+                    startDataTransfer();
+                }else Console.showAlert(this, "Please connect to a device.");
+
                 break;
             case R.id.stopButton:
                 Console.log(classID+" stop");
