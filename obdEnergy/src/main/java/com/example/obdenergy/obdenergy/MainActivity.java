@@ -337,7 +337,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
         else {
             Console.log("Buffer string doesn't match regex, it's "+bufferString);
-//            response.append("\n"+"Command: "+command+"\n"+" Response: "+bufferString);
         }
 
     }
@@ -385,9 +384,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         switch(PID){
             case 0: //No usable fuel data returned, go for the default
+                Console.log("Launching fuel survey activity");
                 intent = new Intent(this, FuelSurveyActivity.class);
                 startActivity(intent);
-                break;
+                return;
             case 47: //Using fuel level data
                 Console.log(classID+" setting up Metric Act with fuel data");
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
@@ -439,8 +439,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         Console.log(classID+" collecting stop Data");
 
-
-//        sendMAFRequest();
         if(!fuelDataGiven){
             sendMAFRequest();
         }else sendMessage(FUEL_REQUEST+"\r");
@@ -485,8 +483,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void connectDevice(Intent data, boolean secure){
-
-        //TODO: different things for secure and insecure connections. Also what is extra info?
 
         // Get the device MAC address and info
         String address = data.getExtras().getString(Devices.EXTRA_DEVICE_ADDRESS);
@@ -539,14 +535,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivityForResult(intent, REQUEST_CONNECT_DEVICE_SECURE);
                 break;
             case R.id.startButton:
-                if(MESSAGE_STATE_CHANGE == (BluetoothAdapter.STATE_CONNECTED)){
-                    Console.log(classID+" start");
-                    path.setInitTimestamp(timeString);
-                    start = true;
-                    startButton.setVisibility(View.GONE);
-                    stopButton.setVisibility(View.VISIBLE);
-                    startDataTransfer();
-                }else Console.showAlert(this, "Please connect to a device.");
+                createMetricActivity(0);
+//                if(MESSAGE_STATE_CHANGE == (BluetoothAdapter.STATE_CONNECTED)){
+//                    Console.log(classID+" start");
+//                    path.setInitTimestamp(timeString);
+//                    start = true;
+//                    startButton.setVisibility(View.GONE);
+//                    stopButton.setVisibility(View.VISIBLE);
+//                    startDataTransfer();
+//                }else Console.showAlert(this, "Please connect to a device.");
 
                 break;
             case R.id.stopButton:

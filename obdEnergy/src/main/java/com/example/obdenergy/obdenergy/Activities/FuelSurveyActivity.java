@@ -34,6 +34,7 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
+        Console.log(classID+" created FUEL survey activity");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fuelsurvey_activity_layout);
 
@@ -49,11 +50,17 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
     @Override
     public void onClick(View v) {
 
+            int selectedRadioButton = -1;
+
             Console.log(classID+" Done Button clicked");
 
-            int selectedRadioButton = radioGroup.getCheckedRadioButtonId();
+            selectedRadioButton = radioGroup.getCheckedRadioButtonId();
+            /*Check that all radio buttons are checked*/
+            if(selectedRadioButton == -1) {
+                Console.showAlert(this, "Please select either city or highway");
+                return;
+            }
             radioButton = (RadioButton)(findViewById(selectedRadioButton));
-
 
             /*Get parameters to pass to MetricActivity*/
             Long time = System.currentTimeMillis()/1000;
@@ -61,13 +68,6 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
             String mpg = "";
             String miles = milesField.getText().toString();
 
-        //TODO: check all are checked - right now still exception
-            /*Check that all radio buttons are checked*/
-            RadioButton rb1 = (RadioButton)(findViewById(R.id.cityChoice));
-            RadioButton rb2 = (RadioButton)(findViewById(R.id.highwayChoice));
-            if(!rb1.isChecked() && !rb2.isChecked()){
-                Console.showAlert(this, "Please select either city or highway");
-            }
             String text = (String) radioButton.getText();
 
             if(text.equals("City")){

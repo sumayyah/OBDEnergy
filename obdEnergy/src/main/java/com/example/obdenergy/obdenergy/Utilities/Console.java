@@ -16,12 +16,13 @@ public class Console {
 
     }
     public static void showAlert(Activity act, String message){
+
+        log("Calling showlaert");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(act);
 
         alertDialogBuilder.setTitle("ERROR");
 
         alertDialogBuilder.setMessage(message)
-//        alertDialogBuilder.setMessage("No Bluetooth device connected. Please connect some Bluetooth device and retry.")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
                     //If the user clicks Ok, shut down alert
