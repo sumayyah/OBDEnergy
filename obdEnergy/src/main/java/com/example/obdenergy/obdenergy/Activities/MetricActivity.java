@@ -31,13 +31,12 @@ public class MetricActivity extends Activity{
 
         String gallons = displayData.getGallons();
 
-        //TODO: check for null values
         String carbonUsed = Calculations.getCarbon(Double.parseDouble(gallons));
         String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));
 
-        fuelData.setText(gallons+" Gals used");
-        carbonData.setText(displayData.getMiles()+" miles driven on "+ displayData.getStreet()+" using up "+carbonUsed+" kilos carbon");
-        treesData.setText(treesKilled+" Trees killed");
+        fuelData.setText(gallons);
+        carbonData.setText(displayData.getMiles());
+        treesData.setText(treesKilled);
 
 
     }

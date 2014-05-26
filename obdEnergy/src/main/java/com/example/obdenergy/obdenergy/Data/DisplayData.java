@@ -3,8 +3,6 @@ package com.example.obdenergy.obdenergy.Data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.obdenergy.obdenergy.Utilities.Console;
-
 import java.util.ArrayList;
 
 /**
@@ -13,8 +11,8 @@ import java.util.ArrayList;
 public class DisplayData implements Parcelable{
 
 
-    private String gallons;
-    private String miles;
+    private String gallons ="";
+    private String miles = "";
     private String street;
     private String timestamp;
     private ArrayList<String> speed;
