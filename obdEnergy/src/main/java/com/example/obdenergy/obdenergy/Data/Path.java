@@ -21,27 +21,28 @@ public class Path {
     public static String finalTimestamp = "";
     public static StorageDate storageTime;
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
-    public static ArrayList<String> MAFArray = new ArrayList<String>();
+    public static ArrayList<Double> MAFArray = new ArrayList<Double>();
 
     public void setInitFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
         initFuel = temp;
     }
-    public void setInitMAF(String val1, String val2){
+    public void setInitMAF(){
+        initMAF = MAFArray.get(0);
+    }
+    public void addToMAFArray(String val1, String val2){
         String strtemp = Calculations.getMAF(val1, val2);
         double temp = Double.parseDouble(String.valueOf(strtemp));
-        initMAF = temp;
+        MAFArray.add(temp);
     }
     public void setFinalFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
         finalFuel = temp;
     }
-    public void setFinalMAF(String val1, String val2){
-        String strtemp = Calculations.getMAF(val1, val2);
-        double temp = Double.parseDouble(String.valueOf(strtemp));
-        finalMAF = temp;
+    public void setFinalMAF(){
+        finalMAF = MAFArray.get(MAFArray.size()-1);
     }
     public void setInitDistance(String val){ initDistance = val;}
     public void setFinalDistance(String val){ finalDistance = val;}
@@ -68,6 +69,11 @@ public class Path {
     public static String printSpeeds(){
         String returnString = "";
         for (Integer s: speedArray) returnString += (" "+s);
+        return returnString;
+    }
+    public static String printMAFs(){
+        String returnString = "";
+        for (Double d: MAFArray) returnString += (" "+d);
         return returnString;
     }
 }
