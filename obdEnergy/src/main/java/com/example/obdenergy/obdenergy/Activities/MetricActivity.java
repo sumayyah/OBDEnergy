@@ -38,7 +38,7 @@ public class MetricActivity extends Activity{
         String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));
 
         fuelData.setText(gallons);
-        carbonData.setText(displayData.getMiles());
+        carbonData.setText(carbonUsed);
         treesData.setText(treesKilled);
 
 

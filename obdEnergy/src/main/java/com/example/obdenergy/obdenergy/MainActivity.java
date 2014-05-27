@@ -41,13 +41,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private String ConnectedDeviceName = null;
     // String buffer for outgoing messages
     private static StringBuffer WriteStringBuffer;
-    private static StringBuffer WriteStartStringBuffer;
-    private static StringBuffer WriteStopStringBuffer;
     // Local Bluetooth adapter
     static BluetoothAdapter BluetoothAdapter = null;
     // Member object for the chat services
-    private static BluetoothChatService StartChatService = null;
-    private static BluetoothChatService StopChatService = null;
     private static BluetoothChatService ChatService = null;
 
     // Intent request codes
@@ -195,11 +191,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void onConnect(){
         /*Send initial messages*/
-//        sendMessage("" + "\r");
-//        sendMessage("ATE0");
-        queue.add(""+"/r");
-        queue.add("ATE0");
-        queue.dequeue();
+        sendMessage("ATE0");
+        sendMessage("" + "\r");
+
+//        queue.add("ATE0");
+//        queue.add(""+"\r");
+        //queue.dequeue();
     }
 
     private final Handler BTHandler = new Handler(){
@@ -208,7 +205,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             Console.log(classID+" Handler recieved "+command+", calling dequeue");
 
-            queue.dequeue();
+            //queue();
             switch (msg.what){
 
                 case MESSAGE_STATE_CHANGE:
@@ -348,13 +345,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 
     private void sendMAFRequest() {
-        queue.add(MAF_REQUEST+"\r");
+        sendMessage(MAF_REQUEST+"\r");//queue.add(MAF_REQUEST + "\r");
     }
 
     private void startInstantFuelReadings() {
 
         final Handler fuelHandler = new Handler();
-
 
         fuelThread = new Thread(new Runnable() {
             @Override
@@ -367,8 +363,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                             @Override
                             public void run() {
                                 //TODO:Get MAF
-                                //TODO: Get speed
-                                Console.log("Sending message speed!");
+                                sendMessage(SPEED_REQUEST+"\r");//queue.add(SPEED_REQUEST+"\r");
+                                //queue.dequeue();
                             }
                         });
                     } catch (InterruptedException e) {
@@ -414,7 +410,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         //TODO: TEST checkProtocol
         if(!bufferString.equals("ISO 9141-2")){
             Console.log(classID+" Not ISO 9141, its' "+bufferString);
-            queue.add(CHANGE_PROTOCOL + "\r");
+            sendMessage(CHANGE_PROTOCOL+"\r");//queue.add(CHANGE_PROTOCOL + "\r");
         }
     }
 
@@ -438,8 +434,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         if(!fuelDataGiven){
             sendMAFRequest();
-        }else queue.add(FUEL_REQUEST+"\r");
-        queue.dequeue();
+        }else sendMessage(FUEL_REQUEST+"\r");//queue.add(FUEL_REQUEST+"\r");
+        //queue.dequeue();
 
     }
 
@@ -470,11 +466,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void startDataTransfer(){
 
-        queue.add(CHECK_PROTOCOL+"\r");//sendMessage(CHECK_PROTOCOL+"\r");
+        sendMessage(CHECK_PROTOCOL+"\r");
+        //queue.add(CHECK_PROTOCOL+"\r");//sendMessage(CHECK_PROTOCOL+"\r");
 
         /*Send request for initial fuel data*/
-        queue.add(FUEL_REQUEST+"\r");//sendMessage(FUEL_REQUEST+"\r");
-        queue.dequeue();
+        sendMessage(FUEL_REQUEST+"\r");
+        //queue.add(FUEL_REQUEST+"\r");//sendMessage(FUEL_REQUEST+"\r");
+        //queue.dequeue();
+
+        startInstantFuelReadings();
     }
 
     private void connectDevice(Intent data, boolean secure){
@@ -541,6 +541,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 StorageDate.printDate();
                 path.setFinalTimestamp(timeString);
                 collectData();
+                Console.log(classID+" speed Array is "+path.printSpeeds());
                 break;
         }
     }

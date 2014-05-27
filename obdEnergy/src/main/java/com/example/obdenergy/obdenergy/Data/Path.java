@@ -64,4 +64,10 @@ public class Path {
     public String getInitTimestamp(){ return initTimestamp; }
     public static String getfinalTime(){ return finalTimestamp; }
     public static String getInitTime(){return initTimestamp;}
+
+    public static String printSpeeds(){
+        String returnString = "";
+        for (Integer s: speedArray) returnString += (" "+s);
+        return returnString;
+    }
 }
