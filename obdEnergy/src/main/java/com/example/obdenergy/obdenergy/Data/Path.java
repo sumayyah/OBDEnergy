@@ -28,8 +28,10 @@ public class Path {
         double temp = Double.parseDouble(String.valueOf(temp1));
         initFuel = temp;
     }
-    public void setInitMAF(){
-        initMAF = MAFArray.get(0);
+    public void setInitMAF(String val1, String val2){
+        String strtemp = Calculations.getMAF(val1, val2);
+        double temp = Double.parseDouble(String.valueOf(strtemp));
+        initMAF = temp;
     }
     public void addToMAFArray(String val1, String val2){
         String strtemp = Calculations.getMAF(val1, val2);
@@ -41,8 +43,10 @@ public class Path {
         double temp = Double.parseDouble(String.valueOf(temp1));
         finalFuel = temp;
     }
-    public void setFinalMAF(){
-        finalMAF = MAFArray.get(MAFArray.size()-1);
+    public void setFinalMAF(String val1, String val2){
+        String strtemp = Calculations.getMAF(val1, val2);
+        double temp = Double.parseDouble(String.valueOf(strtemp));
+        finalMAF = temp;
     }
     public void setInitDistance(String val){ initDistance = val;}
     public void setFinalDistance(String val){ finalDistance = val;}

@@ -203,7 +203,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             Console.log(classID+" Handler recieved "+command+", calling dequeue");
 
-            queue.dequeue();
             switch (msg.what){
 
                 case MESSAGE_STATE_CHANGE:
@@ -287,9 +286,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 switch(PID){
                     case 16: //MAF - airflow rate
                         Console.log(classID+"MAF Fuel data recieved "+finalString);
-                        path.addToMAFArray(firstPart, secondPart);
-                        if(!start && stop){
-                            path.addToMAFArray(firstPart, secondPart);
+                        if(start && !stop){
+                            path.setInitMAF(firstPart, secondPart);
+                            Console.log(classID+" set as MAF initial fuel");
+                        }else if(!start && stop){
+                            path.setFinalMAF(firstPart, secondPart);
+                            Console.log(classID+" set as MAF final fuel");
                             createMetricActivity(PID);
                         }else Console.log("Some other bool");
                         break;
@@ -340,13 +342,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 
     private void sendMAFRequest() {
-        queue.add(MAF_REQUEST + "\r");
+        sendMessage(MAF_REQUEST + "\r");
     }
 
     private void startInstantFuelReadings() {
-
-        final boolean[] toggle = {true};
-
         final Handler fuelHandler = new Handler();
 
         fuelThread = new Thread(new Runnable() {
@@ -355,41 +354,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 while (!stop) {
                     try {
                         Thread.sleep(2000);
-                        if(toggle[0]){
                             fuelHandler.post(new Runnable() {
 
                                 @Override
                                 public void run() {
-                                    Console.log(classID+" toggle true MAF");
-                                    queue.add(MAF_REQUEST+"\r");
-                                    queue.dequeue();
+
+                                    sendMessage(SPEED_REQUEST+"\r");
                                 }
                             });
 
-                            toggle[0] = false;
-                        }else{
-                            fuelHandler.post(new Runnable() {
 
-                                @Override
-                                public void run() {
-                                    Console.log(classID+" toggle false speed");
-                                    queue.add(SPEED_REQUEST+"\r");
-                                    queue.dequeue();
-                                }
-                            });
-
-                            toggle[0] = true;
-                        }
-
-//                        fuelHandler.post(new Runnable() {
-//
-//                            @Override
-//                            public void run() {
-//                                queue.add(MAF_REQUEST+"\r");
-//                                queue.add(SPEED_REQUEST+"\r");
-//                                queue.dequeue();
-//                            }
-//                        });
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -413,9 +387,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 break;
             case 16: //Using MAF data
-                path.setInitMAF();
-                path.setFinalMAF();
-                Console.log(classID + " Set init and final MAF " + path.initMAF + " " + path.finalMAF);
                 gallons = Calculations.getGallons(path.getInitMAF(), path.getFinalMAF(), path.getInitTime(), path.getfinalTime());
                 break;
             default:
@@ -458,11 +429,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void collectData(){
 
-//        if(!fuelDataGiven){
+        if(!fuelDataGiven){
             sendMAFRequest();
-//        }else queue.add(FUEL_REQUEST+"\r");
-//        queue.dequeue();
-
+        }else sendMessage(FUEL_REQUEST+"\r");
     }
 
     public  void sendMessage(String message){
@@ -492,12 +461,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void startDataTransfer(){
 
-//        sendMessage(CHECK_PROTOCOL+"\r");
+        sendMessage(CHECK_PROTOCOL+"\r");
 
         /*Send request for initial fuel data*/
-//        sendMessage(FUEL_REQUEST+"\r");
+        sendMessage(FUEL_REQUEST+"\r");
 
-        startInstantFuelReadings();
     }
 
     private void connectDevice(Intent data, boolean secure){
@@ -565,7 +533,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 path.setFinalTimestamp(timeString);
                 collectData();
                 Console.log(classID+" speed Array is "+path.printSpeeds());
-                Console.log(classID+" MAF Array is "+path.printMAFs());
                 break;
         }
     }
