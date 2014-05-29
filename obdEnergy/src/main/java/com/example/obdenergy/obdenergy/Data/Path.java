@@ -21,7 +21,7 @@ public class Path {
     public static String finalTimestamp = "";
     public static StorageDate storageTime;
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
-    public static ArrayList<String> MAFArray = new ArrayList<String>();
+    public static ArrayList<Double> MAFArray = new ArrayList<Double>();
 
     public void setInitFuel(String val){
         int temp1 = Calculations.hexToInt(val);
@@ -32,6 +32,11 @@ public class Path {
         String strtemp = Calculations.getMAF(val1, val2);
         double temp = Double.parseDouble(String.valueOf(strtemp));
         initMAF = temp;
+    }
+    public void addToMAFArray(String val1, String val2){
+        String strtemp = Calculations.getMAF(val1, val2);
+        double temp = Double.parseDouble(String.valueOf(strtemp));
+        MAFArray.add(temp);
     }
     public void setFinalFuel(String val){
         int temp1 = Calculations.hexToInt(val);
@@ -64,4 +69,15 @@ public class Path {
     public String getInitTimestamp(){ return initTimestamp; }
     public static String getfinalTime(){ return finalTimestamp; }
     public static String getInitTime(){return initTimestamp;}
+
+    public static String printSpeeds(){
+        String returnString = "";
+        for (Integer s: speedArray) returnString += (" "+s);
+        return returnString;
+    }
+    public static String printMAFs(){
+        String returnString = "";
+        for (Double d: MAFArray) returnString += (" "+d);
+        return returnString;
+    }
 }

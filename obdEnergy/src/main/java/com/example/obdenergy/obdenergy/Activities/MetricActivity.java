@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.example.obdenergy.obdenergy.Data.DisplayData;
 import com.example.obdenergy.obdenergy.R;
+import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
 /**
@@ -27,17 +29,17 @@ public class MetricActivity extends Activity{
         carbonData = (TextView)(findViewById(R.id.carbonData));
         treesData = (TextView)(findViewById(R.id.metricData));
 
-//        Bundle extras = getIntent().getExtras();
-//        DisplayData displayData = (DisplayData) extras.getParcelable("DATAPOINT");
+        Bundle extras = getIntent().getExtras();
+        DisplayData displayData = (DisplayData) extras.getParcelable("DATAPOINT");
 
-//        String gallons = displayData.getGallons();
-//
-//        String carbonUsed = Calculations.getCarbon(Double.parseDouble(gallons));
-//        String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));
-//
-//        fuelData.setText(gallons);
-//        carbonData.setText(displayData.getMiles());
-//        treesData.setText(treesKilled);
+        String gallons = displayData.getGallons();
+
+        String carbonUsed = Calculations.getCarbon(Double.parseDouble(gallons));
+        String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));
+
+        fuelData.setText(gallons);
+        carbonData.setText(carbonUsed);
+        treesData.setText(treesKilled);
 
 
     }
