@@ -17,7 +17,8 @@ public class Calculations {
         double percentage = (fuelVal/255);
         double gallons = percentage*tankCapacityNum;
 
-        finalGallonString = String.valueOf(gallons);
+        String tempString = String.valueOf(gallons);
+        finalGallonString = tempString.length() > 4? (tempString.substring(0,3)): (tempString);
 
         return finalGallonString;
     }
@@ -32,7 +33,8 @@ public class Calculations {
 
         double fuelUsed = finalFuel - initFuel;
 
-        finalGallonString = String.valueOf(fuelUsed);
+        String tempString = String.valueOf(fuelUsed);
+        finalGallonString = tempString.length() > 4? (tempString.substring(0,3)): (tempString);
         Console.log(classID+" init fuel "+initFuel+" - final fuel "+finalFuel+" equals "+finalGallonString+" from "+initTime+" to "+finalTime);
 
         return finalGallonString; //TODO: double check - does formula give back gallons?
@@ -45,7 +47,8 @@ public class Calculations {
         double milesNum = Double.parseDouble(miles);
         double finalGallons = milesNum/mpgNum;
 
-        finalGallonString = String.valueOf(finalGallons);
+        String tempString = String.valueOf(finalGallons);
+        finalGallonString = tempString.length() > 4? (tempString.substring(0,3)): (tempString);
 
         return finalGallonString;
     }
@@ -56,7 +59,8 @@ public class Calculations {
         double multiplier = 8.85; //Kilos of carbon per gallon of gas
         double carbon = multiplier*gallonsUsed;
 
-        finalCarbon = String.valueOf(carbon);
+        String tempString = String.valueOf(carbon);
+        finalCarbon = tempString.length() > 4 ? tempString.substring(0,3): tempString;
 
         return finalCarbon;
     }
@@ -67,7 +71,8 @@ public class Calculations {
         double multiplier = 0.228; //Tree seedlings grown for 10 years, per gallon of gas
         double treesKilled = multiplier*gallonsUsed;
 
-        finalTreesKilled = String.valueOf(treesKilled);
+        String tempString = String.valueOf(treesKilled);
+        finalTreesKilled= tempString.length() > 4 ? tempString.substring(0,3): tempString;
 
         return finalTreesKilled;
     }

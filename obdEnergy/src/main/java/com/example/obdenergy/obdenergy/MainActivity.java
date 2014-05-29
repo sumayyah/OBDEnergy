@@ -27,6 +27,7 @@ import com.example.obdenergy.obdenergy.Data.StorageDate;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.example.obdenergy.obdenergy.Utilities.Queue;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -34,19 +35,15 @@ import java.util.GregorianCalendar;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener{
 
-    private final String classID = "MainActivity";
+    private static final String classID = "MainActivity";
 
     // Name of the connected device
     private String ConnectedDeviceName = null;
     // String buffer for outgoing messages
     private static StringBuffer WriteStringBuffer;
-    private static StringBuffer WriteStartStringBuffer;
-    private static StringBuffer WriteStopStringBuffer;
     // Local Bluetooth adapter
     static BluetoothAdapter BluetoothAdapter = null;
     // Member object for the chat services
-    private static BluetoothChatService StartChatService = null;
-    private static BluetoothChatService StopChatService = null;
     private static BluetoothChatService ChatService = null;
 
     // Intent request codes
@@ -90,11 +87,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private Boolean fuelDataGiven = true;
     private Boolean start = false;
     private Boolean stop = false;
-    private String command = "";
+    private static String command = "";
 
     private ProgressBar progressBar;
 
     private Thread fuelThread;
+    private Queue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +109,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         stopButton.setOnClickListener(this);
         connectButton.setOnClickListener(this);
 
+        queue = Queue.getInstance(this);
 
         BluetoothAdapter =BluetoothAdapter.getDefaultAdapter();
 
@@ -145,6 +144,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
+
 
         switch (requestCode){
             case REQUEST_CONNECT_DEVICE_SECURE:
@@ -192,14 +192,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void onConnect(){
         /*Send initial messages*/
-        sendMessage("" + "\r");
         sendMessage("ATE0");
+        sendMessage("" + "\r");
+
     }
 
     private final Handler BTHandler = new Handler(){
 
         @Override
         public void handleMessage(Message msg) {
+            Console.log(classID+" Handler recieved "+command+", calling dequeue");
+
             switch (msg.what){
 
                 case MESSAGE_STATE_CHANGE:
@@ -220,7 +223,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     }
                     break;
                 case MESSAGE_WRITE:
-                    Console.log(classID+" Write command given");
                     break;
                 case MESSAGE_READ:
                     readMessage(msg);
@@ -237,7 +239,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void readMessage(Message msg){
 
-        Console.log(classID+" Reading message! Command is "+command);
         byte[] readBuffer = (byte[]) msg.obj;
         String bufferString = new String(readBuffer, 0, msg.arg1);
         Console.log(classID+" Message is "+bufferString);
@@ -271,7 +272,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         /*If we get 4 bytes of data returned*/
         if(bufferString!="" && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r?\n?")){
-            Console.log("Buffer String matches 8 digit pattern: "+bufferString);
 
             bufferString.trim();
             String[] bytes = bufferString.split(" ");
@@ -303,7 +303,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
         /*If we get 3 bytes of data returned*/
         else if (!bufferString.equals("") && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r?\n?")){
-            Console.log(classID+" Buffer String matches 4 digit pattern: "+bufferString);
 
             bufferString.trim();
             String[] bytes = bufferString.split(" ");
@@ -343,30 +342,28 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 
     private void sendMAFRequest() {
-        sendMessage(MAF_REQUEST+"\r");
+        sendMessage(MAF_REQUEST + "\r");
     }
 
     private void startInstantFuelReadings() {
-        //TODO: create timer/runnable
-
         final Handler fuelHandler = new Handler();
-
 
         fuelThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (!stop) {
                     try {
-                        Thread.sleep(3000);
-                        fuelHandler.post(new Runnable() {
+                        Thread.sleep(2000);
+                            fuelHandler.post(new Runnable() {
 
-                            @Override
-                            public void run() {
-                                //TODO:Get MAF
-                                //TODO: Get speed
-                                Console.log("Sending message speed!");
-                            }
-                        });
+                                @Override
+                                public void run() {
+
+                                    sendMessage(SPEED_REQUEST+"\r");
+                                }
+                            });
+
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -380,20 +377,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         String tankCapacity = Profile.getCapacity();
         Intent intent = null;
         String gallons = "";
-        Console.log(classID+" Called createMetric acti with PID "+PID);
 
         switch(PID){
             case 0: //No usable fuel data returned, go for the default
-                Console.log("Launching fuel survey activity");
                 intent = new Intent(this, FuelSurveyActivity.class);
                 startActivity(intent);
                 return;
             case 47: //Using fuel level data
-                Console.log(classID+" setting up Metric Act with fuel data");
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 break;
             case 16: //Using MAF data
-                Console.log(classID+" setting up Metric Act with MAF data");
                 gallons = Calculations.getGallons(path.getInitMAF(), path.getFinalMAF(), path.getInitTime(), path.getfinalTime());
                 break;
             default:
@@ -414,12 +407,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         //TODO: TEST checkProtocol
         if(!bufferString.equals("ISO 9141-2")){
             Console.log(classID+" Not ISO 9141, its' "+bufferString);
-            sendMessage(CHANGE_PROTOCOL+"\r");
+            sendMessage(CHANGE_PROTOCOL + "\r");//queue.add(CHANGE_PROTOCOL + "\r");
         }
     }
 
     private void createProfile(){
-        Console.log(classID+" creating user profile object from stored data");
         String make = userData.getString("car_make", "");
         String model = userData.getString("car_model", "");
         String year = userData.getString("car_year", "");
@@ -437,17 +429,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void collectData(){
 
-        Console.log(classID+" collecting stop Data");
-
         if(!fuelDataGiven){
             sendMAFRequest();
         }else sendMessage(FUEL_REQUEST+"\r");
-
-//            //TODO: get distance
-
     }
 
-    private void sendMessage(String message){
+    public  void sendMessage(String message){
+
 
         /*Make sure we're connected*/
         if((ChatService.getState() != BluetoothChatService.STATE_CONNECTED)){
@@ -464,7 +452,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             ChatService.write(toSend);
             WriteStringBuffer.setLength(0);
             command = message;
-            Console.log(classID+" written "+message+" as command "+command);
             //TODO: Logwriter
 
         }
@@ -474,12 +461,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void startDataTransfer(){
 
-        //TODO: Queue this?
-        //sendMessage(CHECK_PROTOCOL+"\r");
+        sendMessage(CHECK_PROTOCOL+"\r");
 
         /*Send request for initial fuel data*/
         sendMessage(FUEL_REQUEST+"\r");
-//        sendMAFRequest();
+
     }
 
     private void connectDevice(Intent data, boolean secure){
@@ -524,36 +510,29 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
     @Override
     public void onClick(View v) {
-        Console.log(classID+" button clicked");
         Long time = System.currentTimeMillis()/1000;
         String timeString = time.toString();
 
         switch (v.getId()){
             case R.id.connectButton:
-                Console.log(classID+" connect");
                 Intent intent = new Intent(MainActivity.this, Devices.class);
                 startActivityForResult(intent, REQUEST_CONNECT_DEVICE_SECURE);
                 break;
             case R.id.startButton:
-                createMetricActivity(0);
-//                if(MESSAGE_STATE_CHANGE == (BluetoothAdapter.STATE_CONNECTED)){
-//                    Console.log(classID+" start");
-//                    path.setInitTimestamp(timeString);
-//                    start = true;
-//                    startButton.setVisibility(View.GONE);
-//                    stopButton.setVisibility(View.VISIBLE);
-//                    startDataTransfer();
-//                }else Console.showAlert(this, "Please connect to a device.");
-
+                    path.setInitTimestamp(timeString);
+                    start = true;
+                    startButton.setVisibility(View.GONE);
+                    stopButton.setVisibility(View.VISIBLE);
+                    startDataTransfer();
                 break;
             case R.id.stopButton:
-                Console.log(classID+" stop");
                 start = false;
                 stop = true;
                 path.setStorageTime(calendar);
                 StorageDate.printDate();
                 path.setFinalTimestamp(timeString);
                 collectData();
+                Console.log(classID+" speed Array is "+path.printSpeeds());
                 break;
         }
     }
