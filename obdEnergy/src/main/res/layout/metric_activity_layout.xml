@@ -127,7 +127,7 @@
             android:layout_gravity="center_vertical"
             android:layout_margin="10dp"
             android:padding="10dp"
-            android:background="@drawable/leafCopy">
+            android:background="@drawable/leafcopy">
 
         </LinearLayout>
         <LinearLayout
