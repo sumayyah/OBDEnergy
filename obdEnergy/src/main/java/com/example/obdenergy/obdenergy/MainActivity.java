@@ -92,9 +92,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private static String command = "";
 
     private long startTime = 0L;
-    private long timeInMillis = 0L;
+    private long timeInProgress = 0L;
     private long timeSwapper = 0L;
-    private long updatedTime = 0L;
+    private long finalTime = 0L;
 
     private ProgressBar progressBar;
 
@@ -188,6 +188,24 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     finish();
                 }
         }
+    }
+
+    /*When the activity reloads after a back press*/
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        /*Reset the timer*/
+        timer.setText("00:00:00");
+        startTime = 0L;
+        timeInProgress = 0L;
+        timeSwapper = 0L;
+        finalTime = 0L;
+
+        /*Let a user be able to select drive options again*/
+        startButton.setVisibility(View.VISIBLE);
+        stopButton.setVisibility(View.GONE);
+        stop = false;
     }
 
     private void setupChat(){
@@ -366,7 +384,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
                                 @Override
                                 public void run() {
-
                                     sendMessage(SPEED_REQUEST+"\r");
                                 }
                             });
@@ -490,21 +507,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         ChatService.connect(device, secure);
     }
 
-    private Runnable timerThread = new Runnable() { //TODO: update to seconds hours minutes
+    private Runnable timerThread = new Runnable() {
        //TODO: clear timer upon Activity reload
         @Override
         public void run() {
 
-            timeInMillis = SystemClock.uptimeMillis() - startTime;
-            updatedTime = timeSwapper + timeInMillis;
+            timeInProgress = SystemClock.uptimeMillis() - startTime;
+            finalTime = timeSwapper + timeInProgress;
 
-            int secs = (int) (updatedTime / 1000);
-            int mins = secs / 60;
-            secs = secs % 60;
-            int milliseconds = (int) (updatedTime % 1000);
-            timer.setText("" + mins + ":"
-                            + String.format("%02d", secs) + ":"
-                            + String.format("%03d", milliseconds));
+            int secs = (int) (finalTime / 1000);
+            int hours = secs/3600;
+            int mins = hours%60;
+            secs = secs%3600;
+
+            timer.setText("" + String.format("%02d", hours) + ":"
+                            + String.format("%02d", mins) + ":"
+                            + String.format("%02d", secs));
             timeHandler.postDelayed(this, 0);
 
         }
@@ -565,7 +583,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 collectData();
                 Console.log(classID+" speed Array is "+path.printSpeeds());
 
-                timeSwapper += timeInMillis;
+                timeSwapper += timeInProgress;
                 timeHandler.removeCallbacks(timerThread);
 
                 break;
