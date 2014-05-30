@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -80,6 +81,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 
     private TextView connectStatus;
+    private TextView timer;
     private Button startButton;
     private Button stopButton;
     private Button connectButton;
@@ -89,9 +91,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private Boolean stop = false;
     private static String command = "";
 
+    private long startTime = 0L;
+    private long timeInMillis = 0L;
+    private long timeSwapper = 0L;
+    private long updatedTime = 0L;
+
     private ProgressBar progressBar;
 
     private Thread fuelThread;
+    private Handler timeHandler = new Handler();
     private Queue queue;
 
     @Override
@@ -101,6 +109,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         connectStatus = (TextView)(findViewById(R.id.connectStatus));
+        timer = (TextView)(findViewById(R.id.timer));
         progressBar = (ProgressBar)(findViewById(R.id.progressSpinner));
         startButton = (Button)(findViewById(R.id.startButton));
         stopButton = (Button)(findViewById(R.id.stopButton));
@@ -340,7 +349,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
-
     private void sendMAFRequest() {
         sendMessage(MAF_REQUEST + "\r");
     }
@@ -482,6 +490,26 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         ChatService.connect(device, secure);
     }
 
+    private Runnable timerThread = new Runnable() { //TODO: update to seconds hours minutes
+       //TODO: clear timer upon Activity reload
+        @Override
+        public void run() {
+
+            timeInMillis = SystemClock.uptimeMillis() - startTime;
+            updatedTime = timeSwapper + timeInMillis;
+
+            int secs = (int) (updatedTime / 1000);
+            int mins = secs / 60;
+            secs = secs % 60;
+            int milliseconds = (int) (updatedTime % 1000);
+            timer.setText("" + mins + ":"
+                            + String.format("%02d", secs) + ":"
+                            + String.format("%03d", milliseconds));
+            timeHandler.postDelayed(this, 0);
+
+        }
+    };
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         
@@ -519,11 +547,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivityForResult(intent, REQUEST_CONNECT_DEVICE_SECURE);
                 break;
             case R.id.startButton:
-                    path.setInitTimestamp(timeString);
-                    start = true;
-                    startButton.setVisibility(View.GONE);
-                    stopButton.setVisibility(View.VISIBLE);
-                    startDataTransfer();
+                path.setInitTimestamp(timeString);
+                start = true;
+                startButton.setVisibility(View.GONE);
+                stopButton.setVisibility(View.VISIBLE);
+                startDataTransfer();
+
+                startTime = SystemClock.uptimeMillis();
+                timeHandler.postDelayed(timerThread, 0);
                 break;
             case R.id.stopButton:
                 start = false;
@@ -533,6 +564,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 path.setFinalTimestamp(timeString);
                 collectData();
                 Console.log(classID+" speed Array is "+path.printSpeeds());
+
+                timeSwapper += timeInMillis;
+                timeHandler.removeCallbacks(timerThread);
+
                 break;
         }
     }

@@ -50,11 +50,11 @@
         android:background="@android:color/transparent"
         />
     <RelativeLayout
+        android:id="@+id/ringLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@drawable/ring">
-
         </RelativeLayout>
     <ProgressBar
         android:visibility="gone"
@@ -73,4 +73,14 @@
         android:visibility="gone"
         android:textSize="50dp"
         android:background="@android:color/transparent"/>
+
+        <TextView
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ringLayout"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:text="00:00:00"/>
+
 </RelativeLayout>
