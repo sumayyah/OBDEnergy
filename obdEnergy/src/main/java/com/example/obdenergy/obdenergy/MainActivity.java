@@ -385,6 +385,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                                 @Override
                                 public void run() {
                                     sendMessage(SPEED_REQUEST+"\r");
+                                    Long time = System.currentTimeMillis()/1000;
+                                    String timeString = time.toString();
+                                    path.addToTimeArray(timeString);
                                 }
                             });
 
@@ -419,10 +422,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 break;
         }
 
-        //TODO: get distance calculations from speedArray
-        String miles = "10";
+        Double miles = path.getMiles();
 
-        DisplayData currentDisplayData = new DisplayData(gallons, miles, path.getfinalTime());
+        DisplayData currentDisplayData = new DisplayData(gallons, miles.toString(), path.getfinalTime());
         intent = new Intent(this, MetricActivity.class);
         intent.putExtra("DATAPOINT", currentDisplayData);
         startActivity(intent);
@@ -490,6 +492,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         /*Send request for initial fuel data*/
         sendMessage(FUEL_REQUEST+"\r");
+        startInstantFuelReadings();
 
     }
 
@@ -508,7 +511,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private Runnable timerThread = new Runnable() {
-       //TODO: clear timer upon Activity reload
         @Override
         public void run() {
 
@@ -582,6 +584,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 path.setFinalTimestamp(timeString);
                 collectData();
                 Console.log(classID+" speed Array is "+path.printSpeeds());
+                Console.log(classID+" time Array is "+path.printTimes());
 
                 timeSwapper += timeInProgress;
                 timeHandler.removeCallbacks(timerThread);

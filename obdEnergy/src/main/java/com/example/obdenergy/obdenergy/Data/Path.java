@@ -22,6 +22,7 @@ public class Path {
     public static StorageDate storageTime;
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
     public static ArrayList<Double> MAFArray = new ArrayList<Double>();
+    public static ArrayList<Double> timeArray = new ArrayList<Double>();
 
     public void setInitFuel(String val){
         int temp1 = Calculations.hexToInt(val);
@@ -59,6 +60,22 @@ public class Path {
         int speedInt = Calculations.hexToInt(val);
         speedArray.add(speedInt);
     }
+    /*Takes time in milliseconds, converts to seconds, and stores in array*/
+    public static void addToTimeArray(String val){
+        timeArray.add(Double.parseDouble(val));
+    }
+    public static Double getMiles(){
+        Double finalMiles = 0.0;
+
+        for(int i=0;i<speedArray.size();i++){
+            double secondsPassed = timeArray.get(i) - (i==0 ? 0: timeArray.get(i-1));
+            double hoursPassed = secondsPassed/3600;
+
+            finalMiles += speedArray.get(i)*hoursPassed;
+        }
+
+        return finalMiles;
+    }
 
     public static double getInitFuel(){return initFuel; }
     public static double getFinalFuel(){return finalFuel;}
@@ -78,6 +95,11 @@ public class Path {
     public static String printMAFs(){
         String returnString = "";
         for (Double d: MAFArray) returnString += (" "+d);
+        return returnString;
+    }
+    public static String printTimes(){
+        String returnString = "";
+        for (Double t: timeArray) returnString += (" "+t);
         return returnString;
     }
 }
