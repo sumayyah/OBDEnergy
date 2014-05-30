@@ -11,37 +11,40 @@ import java.text.SimpleDateFormat;
  * Created by sumayyah on 5/7/14.
  */
 public class DataLogger {
+
+
     public static void writeData(final String data) {
 
 
-        // ++++ Fire off a thread to write info to file
+        Thread thread = new Thread() {
 
-        Thread w_thread = new Thread() {
             public void run() {
-//                File myFilesDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/CarData/files");
-                File myFilesDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/storage/emulated/0/Android/carData");
-                myFilesDir.mkdirs();
+//                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/CarData/files");
+                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/storage/emulated/0/Android/carData");
+                file.mkdirs();
 
-                String dataline = (timestamp() + ", " + data + "\n");
+                String dataString = (System.currentTimeMillis()+"\n"+ data + "\n");
 
-                File myfile = new File(myFilesDir + "/" + "Term_Log" + sDate() + ".txt");
+                File myfile = new File(file + "/" + "Log" + sDate() + ".txt");
 //                File myfile = new File("carData.txt");
-                if(myfile.exists() == true)
+
+
+                if(myfile.exists() == true) //if file already exists, append more text to it
                 {
                     try {
                         FileWriter write = new FileWriter(myfile, true);
-                        write.append(dataline);
+                        write.append(dataString);
                         //read_ct++;
                         write.close();
                     }catch (Exception e){
 
                     }
 
-                }else{ //make a new file since we apparently need one
+                }else{ //make a new file
                     try {
                         FileWriter write = new FileWriter(myfile, true);
                         //	write.append(header);
-                        write.append(dataline);
+                        write.append(dataString);
                         //read_ct++;
                         write.close();
                     }catch (Exception e){
@@ -51,14 +54,9 @@ public class DataLogger {
                 }
             }
         };
-        w_thread.start();
+        thread.start();
     }
-
-    public static long timestamp(){
-        long timestamp = System.currentTimeMillis();
-        return timestamp;
-    }
-
+    
     @SuppressLint("SimpleDateFormat")
     public static String sDate(){
 
