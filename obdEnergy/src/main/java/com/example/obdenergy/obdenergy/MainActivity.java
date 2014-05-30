@@ -28,6 +28,7 @@ import com.example.obdenergy.obdenergy.Data.StorageDate;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 import com.example.obdenergy.obdenergy.Utilities.Queue;
 
 import java.util.Calendar;
@@ -99,7 +100,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private ProgressBar progressBar;
 
     private Thread fuelThread;
-    private Handler timeHandler = new Handler();
+    private final Handler timeHandler = new Handler();
+    private final Handler fuelHandler = new Handler();
     private Queue queue;
 
     @Override
@@ -270,6 +272,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         String bufferString = new String(readBuffer, 0, msg.arg1);
         Console.log(classID+" Message is "+bufferString);
 
+        DataLogger.writeData("Command: "+command+" Message: "+bufferString+"\n");
+
         if(command.equals(FUEL_REQUEST) && start){
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
                 fuelDataGiven = false;
@@ -372,7 +376,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void startInstantFuelReadings() {
-        final Handler fuelHandler = new Handler();
+
 
         fuelThread = new Thread(new Runnable() {
             @Override
@@ -405,17 +409,21 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         String tankCapacity = Profile.getCapacity();
         Intent intent = null;
         String gallons = "";
+        Console.log(classID+" creating Metric Act");
 
         switch(PID){
             case 0: //No usable fuel data returned, go for the default
                 intent = new Intent(this, FuelSurveyActivity.class);
                 startActivity(intent);
+                Console.log(classID+" with no data");
                 return;
             case 47: //Using fuel level data
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
+                Console.log(classID+" with Fuel");
                 break;
             case 16: //Using MAF data
                 gallons = Calculations.getGallons(path.getInitMAF(), path.getFinalMAF(), path.getInitTime(), path.getfinalTime());
+                Console.log(classID+" with MAF");
                 break;
             default:
                 Console.log(classID+" Create metric activity wrong PID");
@@ -428,6 +436,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         intent = new Intent(this, MetricActivity.class);
         intent.putExtra("DATAPOINT", currentDisplayData);
         startActivity(intent);
+        Console.log(classID+" send intent to Metric Activity");
     }
 
     private void checkProtocol(String bufferString) {
@@ -479,8 +488,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             ChatService.write(toSend);
             WriteStringBuffer.setLength(0);
             command = message;
-            //TODO: Logwriter
-
         }
 
     }
@@ -588,6 +595,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
                 timeSwapper += timeInProgress;
                 timeHandler.removeCallbacks(timerThread);
+                fuelHandler.removeCallbacks(fuelThread);
 
                 break;
         }

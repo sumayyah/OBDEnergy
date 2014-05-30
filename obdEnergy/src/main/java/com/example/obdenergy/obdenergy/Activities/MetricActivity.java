@@ -8,6 +8,7 @@ import com.example.obdenergy.obdenergy.Data.DisplayData;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 
 /**
  * Created by Sumayyah on 5/11/2014.
@@ -37,9 +38,11 @@ public class MetricActivity extends Activity{
         String carbonUsed = Calculations.getCarbon(Double.parseDouble(gallons));
         String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));
         String displayMiles = displayData.getMiles();
-        String miles = displayMiles.length() > 4 ? displayMiles.substring(0,3): displayMiles;
+//        String miles = displayMiles.length() > 4 ? displayMiles.substring(0,3): displayMiles;
+        DataLogger.writeData("Data calculated: " + "\n" + " Carbon: " + carbonUsed + " Trees killed: " + treesKilled);
 
-        fuelData.setText(gallons+" "+miles+" miles");
+
+        fuelData.setText(gallons);
         carbonData.setText(carbonUsed);
         treesData.setText(treesKilled);
 

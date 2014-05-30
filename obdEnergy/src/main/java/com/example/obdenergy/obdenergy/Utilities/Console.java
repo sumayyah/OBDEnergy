@@ -12,7 +12,7 @@ public class Console {
     //Log to IDE console
     public static void log(String message){
         Log.d("Console", message);
-        DataLogger.writeData("\n" + "Console: " + message);
+        DataLogger.writeConsoleData("\n" + "Console: " + message);
 
     }
     public static void showAlert(Activity act, String message){
