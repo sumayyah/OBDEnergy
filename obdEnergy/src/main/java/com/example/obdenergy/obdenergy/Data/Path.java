@@ -76,6 +76,16 @@ public class Path {
 
         return finalMiles;
     }
+    public static boolean isHighway(){
+
+        if(speedArray.size() < 10) return false;
+        for(int i=10;i<speedArray.size()-10;i++){
+            if(speedArray.get(i) > 80 && speedArray.get(i-10) > 80 && speedArray.get(i+10) > 80)
+                return true;
+        }
+
+        return false;
+    }
 
     public static double getInitFuel(){return initFuel; }
     public static double getFinalFuel(){return finalFuel;}

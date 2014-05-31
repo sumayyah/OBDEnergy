@@ -67,24 +67,27 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
             String timeString = time.toString();
             String mpg = "";
             String miles = milesField.getText().toString();
-
+            String street = "";
             String text = (String) radioButton.getText();
 
             if(text.equals("City")){
                 Console.log(classID+"City MPG is "+Profile.getCitympg());
                 mpg = Profile.getCitympg();
+                street = "city";
             }
             else if(text.equals("Highway")){
                 Console.log(classID+"Highway MPG is "+Profile.getHighwaympg());
                 mpg = Profile.getHighwaympg();
+                street = "highway";
             }
             else Console.log(classID+" wrong radio button data "+text);
 
             String gallons = Calculations.getGallons(mpg, miles);
 
             Console.log("User entered miles, mpg, gallons "+miles+" "+mpg+" "+gallons);
+            miles = "10";
 
-            DisplayData datapoint = new DisplayData(gallons, miles, timeString);
+            DisplayData datapoint = new DisplayData(gallons, miles, timeString, street);
             datapoint.setStreet(text);
 
             Intent intent = new Intent(this, MetricActivity.class);

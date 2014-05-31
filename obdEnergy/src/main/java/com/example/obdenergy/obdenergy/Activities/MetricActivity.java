@@ -34,6 +34,7 @@ public class MetricActivity extends Activity{
         DisplayData displayData = (DisplayData) extras.getParcelable("DATAPOINT");
 
         String gallons = displayData.getGallons();
+        //TODO: get miles and mpg and calculate data
 
         String carbonUsed = Calculations.getCarbon(Double.parseDouble(gallons));
         String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));

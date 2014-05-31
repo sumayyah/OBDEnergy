@@ -409,12 +409,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         String tankCapacity = Profile.getCapacity();
         Intent intent = null;
         String gallons = "";
+        String street = "";
         Console.log(classID+" creating Metric Act");
 
         switch(PID){
             case 0: //No usable fuel data returned, go for the default
-                intent = new Intent(this, FuelSurveyActivity.class);
-                startActivity(intent);
+//                intent = new Intent(this, FuelSurveyActivity.class);
+//                startActivity(intent);
+                if(path.isHighway()) street = "highway";
+                else street = "city";
                 Console.log(classID+" with no data");
                 return;
             case 47: //Using fuel level data
@@ -432,7 +435,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         Double miles = path.getMiles();
 
-        DisplayData currentDisplayData = new DisplayData(gallons, miles.toString(), path.getfinalTime());
+        DisplayData currentDisplayData = new DisplayData(gallons, miles.toString(), path.getfinalTime(),street);
         intent = new Intent(this, MetricActivity.class);
         intent.putExtra("DATAPOINT", currentDisplayData);
         startActivity(intent);

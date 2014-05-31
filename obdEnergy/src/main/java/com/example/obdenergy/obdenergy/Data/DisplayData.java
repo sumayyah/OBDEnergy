@@ -15,15 +15,16 @@ public class DisplayData implements Parcelable{
 
     private String gallons ="";
     private String miles = "";
-    private String street;
+    private String street = "";
     private String timestamp;
     private ArrayList<String> speed;
 
 
-    public DisplayData(String gallons, String miles, String timestamp){
+    public DisplayData(String gallons, String miles, String timestamp, String street){
         this.gallons = gallons;
         this.miles = miles;
         this.timestamp = timestamp;
+        this.street = street;
         DataLogger.writeData("Data collected at: "+timestamp+"\n"+" Fuel: "+gallons+" Miles driven: "+miles);
     }
 
