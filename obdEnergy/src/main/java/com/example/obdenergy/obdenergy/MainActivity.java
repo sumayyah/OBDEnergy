@@ -1,51 +1,47 @@
-package com.example.obdenergy.obdenergy;
+package com.example.tabactivity.app;
 
+import android.app.ActionBar;
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
+import android.app.Fragment;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.SystemClock;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.example.obdenergy.obdenergy.Activities.Devices;
-import com.example.obdenergy.obdenergy.Activities.InitActivity;
-import com.example.obdenergy.obdenergy.Activities.MetricActivity;
-import com.example.obdenergy.obdenergy.Data.DisplayData;
-import com.example.obdenergy.obdenergy.Data.Path;
-import com.example.obdenergy.obdenergy.Data.Profile;
-import com.example.obdenergy.obdenergy.Data.StorageDate;
-import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
-import com.example.obdenergy.obdenergy.Utilities.Calculations;
-import com.example.obdenergy.obdenergy.Utilities.Console;
-import com.example.obdenergy.obdenergy.Utilities.DataLogger;
-import com.example.obdenergy.obdenergy.Utilities.Queue;
+import com.example.tabactivity.app.Activity.DriveFragment;
+import com.example.tabactivity.app.Activity.GraphsFragment;
+import com.example.tabactivity.app.Activity.MetricFragment;
+import com.example.tabactivity.app.Activity.TabListener;
+import com.example.tabactivity.app.Utilities.Console;
+import com.example.tabactivity.app.Utilities.Calculations;
+import com.example.tabactivity.app.Data.Path;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.ArrayList;
+
+//import android.support.v7.app.ActionBar;
+//import android.support.v7.app.ActionBarActivity;
 
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener{
+//public class MainActivity extends ActionBarActivity {
+public  class MainActivity extends Activity implements DriveFragment.dataListener {
+    /**
+     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * fragments for each of the sections. We use a
+     * {@link FragmentPagerAdapter} derivative, which will keep every
+     * loaded fragment in memory. If this becomes too memory intensive, it
+     * may be best to switch to a
+     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     */
+//    SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private static final String classID = "MainActivity";
-
-    // Name of the connected device
-    private String ConnectedDeviceName = null;
-    // String buffer for outgoing messages
-    private static StringBuffer WriteStringBuffer;
-    // Local Bluetooth adapter
-    static BluetoothAdapter BluetoothAdapter = null;
-    // Member object for the chat services
-    private static BluetoothChatService ChatService = null;
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    ViewPager mViewPager;
+    ArrayList<Fragment> fragmentArray = new ArrayList<Fragment>();
+    private final String classID = "Main Activity ";
 
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
@@ -53,11 +49,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private static final int REQUEST_ENABLE_BT = 3;
     private static final int REQUEST_CREATE_PROFILE = 4;
 
-
-    // Key names received from the BluetoothChatService Handler
+    // Names received from the BluetoothChatService Handler
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
-
 
     // Message types sent from the BluetoothChatService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -67,481 +61,81 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public static final int MESSAGE_TOAST = 5;
     private static final int GET_DATA = 0;
 
-    private final String FUEL_REQUEST = "012F"; //Returns % of tank
-    private final String MAF_REQUEST = "0110"; // Returns mass airflow in grams/sec
-    private final String CHECK_PROTOCOL = "ATDP"; //Returns string of protocol type
-    private final String SPEED_REQUEST = "010D"; //Returns km/h
-    private final String INIT_REQUEST = "ATE0"; //Returns OK
-    private final String CHANGE_PROTOCOL = "ATSP3"; //Changes protocol to ISO 9141-2
-    private final String USER_DATA_FILE = "MyCarData";
+    DriveFragment driveFragment = new DriveFragment();
+    MetricFragment metricFragment = new MetricFragment();
+    GraphsFragment graphsFragment = new GraphsFragment();
 
-    SharedPreferences userData;
-    Path path = new Path();
-    Calendar calendar = new GregorianCalendar();
+    ActionBar.Tab Tab1;
+    ActionBar.Tab Tab2;
+    ActionBar.Tab Tab3;
+
+    public Path path;
 
 
-    private TextView connectStatus;
-    private TextView timer;
-    private Button startButton;
-    private Button stopButton;
-    private Button connectButton;
-
-    private Boolean fuelDataGiven = true;
-    private Boolean start = false;
-    private Boolean stop = false;
-    private static String command = "";
-
-    private long startTime = 0L;
-    private long timeInProgress = 0L;
-    private long timeSwapper = 0L;
-    private long finalTime = 0L;
-
-    private ProgressBar progressBar;
-
-    private Thread speedThread;
-    private final Handler timeHandler = new Handler();
-    private final Handler speedHandler = new Handler();
-    private Queue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        connectStatus = (TextView)(findViewById(R.id.connectStatus));
-        timer = (TextView)(findViewById(R.id.timer));
-        progressBar = (ProgressBar)(findViewById(R.id.progressSpinner));
-        startButton = (Button)(findViewById(R.id.startButton));
-        stopButton = (Button)(findViewById(R.id.stopButton));
-        connectButton = (Button)(findViewById(R.id.connectButton));
-        startButton.setOnClickListener(this);
-        stopButton.setOnClickListener(this);
-        connectButton.setOnClickListener(this);
+        // Set up the action bar.
+//        final ActionBar actionBar = getSupportActionBar();
 
-        queue = Queue.getInstance(this);
+        ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        BluetoothAdapter =BluetoothAdapter.getDefaultAdapter();
+        Tab1 = actionBar.newTab().setText("DRIVE");
+        Tab2 = actionBar.newTab().setText("METRICS");
+        Tab3 = actionBar.newTab().setText("GRAPHS");
 
-        /*Check if device supports Bluetooth*/
-        if(BluetoothAdapter==null) Console.log(classID+" Bluetooth is not supported in device.");
 
-        /*If this is the first time running the app, get user data*/
-        userData = getSharedPreferences(USER_DATA_FILE, 0);
-        Boolean hasRun = userData.getBoolean("my_first_time", false);
+        Tab1.setTabListener(new TabListener(driveFragment));
+        Tab2.setTabListener(new TabListener(metricFragment));
+        Tab3.setTabListener(new TabListener(graphsFragment));
 
-        if(!hasRun){
-            userData.edit().putBoolean("my_first_time", true).commit();
-            Intent intent = new Intent(this, InitActivity.class);
-            startActivityForResult(intent, REQUEST_CREATE_PROFILE);
-        }
-        else {createProfile();}
+        actionBar.addTab(Tab1);
+        actionBar.addTab(Tab2);
+        actionBar.addTab(Tab3);
+
+        path = new Path();
+
+//        // Create the adapter that will return a fragment for each of the three
+//        // primary sections of the activity.
+////        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+//
+//        // Set up the ViewPager with the sections adapter.
+//        mViewPager = (ViewPager) findViewById(R.id.pager);
+////        mViewPager.setAdapter(mSectionsPagerAdapter);
+//
+//        // When swiping between different sections, select the corresponding
+//        // tab. We can also use ActionBar.Tab#select() to do this if we have
+//        // a reference to the Tab.
+//        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+//            @Override
+//            public void onPageSelected(int position) {
+//                actionBar.setSelectedNavigationItem(position);
+//            }
+//        });
+//
+
+
+
+//        // For each of the sections in the app, add a tab to the action bar.
+//        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+//            // Create a tab with text corresponding to the page title defined by
+//            // the adapter. Also specify this Activity object, which implements
+//            // the TabListener interface, as the callback (listener) for when
+//            // this tab is selected.
+//            actionBar.addTab(
+//                    actionBar.newTab()
+//                            .setText(mSectionsPagerAdapter.getPageTitle(i))
+//                            .setTabListener(new TabListener(fragmentArray.get(i))));
+//        }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-         /*Check if Bluetooth is enabled. If not, present that option to the user*/
-        if (!BluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            Console.log(classID+" Bluetooth is not enabled, request sent");
-        }else {
-            if(ChatService == null) setupChat();
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-
-
-        switch (requestCode){
-            case REQUEST_CONNECT_DEVICE_SECURE:
-
-                if (resultCode == Activity.RESULT_OK) {
-                    connectStatus.setText("Connecting...");
-                    progressBar.setVisibility(View.VISIBLE);
-                    connectButton.setVisibility(View.GONE);
-                    connectDevice(data, true);
-                }
-                break;
-            case REQUEST_CONNECT_DEVICE_INSECURE:
-
-                if (resultCode == Activity.RESULT_OK) {
-                    connectStatus.setText("Connecting...");
-                    progressBar.setVisibility(View.VISIBLE);
-                    connectButton.setVisibility(View.GONE);
-                    connectDevice(data, false);
-                }
-                break;
-            case REQUEST_CREATE_PROFILE:
-                if(resultCode == Activity.RESULT_OK) createProfile();
-                break;
-            case REQUEST_ENABLE_BT:
-
-                if (resultCode == Activity.RESULT_OK) {
-                    // Bluetooth is now enabled, so set up a chat session
-                    setupChat();
-                } else {
-                    // User did not enable Bluetooth or an error occurred
-                    Console.log(classID+" BT not enabled");
-                    finish();
-                }
-        }
-    }
-
-    /*When the activity reloads after a back press*/
-    @Override
-    public void onResume(){
-        super.onResume();
-
-        /*Reset the timer*/
-        timer.setText("00:00:00");
-        startTime = 0L;
-        timeInProgress = 0L;
-        timeSwapper = 0L;
-        finalTime = 0L;
-
-        /*Let a user be able to select drive options again*/
-        startButton.setVisibility(View.VISIBLE);
-        stopButton.setVisibility(View.GONE);
-        stop = false;
-    }
-
-    private void setupChat(){
-
-        ChatService = new BluetoothChatService(this, BTHandler);
-
-        /*Initialize outgoing string buffer with null string*/
-        WriteStringBuffer = new StringBuffer("");
-
-    }
-
-    private void onConnect(){
-        /*Send initial messages*/
-        sendMessage("ATE0");
-        sendMessage("" + "\r");
-
-    }
-
-    private final Handler BTHandler = new Handler(){
-
-        @Override
-        public void handleMessage(Message msg) {
-            Console.log(classID+" Handler recieved "+command+", calling dequeue");
-
-            switch (msg.what){
-
-                case MESSAGE_STATE_CHANGE:
-
-                    switch (msg.arg1){
-                        case BluetoothChatService.STATE_CONNECTED:
-                            Console.log(classID + " Connected, calling onConnect");
-                            connectStatus.setText("Connected to " + ConnectedDeviceName);
-                            progressBar.setVisibility(View.GONE);
-                            onConnect();
-                            break;
-                        case BluetoothChatService.STATE_CONNECTING:
-                            connectStatus.setText("Connecting...");
-                            progressBar.setVisibility(View.VISIBLE);
-                            connectButton.setVisibility(View.GONE);
-                        case BluetoothChatService.STATE_LISTEN:
-                        case BluetoothChatService.STATE_NONE:
-                    }
-                    break;
-                case MESSAGE_WRITE:
-                    break;
-                case MESSAGE_READ:
-                    readMessage(msg);
-                    break;
-                case MESSAGE_DEVICE_NAME:
-                    ConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    break;
-                case MESSAGE_TOAST:
-                    Console.log(TOAST);
-                    break;
-            }
-        }
-    };
-
-    private void readMessage(Message msg){
-
-        byte[] readBuffer = (byte[]) msg.obj;
-        String bufferString = new String(readBuffer, 0, msg.arg1);
-        Console.log(classID+" Message is "+bufferString);
-
-        DataLogger.writeData("Command: "+command+" Message: "+bufferString+"\n");
-
-        if(command.equals(FUEL_REQUEST) && start){
-            if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
-                fuelDataGiven = false;
-                Console.log("Fuel data gets error return message");
-                startInstantSpeedReadings();
-                sendMAFRequest();
-                return;
-            }
-        }else if(command.equals(CHECK_PROTOCOL)){
-            checkProtocol(bufferString);
-        }else if(command.equals(MAF_REQUEST) && start){
-            if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){ //If second line of defense - MAF - doesn't work, just get data from user for now
-                createMetricActivity(0);
-                return;
-            }
-        }else if(command.equals(CHANGE_PROTOCOL)){ //TODO: this may pop up when the buffer returns the random empties - TEST
-            if(!bufferString.equals("OK")){
-                String message = "Failed to change protocol to ISO 9141-2. Accuracy of data not guaranteed.";
-                Console.showAlert(this, message);
-            }
-        }else if(command.equals(INIT_REQUEST)){
-            if(bufferString.equals("OK")){
-                Console.log(classID+" Init succeeded");
-                return;
-            }else Console.log("Init failed");
-        }
-
-        /*If we get 4 bytes of data returned*/
-        if(bufferString!="" && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r?\n?")){
-
-            bufferString.trim();
-            String[] bytes = bufferString.split(" ");
-
-            if((bytes[0]!=null) && (bytes[1]!=null) && (bytes[2]!=null) && (bytes[3]!=null)){
-                int PID = Integer.parseInt(bytes[1], 16);
-                String firstPart = bytes[2];
-                String secondPart = bytes[3];
-                String finalString = firstPart+secondPart;
-                Console.log(classID+" No null pieces! They're "+firstPart+" and "+secondPart+" makes "+finalString+" PID "+PID+" From "+bytes[1]);
-
-                switch(PID){
-                    case 16: //MAF - airflow rate
-                        Console.log(classID+"MAF Fuel data recieved "+finalString);
-                        if(start && !stop){
-                            path.setInitMAF(firstPart, secondPart);
-                            Console.log(classID+" set as MAF initial fuel");
-                        }else if(!start && stop){
-                            path.setFinalMAF(firstPart, secondPart);
-                            Console.log(classID+" set as MAF final fuel");
-                            createMetricActivity(PID);
-                        }else Console.log("Some other bool");
-                        break;
-                    default:
-                        Console.log(classID+" switch case done got some other PID");
-                        break;
-                }
-            } else Console.log("NUll pieces in first regex check :(");
-        }
-        /*If we get 3 bytes of data returned*/
-        else if (!bufferString.equals("") && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r?\n?")){
-
-            bufferString.trim();
-            String[] bytes = bufferString.split(" ");
-
-            if(((bytes[0]!=null) && (bytes[1]!=null) && (bytes[2]!=null))){
-                int PID = Integer.parseInt(bytes[1], 16);
-                String secondPart = bytes[2];
-
-                switch (PID){
-                    case 47: //Fuel data
-
-                        //TODO: check for 0 fuel here, or error data
-                        Console.log(classID+" Fuel data recieved "+secondPart);
-                        if(start && !stop){
-                            path.setInitFuel(secondPart);
-                            Console.log(classID+" set as initial fuel");
-                        }else if(!start && stop){
-                            path.setFinalFuel(secondPart);
-                            Console.log(classID+" set as final fuel");
-                            createMetricActivity(PID);
-                        }else Console.log("Some other bool");
-                        break;
-
-                    case 13: //Speed data (KM/H)
-                        Console.log(classID+" Speed data recieved"+secondPart);
-                        path.addToSpeedArray(secondPart);
-                        break;
-                }
-
-            }
-        }
-        else {
-            Console.log("Buffer string doesn't match regex, it's "+bufferString);
-        }
-
-    }
-
-    private void sendMAFRequest() {
-        sendMessage(MAF_REQUEST + "\r");
-    }
-
-    private void startInstantSpeedReadings() {
-
-
-        speedThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!stop) {
-                    try {
-                        Thread.sleep(2000);
-                            speedHandler.post(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    sendMessage(SPEED_REQUEST + "\r");
-                                    Long time = System.currentTimeMillis() / 1000;
-                                    String timeString = time.toString();
-                                    path.addToTimeArray(timeString);
-                                }
-                            });
-
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        speedThread.start();
-    }
-
-    private void createMetricActivity(int PID) {
-        String tankCapacity = Profile.getCapacity();
-        Intent intent = null;
-        String gallons = "";
-        String street = "";
-        Console.log(classID+" creating Metric Act");
-
-        switch(PID){
-            case 0: //No usable fuel data returned, go for the default
-//                intent = new Intent(this, FuelSurveyActivity.class);
-//                startActivity(intent);
-                if(path.isHighway()) street = "highway";
-                else street = "city";
-                Console.log(classID+" with no data");
-                return;
-            case 47: //Using fuel level data
-                gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
-                Console.log(classID+" with Fuel");
-                break;
-            case 16: //Using MAF data
-                gallons = Calculations.getGallons(path.getInitMAF(), path.getFinalMAF(), path.getInitTime(), path.getfinalTime());
-                Console.log(classID+" with MAF");
-                break;
-            default:
-                Console.log(classID+" Create metric activity wrong PID");
-                break;
-        }
-
-        Double miles = path.getMiles();
-
-        DisplayData currentDisplayData = new DisplayData(gallons, miles.toString(), path.getfinalTime(),street);
-        intent = new Intent(this, MetricActivity.class);
-        intent.putExtra("DATAPOINT", currentDisplayData);
-        startActivity(intent);
-        Console.log(classID+" send intent to Metric Activity");
-    }
-
-    private void checkProtocol(String bufferString) {
-        //TODO: TEST checkProtocol
-        if(!bufferString.equals("ISO 9141-2")){
-            Console.log(classID+" Not ISO 9141, its' "+bufferString);
-            sendMessage(CHANGE_PROTOCOL + "\r");//queue.add(CHANGE_PROTOCOL + "\r");
-        }
-    }
-
-    private void createProfile(){
-        String make = userData.getString("car_make", "");
-        String model = userData.getString("car_model", "");
-        String year = userData.getString("car_year", "");
-        String tank = userData.getString("tank_capacity", "");
-        String city = userData.getString("City", "");
-        String highway = userData.getString("Highway", "");
-
-        Profile.setMake(make);
-        Profile.setModel(model);
-        Profile.setYear(year);
-        Profile.setCapacity(tank);
-        Profile.setCitympg(city);
-        Profile.setHighwaympg(highway);
-    }
-
-    private void collectData(){
-
-        if(!fuelDataGiven){
-            sendMAFRequest();
-        }else sendMessage(FUEL_REQUEST+"\r");
-    }
-
-    public  void sendMessage(String message){
-
-
-        /*Make sure we're connected*/
-        if((ChatService.getState() != BluetoothChatService.STATE_CONNECTED)){
-            Console.log(classID+" Not connected");
-            String msg = "No Bluetooth device connected. Please connect some Bluetooth device and retry.";
-            Console.showAlert(this, msg);
-            return;
-        }
-
-        /*If there is actually a message*/
-        if(message.length() > 0){
-
-            byte[] toSend = message.getBytes();
-            ChatService.write(toSend);
-            WriteStringBuffer.setLength(0);
-            command = message;
-        }
-
-    }
-
-
-    private void startDataTransfer(){
-
-        sendMessage(CHECK_PROTOCOL+"\r");
-
-        /*Send request for initial fuel data*/
-        sendMessage(FUEL_REQUEST+"\r");
-        startInstantSpeedReadings();
-
-    }
-
-    private void connectDevice(Intent data, boolean secure){
-
-        // Get the device MAC address and info
-        String address = data.getExtras().getString(Devices.EXTRA_DEVICE_ADDRESS);
-        String info = data.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
-
-        connectStatus.setText("Connected to: "+info+" "+address);
-
-        // Get the BluetoothDevice object
-        BluetoothDevice device = BluetoothAdapter.getRemoteDevice(address);
-        // Attempt to connect to the device
-        ChatService.connect(device, secure);
-    }
-
-    private Runnable timerThread = new Runnable() {
-        @Override
-        public void run() {
-
-            timeInProgress = SystemClock.uptimeMillis() - startTime;
-            finalTime = timeSwapper + timeInProgress;
-
-            int secs = (int) (finalTime / 1000);
-            int hours = secs/3600;
-            int mins = hours%60;
-            secs = secs%3600;
-
-            timer.setText("" + String.format("%02d", hours) + ":"
-                            + String.format("%02d", mins) + ":"
-                            + String.format("%02d", secs));
-            timeHandler.postDelayed(this, 0);
-
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -560,47 +154,84 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     @Override
-    public void onStop(){
-        super.onStop();
-        SharedPreferences.Editor editor = userData.edit();
-        //TODO: store path array here
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+
+
+        switch (requestCode){
+            case REQUEST_CONNECT_DEVICE_SECURE:
+
+                if (resultCode == Activity.RESULT_OK) { //TODO: create one function in drivefragment
+                    driveFragment.setConnectStatus("Connecting...");
+                    driveFragment.setProgressBar(true);
+                    driveFragment.connectDevice(data, true);
+                    Console.log(classID+"Got connect requet, sent off to drive");
+                }
+                break;
+            case REQUEST_CONNECT_DEVICE_INSECURE:
+
+                if (resultCode == Activity.RESULT_OK) {
+                    driveFragment.setConnectStatus("Connecting...");
+                    driveFragment.setProgressBar(true);
+                    driveFragment.connectDevice(data, false);
+                }
+                break;
+            case REQUEST_CREATE_PROFILE:
+                if(resultCode == Activity.RESULT_OK);//createProfile();
+                break;
+            case REQUEST_ENABLE_BT:
+
+                if (resultCode == Activity.RESULT_OK) {
+                    //Bluetooth is now enabled, so set up a chat session
+                    driveFragment.setupChat();
+                } else {
+                    // User did not enable Bluetooth or an error occurred
+//                    Console.log(classID+" BT not enabled");
+                    finish();
+                }
+        }
     }
+
     @Override
-    public void onClick(View v) {
-        Long time = System.currentTimeMillis()/1000;
-        String timeString = time.toString();
+    public void DriveFragmentDataComm(int PID) {
+        Console.log(classID+" recieved PID "+ PID);
 
-        switch (v.getId()){
-            case R.id.connectButton:
-                Intent intent = new Intent(MainActivity.this, Devices.class);
-                startActivityForResult(intent, REQUEST_CONNECT_DEVICE_SECURE);
+        driveFragment.confirmData(PID);
+
+//        String tankCapacity = Profile.getCapacity();//TODO: get Profile
+        String tankCapacity = "14";
+
+        String gallons = "0.0";
+        String street = "";
+        Double miles = path.getMiles();
+
+        switch(PID){
+            case 0:
+                if(path.isHighway()) street = "highway";
+                else street = "city";
+                Console.log(classID+" with no data"); //TODO: calculate gallons based on this
+                return;
+            case 47: //Using fuel level data
+                gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
+                Console.log(classID+" with Fuel");
                 break;
-            case R.id.startButton:
-                path.setInitTimestamp(timeString);
-                start = true;
-                startButton.setVisibility(View.GONE);
-                stopButton.setVisibility(View.VISIBLE);
-                startDataTransfer();
-
-                startTime = SystemClock.uptimeMillis();
-                timeHandler.postDelayed(timerThread, 0);
+            case 16: //Using MAF data
+                gallons = Calculations.getGallons(path.getInitMAF(), path.getFinalMAF(), path.getInitTime(), path.getfinalTime());
+                Console.log(classID+" with MAF");
                 break;
-            case R.id.stopButton:
-                start = false;
-                stop = true;
-                path.setStorageTime(calendar);
-                StorageDate.printDate();
-                path.setFinalTimestamp(timeString);
-                collectData();
-                Console.log(classID+" speed Array is "+path.printSpeeds());
-                Console.log(classID+" time Array is "+path.printTimes());
-
-                timeSwapper += timeInProgress;
-                timeHandler.removeCallbacks(timerThread);
-                speedHandler.removeCallbacks(speedThread);
-
+            default:
+                Console.log(classID+" Create metric activity wrong PID");
                 break;
         }
+
+        String carbonUsed = Calculations.getCarbon(Double.parseDouble(gallons));
+        String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));
+
+        metricFragment.MetricFragmentDataComm(gallons, carbonUsed, treesKilled);
+
+    }
+
+    public void printMessage(String data){
+        Console.log(classID+"printing "+data);
     }
 
 
