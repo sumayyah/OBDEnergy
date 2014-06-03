@@ -5,12 +5,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import com.example.obdenergy.obdenergy.Activities.DriveFragment;
 import com.example.obdenergy.obdenergy.MainActivity;
 
 import java.io.IOException;
@@ -19,9 +19,10 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 /**
- * Created by sumayyah on 5/7/14.
+ * Created by sumayyah on 5/31/14.
  */
 public class BluetoothChatService {
+
     public Handler BTmsgHandler;
 
     // Debugging
@@ -58,20 +59,21 @@ public class BluetoothChatService {
      * @param context  The UI Activity Context
      * @param handler  A Handler to send messages back to the UI Activity
      */
-    public BluetoothChatService(Context context, Handler handler) {
+    public BluetoothChatService(DriveFragment context, Handler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
-        Console.log(classID + "Adapter: " + mAdapter);
+//        Console.log(classID + "Adapter: " + mAdapter);
         //mAdapter = MainActivity.mBluetoothAdapter;
         mState = STATE_NONE;
         mHandler = handler;
     }
+
 
     /**
      * Set the current state of the chat connection
      * @param state  An integer defining the current connection state
      */
     private synchronized void setState(int state) {
-        if (D) Console.log(classID +"setState() " + mState + " -> " + state);
+//        if (D) Console.log(classID +"setState() " + mState + " -> " + state);
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update

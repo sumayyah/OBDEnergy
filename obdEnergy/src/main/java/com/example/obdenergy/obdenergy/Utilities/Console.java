@@ -2,17 +2,18 @@ package com.example.obdenergy.obdenergy.Utilities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.util.Log;
 
 /**
- * Created by sumayyah on 5/7/14.
+ * Created by sumayyah on 5/31/14.
  */
 public class Console {
     //Log to IDE console
     public static void log(String message){
         Log.d("Console", message);
-        DataLogger.writeConsoleData("\n" + "Console: " + message);
+//        DataLogger.writeConsoleData("\n" + "Console: " + message);
 
     }
     public static void showAlert(Activity act, String message){
@@ -35,4 +36,5 @@ public class Console {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
 }

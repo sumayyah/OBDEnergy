@@ -43,7 +43,7 @@ public class Queue {
         Console.log(classID+"called deuqueue");
         if(!messageQueue.isEmpty()){
             String message = messageQueue.remove(0);
-            activity.sendMessage(message);
+//            activity.sendMessage(message);
             Console.log(classID+"not empty, sent message "+message);
         } else Console.log(classID+"queue empty");
     }

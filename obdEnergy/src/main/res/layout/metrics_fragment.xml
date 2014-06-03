@@ -1,14 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black">
+
     <LinearLayout
+        android:id="@+id/spacerLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"></LinearLayout>
+        android:orientation="horizontal"
+        android:layout_weight="2"
+        >
+
+        <TextView
+            android:id="@+id/activityTitle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="TITLE OF ACTIVITY"
+            android:gravity="center"
+            android:textColor="@android:color/white"/>
+        </LinearLayout>
 
     <LinearLayout
         android:id="@+id/fuelContainer"
@@ -16,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/spacerLayout"
         >
 
         <LinearLayout
@@ -27,17 +39,9 @@
             android:padding="10dp"
             android:background="@drawable/fuel2"></LinearLayout>
 
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:padding="10dp"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="FUEL: "/>-->
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:background="#282828"
             android:layout_weight="3"
             android:layout_height="150dp"
             android:layout_gravity="center_vertical">
@@ -46,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:textSize="50sp"
+                android:textSize="60sp"
                 android:layout_gravity="center_vertical"
                 android:text="100"/>
             <TextView
@@ -54,26 +58,20 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="Gals"/>
-            </LinearLayout>
-
-
-
         </LinearLayout>
+
+
+
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/carbonContainer"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:layout_below="@id/fuelContainer"
         >
 
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:padding="10dp"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:text="KG CARBON: "/>-->
         <LinearLayout
             android:layout_width="40dp"
             android:layout_height="80dp"
@@ -85,7 +83,6 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="150dp"
-            android:background="#282828"
             android:layout_weight="3"
             android:layout_gravity="center_vertical">
             <TextView
@@ -94,14 +91,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
-                android:textSize="50sp"
+                android:textSize="60sp"
                 android:text="50"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="kg carbon"/>
-            </LinearLayout>
+        </LinearLayout>
 
 
     </LinearLayout>
@@ -111,15 +108,9 @@
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:layout_below="@id/treesContainer"
         >
 
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:padding="10dp"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:text="TREES: "/>-->
         <LinearLayout
             android:layout_width="40dp"
             android:layout_height="75dp"
@@ -134,7 +125,6 @@
             android:layout_width="wrap_content"
             android:layout_height="150dp"
             android:layout_weight="3"
-            android:background="#282828"
             android:layout_gravity="center_vertical">
 
             <TextView
@@ -142,7 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:textSize="50sp"
+                android:textSize="60sp"
                 android:layout_gravity="center_vertical"
                 android:text="50"/>
             <TextView
@@ -150,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="trees killed"/>
-            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -158,4 +148,5 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="2"></LinearLayout>
+
 </LinearLayout>

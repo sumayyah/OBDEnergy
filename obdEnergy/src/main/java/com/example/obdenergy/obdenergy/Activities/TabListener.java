@@ -1,10 +1,12 @@
-package com.example.tabactivity.app.Activity;
+package com.example.obdenergy.obdenergy.Activities;
+
 
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 
-import com.example.tabactivity.app.R;
+import com.example.obdenergy.obdenergy.R;
+
 //import android.support.v7.app.ActionBar;
 //import android.support.v7.app.ActionBar.TabListener;
 

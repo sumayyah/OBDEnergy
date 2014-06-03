@@ -1,4 +1,4 @@
-package com.example.tabactivity.app.Activity;
+package com.example.obdenergy.obdenergy.Activities;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -6,7 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.tabactivity.app.R;
+import com.example.obdenergy.obdenergy.R;
+
 
 /**
  * Created by sumayyah on 5/31/14.

@@ -90,9 +90,9 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
             DisplayData datapoint = new DisplayData(gallons, miles, timeString, street);
             datapoint.setStreet(text);
 
-            Intent intent = new Intent(this, MetricActivity.class);
-            intent.putExtra("DATAPOINT", datapoint);
-            startActivity(intent);
+//            Intent intent = new Intent(this, MetricActivity.class);
+//            intent.putExtra("DATAPOINT", datapoint);
+//            startActivity(intent);
 
             finish();
 

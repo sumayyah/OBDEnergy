@@ -1,4 +1,4 @@
-package com.example.tabactivity.app.Activity;
+package com.example.obdenergy.obdenergy.Activities;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -16,10 +16,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.tabactivity.app.Utilities.BluetoothChatService;
-import com.example.tabactivity.app.Utilities.Console;
-import com.example.tabactivity.app.MainActivity;
-import com.example.tabactivity.app.R;
+import com.example.obdenergy.obdenergy.R;
+import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
+import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.example.obdenergy.obdenergy.MainActivity;
 
 /**
  * Created by sumayyah on 5/31/14.
