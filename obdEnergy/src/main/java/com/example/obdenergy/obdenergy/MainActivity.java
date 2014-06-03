@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Activities.Devices;
-import com.example.obdenergy.obdenergy.Activities.FuelSurveyActivity;
 import com.example.obdenergy.obdenergy.Activities.InitActivity;
 import com.example.obdenergy.obdenergy.Activities.MetricActivity;
 import com.example.obdenergy.obdenergy.Data.DisplayData;
@@ -99,9 +98,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private ProgressBar progressBar;
 
-    private Thread fuelThread;
+    private Thread speedThread;
     private final Handler timeHandler = new Handler();
-    private final Handler fuelHandler = new Handler();
+    private final Handler speedHandler = new Handler();
     private Queue queue;
 
     @Override
@@ -278,7 +277,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
                 fuelDataGiven = false;
                 Console.log("Fuel data gets error return message");
-                startInstantFuelReadings();
+                startInstantSpeedReadings();
                 sendMAFRequest();
                 return;
             }
@@ -375,21 +374,21 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         sendMessage(MAF_REQUEST + "\r");
     }
 
-    private void startInstantFuelReadings() {
+    private void startInstantSpeedReadings() {
 
 
-        fuelThread = new Thread(new Runnable() {
+        speedThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (!stop) {
                     try {
                         Thread.sleep(2000);
-                            fuelHandler.post(new Runnable() {
+                            speedHandler.post(new Runnable() {
 
                                 @Override
                                 public void run() {
-                                    sendMessage(SPEED_REQUEST+"\r");
-                                    Long time = System.currentTimeMillis()/1000;
+                                    sendMessage(SPEED_REQUEST + "\r");
+                                    Long time = System.currentTimeMillis() / 1000;
                                     String timeString = time.toString();
                                     path.addToTimeArray(timeString);
                                 }
@@ -402,7 +401,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 }
             }
         });
-        fuelThread.start();
+        speedThread.start();
     }
 
     private void createMetricActivity(int PID) {
@@ -502,7 +501,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         /*Send request for initial fuel data*/
         sendMessage(FUEL_REQUEST+"\r");
-        startInstantFuelReadings();
+        startInstantSpeedReadings();
 
     }
 
@@ -598,7 +597,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
                 timeSwapper += timeInProgress;
                 timeHandler.removeCallbacks(timerThread);
-                fuelHandler.removeCallbacks(fuelThread);
+                speedHandler.removeCallbacks(speedThread);
 
                 break;
         }
