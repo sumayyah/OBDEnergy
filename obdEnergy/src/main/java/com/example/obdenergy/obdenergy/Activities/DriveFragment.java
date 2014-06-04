@@ -115,6 +115,13 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        /*Check if device supports Bluetooth*/
+        if(BluetoothAdapter==null) {
+            Console.showAlert(getActivity(), "Bluetooth not supported in device");
+            Console.log(classID + " Bluetooth is not supported in device.");
+            getActivity().finish();
+        }
+
 
         return view;
     }
@@ -350,10 +357,12 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
     private void onStartPressed() {
 
-        sendMessage(CHECK_PROTOCOL + "\r");
+//        sendMessage(CHECK_PROTOCOL + "\r");
 
         /*Send request for initial fuel data*/
-        sendMessage(FUEL_REQUEST + "\r");
+//        sendMessage(FUEL_REQUEST + "\r");
+        fuelDataGiven = false;
+        sendMAFRequest();
 
         startInstantSpeedReadings();
 
@@ -496,7 +505,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 switch (PID){
                     case 47: //Fuel data
 
-                        //TODO: check for 0 fuel here, or error data
                         Console.log(classID+" Fuel data recieved "+secondPart);
                         if(start && !stop){
                             mainActivity.path.setInitFuel(secondPart);

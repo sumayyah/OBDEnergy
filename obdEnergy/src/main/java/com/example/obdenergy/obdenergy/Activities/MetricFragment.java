@@ -48,9 +48,6 @@ public class MetricFragment extends Fragment {
         carbonData.setText(carbonUsed);
         treesData.setText(treesKilled);
 
-
-        //TODO: get miles and mpg and calculate data
-
         return view;
     }
 

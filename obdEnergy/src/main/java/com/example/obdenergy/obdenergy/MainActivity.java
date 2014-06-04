@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -16,6 +17,7 @@ import com.example.obdenergy.obdenergy.Activities.GraphsFragment;
 import com.example.obdenergy.obdenergy.Activities.TabListener;
 import com.example.obdenergy.obdenergy.Activities.InitActivity;
 import com.example.obdenergy.obdenergy.Data.Path;
+import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
@@ -57,6 +59,8 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
     public static final int MESSAGE_TOAST = 5;
     private static final int GET_DATA = 0;
 
+    private final String USER_DATA_FILE = "MyCarData";
+
     DriveFragment driveFragment = new DriveFragment();
     MetricFragment metricFragment = new MetricFragment();
     GraphsFragment graphsFragment = new GraphsFragment();
@@ -66,7 +70,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
     ActionBar.Tab Tab3;
 
     public Path path;
-
+    public static SharedPreferences userData;
 
 
     @Override
@@ -95,6 +99,20 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
         path = new Path();
 
+
+
+        /*If this is the first time running the app, get user data*/
+        userData = getSharedPreferences(USER_DATA_FILE, 0);
+        Boolean hasRun = userData.getBoolean("my_first_time", false);
+
+        if(!hasRun){
+            userData.edit().putBoolean("my_first_time", true).commit();
+            Intent intent = new Intent(this, InitActivity.class);
+            startActivityForResult(intent, REQUEST_CREATE_PROFILE);
+        }
+        else {createProfile();}
+
+
     }
 
     @Override
@@ -120,7 +138,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
                 }
                 break;
             case REQUEST_CREATE_PROFILE:
-                if(resultCode == Activity.RESULT_OK);//createProfile();
+                if(resultCode == Activity.RESULT_OK) createProfile();
                 break;
             case REQUEST_ENABLE_BT:
 
@@ -141,7 +159,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
         driveFragment.confirmData(PID);
 
-//        String tankCapacity = Profile.getCapacity();//TODO: get Profile
+//        String tankCapacity = Profile.getCapacity();
         String tankCapacity = "14";
 
         String gallons = "0.0";
@@ -150,16 +168,22 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
         switch(PID){
             case 0:
-                if(path.isHighway()) street = "highway";
-                else street = "city";
-                Console.log(classID+" with no data"); //TODO: calculate gallons based on this
+                if(path.isHighway())
+                {
+                    street = "Highway";
+                    gallons = Calculations.getGallons(miles, street);
+                }
+                else gallons = Calculations.getGallons(miles, "City");
+                Console.log(classID+" with no data");
                 return;
             case 47: //Using fuel level data
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
+                if(gallons.equals("0.0")) DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
                 Console.log(classID+" with Fuel");
                 break;
             case 16: //Using MAF data
                 gallons = Calculations.getGallons(path.getInitMAF(), path.getFinalMAF(), path.getInitTime(), path.getfinalTime());
+                if(gallons.equals("0.0")) DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
                 Console.log(classID+" with MAF");
                 break;
             default:
@@ -178,5 +202,23 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         Console.log(classID+"printing "+data);
     }
 
+    private void createProfile(){
+        String make = userData.getString("car_make", "");
+        String model = userData.getString("car_model", "");
+        String year = userData.getString("car_year", "");
+        String tank = userData.getString("tank_capacity", "");
+        String city = userData.getString("City", "");
+        String highway = userData.getString("Highway", "");
+
+        Profile.setMake(make);
+        Profile.setModel(model);
+        Profile.setYear(year);
+        Profile.setCapacity(tank);
+        Profile.setCitympg(city);
+        Profile.setHighwaympg(highway);
+
+        Console.log(classID+"Created Profile, checking contents");
+        Console.log(Profile.checkContents());
+    }
 
 }

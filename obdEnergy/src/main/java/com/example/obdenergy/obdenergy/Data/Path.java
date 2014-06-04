@@ -114,18 +114,7 @@ public class Path {
         return returnString;
     }
 
-    public int counter;
-    public String time;
-
-    public Path(){}
-
-    public void setPathDetails(int counter, String time){
-        this.counter = counter;
-        this.time = time;
-    }
-
     public void printData() {
-        Console.log("Path data: "+counter+" "+time);
         Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF);
         Console.log("Speed array is: "+printSpeeds());
     }
