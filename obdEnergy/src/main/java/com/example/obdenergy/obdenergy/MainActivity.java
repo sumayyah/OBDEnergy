@@ -7,14 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.example.obdenergy.obdenergy.Activities.DriveFragment;
-import com.example.obdenergy.obdenergy.Activities.MetricFragment;
 import com.example.obdenergy.obdenergy.Activities.GraphsFragment;
+import com.example.obdenergy.obdenergy.Activities.MetricFragment;
 import com.example.obdenergy.obdenergy.Activities.TabListener;
-import com.example.obdenergy.obdenergy.Activities.InitActivity;
 import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
@@ -94,6 +91,8 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         actionBar.addTab(Tab3);
 
         path = new Path();
+
+        //TODO: check SharedPreferences
 
     }
 
@@ -178,5 +177,8 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         Console.log(classID+"printing "+data);
     }
 
-
+    @Override
+    protected void onStop() { //TODO: store all path data in sharedPreferences
+        super.onStop();
+    }
 }
