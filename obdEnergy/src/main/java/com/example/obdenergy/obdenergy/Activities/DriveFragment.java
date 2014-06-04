@@ -55,6 +55,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private final String SPEED_REQUEST = "010D"; //Returns km/h
     private final String INIT_REQUEST = "ATE0"; //Returns OK
     private final String CHANGE_PROTOCOL = "ATSP3"; //Changes protocol to ISO 9141-2
+    private final String AUTO_PROTOCOL = "ATSP0"; //Lets logger find closest protocol automatically
     private final String USER_DATA_FILE = "MyCarData";
 
 
