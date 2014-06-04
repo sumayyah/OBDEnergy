@@ -8,14 +8,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.example.obdenergy.obdenergy.Activities.DriveFragment;
-import com.example.obdenergy.obdenergy.Activities.MetricFragment;
 import com.example.obdenergy.obdenergy.Activities.GraphsFragment;
+import com.example.obdenergy.obdenergy.Activities.MetricFragment;
 import com.example.obdenergy.obdenergy.Activities.TabListener;
-import com.example.obdenergy.obdenergy.Activities.InitActivity;
 import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
@@ -99,8 +96,6 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
         path = new Path();
 
-
-
         /*If this is the first time running the app, get user data*/
         userData = getSharedPreferences(USER_DATA_FILE, 0);
         Boolean hasRun = userData.getBoolean("my_first_time", false);
@@ -111,7 +106,6 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
             startActivityForResult(intent, REQUEST_CREATE_PROFILE);
         }
         else {createProfile();}
-
 
     }
 
@@ -221,4 +215,8 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         Console.log(Profile.checkContents());
     }
 
+    @Override
+    protected void onStop() { //TODO: store all path data in sharedPreferences
+        super.onStop();
+    }
 }
