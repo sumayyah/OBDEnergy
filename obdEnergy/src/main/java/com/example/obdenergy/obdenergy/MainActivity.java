@@ -95,8 +95,6 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         actionBar.addTab(Tab2);
         actionBar.addTab(Tab3);
 
-        path = new Path();
-
         /*If this is the first time running the app, get user data*/
         userData = getSharedPreferences(USER_DATA_FILE, 0);
         Boolean hasRun = userData.getBoolean("my_first_time", false);
@@ -152,6 +150,11 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
     public void DriveFragmentDataComm(int PID) {
         Console.log(classID+" recieved PID "+ PID);
 
+
+        path.printData();
+        if(path != null) {
+            Profile.pathArray.add(path);
+        }
         driveFragment.confirmData(PID);
 
 //        String tankCapacity = Profile.getCapacity();
@@ -219,5 +222,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
     @Override
     protected void onStop() { //TODO: store all path data in sharedPreferences
         super.onStop();
+
+        Console.log(classID+"stopped");
     }
 }

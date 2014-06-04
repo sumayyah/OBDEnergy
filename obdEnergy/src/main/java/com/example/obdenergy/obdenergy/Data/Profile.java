@@ -3,6 +3,8 @@ package com.example.obdenergy.obdenergy.Data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.obdenergy.obdenergy.Utilities.Console;
+
 import java.util.ArrayList;
 
 /**
@@ -52,6 +54,16 @@ public class Profile implements Parcelable{
     public static String checkContents(){
         String returnString = "Make "+make+" Model "+model+" Year "+year+" Capacity "+capacity+" CityMPG "+citympg+" HighwayMPG"+highwaympg;
         return returnString;
+    }
+
+    public static void printPath(){
+        Console.log("Printing paths array");
+        int counter = 0;
+        for(Path p: pathArray){
+            counter++;
+            Console.log("Path "+counter);
+            p.printData();
+        }
     }
 
     @Override
