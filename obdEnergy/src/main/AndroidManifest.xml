@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.obdenergy.obdenergy" >
 
+    <uses-sdk
+        android:minSdkVersion="13"
+        android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -10,35 +12,26 @@
 
     <application
         android:allowBackup="true"
-        android:debuggable="true"
-        android:icon="@drawable/launcher_icon1"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        tools:ignore="HardcodedDebugMode">
+        android:theme="@style/customTab" >
         <activity
             android:name=".MainActivity"
-            android:label="OBDEnergy"
-            android:theme="@style/Theme.AppCompat">
+            android:label="OBDEnergy" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.InitActivity"
-                  android:theme="@android:style/Theme.Dialog">
 
-        </activity>
-        <activity android:name=".Activities.FuelSurveyActivity"
-            android:theme="@android:style/Theme.Dialog">
-
-        </activity>
-        <activity android:name=".Activities.MetricActivity">
-
-        </activity>
         <activity android:name=".Activities.Devices"
             android:theme="@android:style/Theme.Dialog">
-
+            </activity>
+        <activity android:name=".Activities.InitActivity"
+            android:theme="@android:style/Theme.Dialog">
         </activity>
+
     </application>
 
 </manifest>

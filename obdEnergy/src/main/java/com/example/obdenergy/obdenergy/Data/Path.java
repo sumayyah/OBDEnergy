@@ -11,6 +11,7 @@ import java.util.Calendar;
  */
 public class Path {
 
+
     public static double initFuel = (double) 0.0;
     public static double initMAF = (double) 0.0;
     public static double finalFuel = (double) 0.0;
@@ -19,7 +20,7 @@ public class Path {
     public String finalDistance = "";
     public static String initTimestamp = "";
     public static String finalTimestamp = "";
-    public static StorageDate storageTime;
+    //        public static StorageDate storageTime;
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
     public static ArrayList<Double> MAFArray = new ArrayList<Double>();
     public static ArrayList<Double> timeArray = new ArrayList<Double>();
@@ -52,10 +53,10 @@ public class Path {
     public void setInitDistance(String val){ initDistance = val;}
     public void setFinalDistance(String val){ finalDistance = val;}
     public static void setInitTimestamp(String val){ initTimestamp = val;
-        Console.log("Set init timestamp "+val);}
+        Console.log("Set init timestamp " + val);}
     public static void setFinalTimestamp(String val){ finalTimestamp = val;
         Console.log("Set final timestamp "+val);}
-    public static void setStorageTime(Calendar val){storageTime = new StorageDate(val);}
+    //        public static void setStorageTime(Calendar val){storageTime = new StorageDate(val);}
     public static void addToSpeedArray(String val){
         int speedInt = Calculations.hexToInt(val);
         speedArray.add(speedInt);
@@ -111,5 +112,10 @@ public class Path {
         String returnString = "";
         for (Double t: timeArray) returnString += (" "+t);
         return returnString;
+    }
+
+    public void printData() {
+        Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF);
+        Console.log("Speed array is: "+printSpeeds());
     }
 }

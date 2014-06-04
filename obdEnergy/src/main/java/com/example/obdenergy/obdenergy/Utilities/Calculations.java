@@ -1,5 +1,7 @@
 package com.example.obdenergy.obdenergy.Utilities;
 
+import com.example.obdenergy.obdenergy.MainActivity;
+
 /**
  * Created by sumayyah on 5/13/14.
  */
@@ -40,6 +42,7 @@ public class Calculations {
         return finalGallonString; //TODO: double check - does formula give back gallons?
     }
 
+    /*Calculate gallons with user input*/
     public static String getGallons(String mpg, String miles){
         String finalGallonString = "";
 
@@ -49,6 +52,18 @@ public class Calculations {
 
         String tempString = String.valueOf(finalGallons);
         finalGallonString = tempString.length() > 4? (tempString.substring(0,3)): (tempString);
+
+        return finalGallonString;
+    }
+
+    /*Calculate gallons with array of instantaneous speed readings*/
+    public static String getGallons(double miles, String street){ //TODO: test this function
+        String finalGallonString = "0.0";
+
+        String mpg = MainActivity.userData.getString(street, "city");
+
+        Double answer = miles*Double.parseDouble(mpg);
+        finalGallonString = String.valueOf(answer);
 
         return finalGallonString;
     }
