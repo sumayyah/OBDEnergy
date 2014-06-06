@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 
 import com.example.obdenergy.obdenergy.Activities.DriveFragment;
 import com.example.obdenergy.obdenergy.Activities.GraphsFragment;
+import com.example.obdenergy.obdenergy.Activities.InitActivity;
 import com.example.obdenergy.obdenergy.Activities.MetricFragment;
 import com.example.obdenergy.obdenergy.Activities.TabListener;
 import com.example.obdenergy.obdenergy.Data.Path;
@@ -29,8 +30,6 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-//    SectionsPagerAdapter mSectionsPagerAdapter;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -189,6 +188,10 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));
 
         metricFragment.MetricFragmentDataComm(gallons, carbonUsed, treesKilled);
+
+        path.gallonsUsed = Double.parseDouble(gallons);
+        path.carbonUsed = Double.parseDouble(carbonUsed);
+        path.treesKilled = Double.parseDouble(treesKilled);
 
     }
 

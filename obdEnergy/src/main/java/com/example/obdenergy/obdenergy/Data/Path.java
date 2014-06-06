@@ -4,7 +4,6 @@ import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Created by sumayyah on 5/13/14.
@@ -16,6 +15,9 @@ public class Path {
     public static double initMAF = (double) 0.0;
     public static double finalFuel = (double) 0.0;
     public static double finalMAF = (double) 0.0;
+    public static double gallonsUsed = (double) 0.0;
+    public static double carbonUsed = (double)0.0;
+    public static double treesKilled = (double) 0.0;
     public String initDistance = "";
     public String finalDistance = "";
     public static String initTimestamp = "";
@@ -35,11 +37,6 @@ public class Path {
         double temp = Double.parseDouble(String.valueOf(strtemp));
         initMAF = temp;
     }
-    public void addToMAFArray(String val1, String val2){
-        String strtemp = Calculations.getMAF(val1, val2);
-        double temp = Double.parseDouble(String.valueOf(strtemp));
-        MAFArray.add(temp);
-    }
     public void setFinalFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
@@ -50,8 +47,6 @@ public class Path {
         double temp = Double.parseDouble(String.valueOf(strtemp));
         finalMAF = temp;
     }
-    public void setInitDistance(String val){ initDistance = val;}
-    public void setFinalDistance(String val){ finalDistance = val;}
     public static void setInitTimestamp(String val){ initTimestamp = val;
         Console.log("Set init timestamp " + val);}
     public static void setFinalTimestamp(String val){ finalTimestamp = val;
@@ -92,9 +87,6 @@ public class Path {
     public static double getFinalFuel(){return finalFuel;}
     public static double getInitMAF(){return initMAF;}
     public static double getFinalMAF(){return finalMAF;}
-    public String getInitDistance(){ return initDistance; }
-    public String getFinalDistance(){ return finalDistance; }
-    public String getInitTimestamp(){ return initTimestamp; }
     public static String getfinalTime(){ return finalTimestamp; }
     public static String getInitTime(){return initTimestamp;}
 
