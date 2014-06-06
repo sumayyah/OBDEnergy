@@ -64,13 +64,13 @@
                 android:text="256"
                 android:textSize="40sp"
                 android:layout_centerInParent="true"
-                android:textColor="@color/white"/>
+                android:textColor="#fffe"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/fuelNumber"
                 android:layout_alignBaseline="@+id/fuelNumber"
-                android:textColor="@color/white"
+                android:textColor="#fff"
                 android:text="gallons of gas"/>
             </RelativeLayout>
 

@@ -3,12 +3,13 @@ package com.example.obdenergy.obdenergy.Data;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by sumayyah on 5/13/14.
  */
-public class Path {
+public class Path implements Serializable{
 
 
     public static double initFuel = (double) 0.0;
@@ -18,15 +19,12 @@ public class Path {
     public static double gallonsUsed = (double) 0.0;
     public static double carbonUsed = (double)0.0;
     public static double treesKilled = (double) 0.0;
-    public String initDistance = "";
-    public String finalDistance = "";
     public static String initTimestamp = "";
     public static String finalTimestamp = "";
-    //        public static StorageDate storageTime;
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
-    public static ArrayList<Double> MAFArray = new ArrayList<Double>();
     public static ArrayList<Double> timeArray = new ArrayList<Double>();
 
+    //TODO: calculate average speed and miles, add to Serializable
     public void setInitFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
@@ -95,11 +93,7 @@ public class Path {
         for (Integer s: speedArray) returnString += (" "+s);
         return returnString;
     }
-    public static String printMAFs(){
-        String returnString = "";
-        for (Double d: MAFArray) returnString += (" "+d);
-        return returnString;
-    }
+
     public static String printTimes(){
         String returnString = "";
         for (Double t: timeArray) returnString += (" "+t);
@@ -109,5 +103,10 @@ public class Path {
     public void printData() {
         Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF);
         Console.log("Speed array is: "+printSpeeds());
+    }
+
+    @Override
+    public String toString(){
+        return "Path [initFuel="+initFuel+", initMAF="+initMAF+", finalFuel="+finalFuel+", finalMAF="+finalMAF+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", initTimestamp="+initTimestamp+", finalTimestamp="+finalTimestamp+"]";
     }
 }
