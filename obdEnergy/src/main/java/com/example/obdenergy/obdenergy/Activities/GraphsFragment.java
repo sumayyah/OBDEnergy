@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
-import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
 import java.util.ArrayList;
@@ -65,17 +64,17 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()) {
             case R.id.todayButton:
                 Console.log(classID+"clicked Today");
-                pathArray = Calculations.getPathArray(0);
+//                pathArray = Calculations.getPathArray(0);
                 drawIcons(0);
                 break;
             case R.id.weekButton:
                 Console.log(classID+"clicked Week");
-                pathArray = Calculations.getPathArray(1);
+//                pathArray = Calculations.getPathArray(1);
                 drawIcons(0);
                 break;
             case R.id.monthButton:
                 Console.log(classID+"clicked Month");
-                pathArray = Calculations.getPathArray(2);
+//                pathArray = Calculations.getPathArray(2);
                 drawIcons(0);
                 break;
             default:

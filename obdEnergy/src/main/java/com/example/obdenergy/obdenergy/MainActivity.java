@@ -20,6 +20,8 @@ import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public  class MainActivity extends Activity implements DriveFragment.dataListener {
     /**
@@ -68,6 +70,8 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
     public Path path;
     public static SharedPreferences userData;
 
+    public ArrayList<String> array;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,16 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         actionBar.addTab(Tab3);
 
         path = new Path();
+
+        array = new ArrayList<String>();
+        array.add("a");
+        array.add("b");
+        array.add("c");
+        array.add("d");
+        array.add("e");
+        array.add("f");
+        array.add("g");
+
 
         /*If this is the first time running the app, get user data*/
         userData = getSharedPreferences(USER_DATA_FILE, 0);
@@ -206,6 +220,15 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         String tank = userData.getString("tank_capacity", "");
         String city = userData.getString("City", "");
         String highway = userData.getString("Highway", "");
+        Set<String> set = userData.getStringSet("Paths", null);
+        Console.log(classID+"Got paths set from sharedPrefs");
+
+        if(set != null ){
+            ArrayList<String> retrievedPaths = new ArrayList<String>(set);
+            for(String s: retrievedPaths){
+                Console.log(classID+"Paths element "+s);
+            }
+        } else Console.log(classID+"Set is null");
 
         Profile.setMake(make);
         Profile.setModel(model);
@@ -220,6 +243,13 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
     @Override
     protected void onStop() { //TODO: store all path data in sharedPreferences
+
         super.onStop();
+
+        //Set the values
+        Set<String> set = new HashSet<String>();
+        set.addAll(array);
+        userData.edit().putStringSet("Paths", set).commit();
+        Console.log(classID+"Put array in set, commited to SharedPrefs");
     }
 }

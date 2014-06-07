@@ -105,8 +105,8 @@ public class Path implements Serializable{
         Console.log("Speed array is: "+printSpeeds());
     }
 
-    @Override
-    public String toString(){
-        return "Path [initFuel="+initFuel+", initMAF="+initMAF+", finalFuel="+finalFuel+", finalMAF="+finalMAF+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", initTimestamp="+initTimestamp+", finalTimestamp="+finalTimestamp+"]";
-    }
+//    @Override
+//    public String toString(){
+//        return "Path [initFuel="+initFuel+", initMAF="+initMAF+", finalFuel="+finalFuel+", finalMAF="+finalMAF+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", initTimestamp="+initTimestamp+", finalTimestamp="+finalTimestamp+"]";
+//    }
 }
