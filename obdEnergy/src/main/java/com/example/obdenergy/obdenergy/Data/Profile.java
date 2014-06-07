@@ -17,6 +17,7 @@ public class Profile implements Parcelable{
     private static String citympg;
     private static String highwaympg;
     public static ArrayList<Path> pathArray;
+    public static ArrayList<String> pathArr; //TODO: change all arrays to path types
 
 
 
@@ -49,6 +50,11 @@ public class Profile implements Parcelable{
     public static void setHighwaympg(String highwaympg) {
         Profile.highwaympg = highwaympg;}
 
+    public static void setPathArray(ArrayList<String> array){
+        for(String s: array){
+            pathArr.add(s);
+        }
+    }
     public static String checkContents(){
         String returnString = "Make "+make+" Model "+model+" Year "+year+" Capacity "+capacity+" CityMPG "+citympg+" HighwayMPG"+highwaympg;
         return returnString;

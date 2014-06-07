@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.obdenergy.obdenergy.Data.Path;
+import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Console;
@@ -357,6 +359,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
     private void onStartPressed() {
 
+        mainActivity.path = new Path();
+
 //        sendMessage(CHECK_PROTOCOL + "\r");
 
         /*Send request for initial fuel data*/
@@ -369,6 +373,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onStopPressed() {
+
+        Profile.pathArray.add(mainActivity.path);
 
         if (!fuelDataGiven) {
             sendMAFRequest();

@@ -97,7 +97,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         actionBar.addTab(Tab2);
         actionBar.addTab(Tab3);
 
-        path = new Path();
+
 
         array = new ArrayList<String>();
         array.add("a");
@@ -225,6 +225,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
         if(set != null ){
             ArrayList<String> retrievedPaths = new ArrayList<String>(set);
+            Profile.setPathArray(retrievedPaths);
             for(String s: retrievedPaths){
                 Console.log(classID+"Paths element "+s);
             }
@@ -248,7 +249,8 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
         //Set the values
         Set<String> set = new HashSet<String>();
-        set.addAll(array);
+//        set.addAll(array);
+        set.addAll(Profile.pathArr); //TODO: change to path array, not string
         userData.edit().putStringSet("Paths", set).commit();
         Console.log(classID+"Put array in set, commited to SharedPrefs");
     }
