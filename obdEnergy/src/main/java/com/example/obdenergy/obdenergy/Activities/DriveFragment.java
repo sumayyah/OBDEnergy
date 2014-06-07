@@ -369,12 +369,10 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         sendMAFRequest();
 
         startInstantSpeedReadings();
-
     }
 
     private void onStopPressed() {
 
-        Profile.pathArray.add(mainActivity.path);
 
         if (!fuelDataGiven) {
             sendMAFRequest();

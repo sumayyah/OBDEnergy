@@ -12,19 +12,18 @@ import java.util.ArrayList;
 public class Path implements Serializable{
 
 
-    public static double initFuel = (double) 0.0;
-    public static double initMAF = (double) 0.0;
-    public static double finalFuel = (double) 0.0;
-    public static double finalMAF = (double) 0.0;
-    public static double gallonsUsed = (double) 0.0;
-    public static double carbonUsed = (double)0.0;
-    public static double treesKilled = (double) 0.0;
+    public static Double initFuel = (double) 0.0;
+    public static Double initMAF = (double) 0.0;
+    public static Double finalFuel = (double) 0.0;
+    public static Double finalMAF = (double) 0.0;
+    public static Double gallonsUsed = (double) 0.0;
+    public static Double carbonUsed = (double)0.0;
+    public static Double treesKilled = (double) 0.0;
+    public static Double averageSpeed = (double) 0.0;
     public static String initTimestamp = "";
     public static String finalTimestamp = "";
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
     public static ArrayList<Double> timeArray = new ArrayList<Double>();
-
-    //TODO: calculate average speed and miles, add to Serializable
     public void setInitFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
@@ -53,6 +52,15 @@ public class Path implements Serializable{
     public static void addToSpeedArray(String val){
         int speedInt = Calculations.hexToInt(val);
         speedArray.add(speedInt);
+//        calculateAvgSpeed();
+    }
+    public static void calculateAvgSpeed(){
+        double total = 0.0;
+        for(double d: speedArray){
+            total+=d;
+        }
+        averageSpeed = total/speedArray.size();
+        Console.log("Path calculated average speed is "+averageSpeed);
     }
     /*Takes time in milliseconds, converts to seconds, and stores in array*/
     public static void addToTimeArray(String val){
@@ -101,7 +109,8 @@ public class Path implements Serializable{
     }
 
     public void printData() {
-        Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF);
+        Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF+" average speed "+averageSpeed);
+        Console.log("Gallons "+gallonsUsed+", Carbon "+carbonUsed+", Trees "+treesKilled);
         Console.log("Speed array is: "+printSpeeds());
     }
 
@@ -109,4 +118,5 @@ public class Path implements Serializable{
 //    public String toString(){
 //        return "Path [initFuel="+initFuel+", initMAF="+initMAF+", finalFuel="+finalFuel+", finalMAF="+finalMAF+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", initTimestamp="+initTimestamp+", finalTimestamp="+finalTimestamp+"]";
 //    }
+
 }

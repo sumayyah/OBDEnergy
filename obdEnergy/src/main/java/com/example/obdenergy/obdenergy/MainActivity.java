@@ -18,10 +18,12 @@ import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 public  class MainActivity extends Activity implements DriveFragment.dataListener {
     /**
@@ -200,13 +202,14 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
         String carbonUsed = Calculations.getCarbon(Double.parseDouble(gallons));
         String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));
-
         metricFragment.MetricFragmentDataComm(gallons, carbonUsed, treesKilled);
 
         path.gallonsUsed = Double.parseDouble(gallons);
         path.carbonUsed = Double.parseDouble(carbonUsed);
         path.treesKilled = Double.parseDouble(treesKilled);
 
+        path.calculateAvgSpeed();
+        Profile.pathArray.add(path);
     }
 
     public void printMessage(String data){
@@ -220,16 +223,13 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         String tank = userData.getString("tank_capacity", "");
         String city = userData.getString("City", "");
         String highway = userData.getString("Highway", "");
-        Set<String> set = userData.getStringSet("Paths", null);
-        Console.log(classID+"Got paths set from sharedPrefs");
 
-        if(set != null ){
-            ArrayList<String> retrievedPaths = new ArrayList<String>(set);
-            Profile.setPathArray(retrievedPaths);
-            for(String s: retrievedPaths){
-                Console.log(classID+"Paths element "+s);
-            }
-        } else Console.log(classID+"Set is null");
+        String pathStringArray = userData.getString("Paths", "");
+        try {
+            JSONArray pathJSONArray = new JSONArray(pathStringArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         Profile.setMake(make);
         Profile.setModel(model);
@@ -243,15 +243,14 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
     }
 
     @Override
-    protected void onStop() { //TODO: store all path data in sharedPreferences
+    protected void onStop() {
 
         super.onStop();
 
-        //Set the values
-        Set<String> set = new HashSet<String>();
-//        set.addAll(array);
-        set.addAll(Profile.pathArr); //TODO: change to path array, not string
-        userData.edit().putStringSet("Paths", set).commit();
+        Gson gson = new Gson();
+        String jsonArray = gson.toJson(Profile.pathArray);
+        userData.edit().putString("Paths", jsonArray).commit();
+
         Console.log(classID+"Put array in set, commited to SharedPrefs");
     }
 }
