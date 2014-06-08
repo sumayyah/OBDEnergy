@@ -3,13 +3,12 @@ package com.example.obdenergy.obdenergy.Data;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by sumayyah on 5/13/14.
  */
-public class Path implements Serializable{
+public class Path{
 
 
     public static Double initFuel = (double) 0.0;
@@ -24,6 +23,9 @@ public class Path implements Serializable{
     public static String finalTimestamp = "";
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
     public static ArrayList<Double> timeArray = new ArrayList<Double>();
+
+    public Path(){}
+
     public void setInitFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
@@ -114,9 +116,9 @@ public class Path implements Serializable{
         Console.log("Speed array is: "+printSpeeds());
     }
 
-//    @Override
-//    public String toString(){
-//        return "Path [initFuel="+initFuel+", initMAF="+initMAF+", finalFuel="+finalFuel+", finalMAF="+finalMAF+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", initTimestamp="+initTimestamp+", finalTimestamp="+finalTimestamp+"]";
-//    }
+    @Override
+    public String toString(){
+        return "Path [initFuel="+initFuel+", initMAF="+initMAF+", finalFuel="+finalFuel+", finalMAF="+finalMAF+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", initTimestamp="+initTimestamp+", finalTimestamp="+finalTimestamp+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", averageSpeed="+averageSpeed+"]";
+    }
 
 }

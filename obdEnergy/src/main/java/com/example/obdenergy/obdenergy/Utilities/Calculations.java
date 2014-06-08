@@ -2,6 +2,8 @@ package com.example.obdenergy.obdenergy.Utilities;
 
 import com.example.obdenergy.obdenergy.MainActivity;
 
+import org.json.JSONArray;
+
 /**
  * Created by sumayyah on 5/13/14.
  */
@@ -108,6 +110,25 @@ public class Calculations {
 
         int value = Integer.parseInt(hexString, 16);
         return value;
+    }
+
+    public static JSONArray getPathArray(int id){
+        JSONArray jsonArray = new JSONArray();
+
+        switch (id){
+            case 0:
+
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            default:
+                Console.log(classID+"Wrong id to get Path array");
+                break;
+        }
+
+        return jsonArray;
     }
 
 }

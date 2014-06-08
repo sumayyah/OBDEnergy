@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
+import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
-import java.util.ArrayList;
+import org.json.JSONArray;
 
 
 /**
@@ -30,7 +30,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private final String classID="GraphsFragment";
 
-    private ArrayList<Path> pathArray;
+    private JSONArray pathArray;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancestate){
@@ -61,26 +61,26 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
 
+
         switch (v.getId()) {
             case R.id.todayButton:
                 Console.log(classID+"clicked Today");
-//                pathArray = Calculations.getPathArray(0);
+                pathArray = Calculations.getPathArray(0);
                 drawIcons(0);
                 break;
             case R.id.weekButton:
                 Console.log(classID+"clicked Week");
-//                pathArray = Calculations.getPathArray(1);
+                pathArray = Calculations.getPathArray(1);
                 drawIcons(0);
                 break;
             case R.id.monthButton:
                 Console.log(classID+"clicked Month");
-//                pathArray = Calculations.getPathArray(2);
+                pathArray = Calculations.getPathArray(2);
                 drawIcons(0);
                 break;
             default:
                 break;
         }
-
     }
 
     private void drawIcons(int num){

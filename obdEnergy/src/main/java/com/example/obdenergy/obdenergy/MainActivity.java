@@ -19,10 +19,12 @@ import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public  class MainActivity extends Activity implements DriveFragment.dataListener {
@@ -71,6 +73,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
     public Path path;
     public static SharedPreferences userData;
+    public static JSONArray jsonPathArray;
 
     public ArrayList<String> array;
 
@@ -164,7 +167,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
     @Override
     public void DriveFragmentDataComm(int PID) {
-        Console.log(classID+" recieved PID "+ PID);
+        Console.log(classID+" received PID "+ PID);
 
         driveFragment.confirmData(PID);
 
@@ -177,23 +180,24 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
         switch(PID){
             case 0:
+                Console.log(classID+" with no data");
                 if(path.isHighway())
                 {
                     street = "Highway";
                     gallons = Calculations.getGallons(miles, street);
                 }
                 else gallons = Calculations.getGallons(miles, "City");
-                Console.log(classID+" with no data");
+
                 return;
             case 47: //Using fuel level data
+                Console.log(classID+"With Fuel");
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 if(gallons.equals("0.0")) DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
-                Console.log(classID+" with Fuel");
                 break;
             case 16: //Using MAF data
+                Console.log(classID+" with MAF");
                 gallons = Calculations.getGallons(path.getInitMAF(), path.getFinalMAF(), path.getInitTime(), path.getfinalTime());
                 if(gallons.equals("0.0")) DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
-                Console.log(classID+" with MAF");
                 break;
             default:
                 Console.log(classID+" Create metric activity wrong PID");
@@ -209,7 +213,9 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         path.treesKilled = Double.parseDouble(treesKilled);
 
         path.calculateAvgSpeed();
-        Profile.pathArray.add(path);
+        Profile.addToPathArray(path);
+        Console.log(classID+"Added path to Profile array");
+        Profile.checkArray();
     }
 
     public void printMessage(String data){
@@ -223,12 +229,15 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         String tank = userData.getString("tank_capacity", "");
         String city = userData.getString("City", "");
         String highway = userData.getString("Highway", "");
-
         String pathStringArray = userData.getString("Paths", "");
+
+        Console.log(classID+"Path string is "+pathStringArray);
         try {
-            JSONArray pathJSONArray = new JSONArray(pathStringArray);
+            jsonPathArray = new JSONArray(pathStringArray);
+            Console.log(classID+"Path JSON array is "+jsonPathArray);
         } catch (JSONException e) {
             e.printStackTrace();
+            Console.log(classID+" Failed to convert string to JSON");
         }
 
         Profile.setMake(make);
@@ -244,13 +253,17 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
     @Override
     protected void onStop() {
-
         super.onStop();
+        Console.log(classID+"stopped");
 
         Gson gson = new Gson();
-        String jsonArray = gson.toJson(Profile.pathArray);
-        userData.edit().putString("Paths", jsonArray).commit();
+        Type listType = new TypeToken<ArrayList<Path>>(){}.getType();
+        String jsonArray = gson.toJson(path);
 
-        Console.log(classID+"Put array in set, commited to SharedPrefs");
+//        Gson gson = new GsonBuilder().create();
+//        JsonArray jsonArray = gson.toJsonTree(Profile.pathArray).getAsJsonArray();
+//        userData.edit().putString("Paths", jsonArray.toString()).commit();
+
+        Console.log(classID+"Put array "+jsonArray+"in set, commited to SharedPrefs");
     }
 }

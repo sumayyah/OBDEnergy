@@ -17,11 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Data.Path;
-import com.example.obdenergy.obdenergy.Data.Profile;
+import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Console;
-import com.example.obdenergy.obdenergy.MainActivity;
 
 /**
  * Created by sumayyah on 5/31/14.
@@ -364,9 +363,9 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 //        sendMessage(CHECK_PROTOCOL + "\r");
 
         /*Send request for initial fuel data*/
-//        sendMessage(FUEL_REQUEST + "\r");
-        fuelDataGiven = false;
-        sendMAFRequest();
+        sendMessage(FUEL_REQUEST + "\r");
+//        fuelDataGiven = false;
+//        sendMAFRequest();
 
         startInstantSpeedReadings();
     }
@@ -378,6 +377,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             sendMAFRequest();
         } else sendMessage(FUEL_REQUEST + "\r");
     }
+
     private void sendMAFRequest() {
         Console.log(classID+"sending MAF request");
         sendMessage(MAF_REQUEST + "\r");
@@ -464,8 +464,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             }else Console.log("Init failed");
         }
 
-        /*If we get 4 bytes of data returned*/
-        if(bufferString!="" && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r?\n?")){
+        /*If we get 4 bytes of data returned*/ //TODO: test with different baud rates and or timeouts
+        if(bufferString!="" && (bufferString.matches("(\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*(\r)*\n?)+") || bufferString.matches("(\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n?)+"))){
 
             bufferString.trim();
             String[] bytes = bufferString.split(" ");
@@ -497,7 +497,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             } else Console.log("NUll pieces in first regex check :(");
         }
         /*If we get 3 bytes of data returned*/
-        else if (!bufferString.equals("") && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r?\n?")){
+else if (!bufferString.equals("")&&(bufferString.matches("(\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)")||bufferString.matches("(\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)"))){// (\\s*[0-9A-Fa-f]{1} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)*"))){
 
             bufferString.trim();
             String[] bytes = bufferString.split(" ");

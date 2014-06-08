@@ -1,6 +1,5 @@
 package com.example.obdenergy.obdenergy.Data;
 
-import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
 import java.util.Calendar;
@@ -26,7 +25,13 @@ public class StorageDate {
         second = calendar.get(Calendar.SECOND);
     }
 
+    public StorageDate(){};
+
     public static void printDate(){
         Console.log("Year "+year+" month "+month+" day "+dayOfMonth+" hour "+hour+" minute "+minute+" second "+second);
+    }
+    @Override
+    public String toString(){
+        return "Year ="+year+", month="+month+", day="+dayOfMonth+", hour="+hour+", minute="+minute+", second="+second;
     }
 }
