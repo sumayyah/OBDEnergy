@@ -2,9 +2,9 @@ package com.example.obdenergy.obdenergy.Data;
 
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Created by sumayyah on 5/13/14.
@@ -12,40 +12,37 @@ import java.util.Calendar;
 public class Path {
 
 
-    public static double initFuel = (double) 0.0;
-    public static double initMAF = (double) 0.0;
-    public static double finalFuel = (double) 0.0;
-    public static double finalMAF = (double) 0.0;
-    public String initDistance = "";
-    public String finalDistance = "";
+    public static Double initFuel = (double) 0.0;
+    public static Double initMAF = (double) 0.0;
+    public static Double finalFuel = (double) 0.0;
+    public static Double finalMAF = (double) 0.0;
+    public static Double gallonsUsed = (double) 0.0;
+    public static Double carbonUsed = (double)0.0;
+    public static Double treesKilled = (double) 0.0;
+    public static Double averageSpeed = (double) 0.0;
     public static String initTimestamp = "";
     public static String finalTimestamp = "";
-    //        public static StorageDate storageTime;
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
-    public static ArrayList<Double> MAFArray = new ArrayList<Double>();
     public static ArrayList<Double> timeArray = new ArrayList<Double>();
 
-    public void setInitFuel(String val){
+    public Path(){}
+
+    public static void setInitFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
         initFuel = temp;
     }
-    public void setInitMAF(String val1, String val2){
+    public static void setInitMAF(String val1, String val2){
         String strtemp = Calculations.getMAF(val1, val2);
         double temp = Double.parseDouble(String.valueOf(strtemp));
         initMAF = temp;
     }
-    public void addToMAFArray(String val1, String val2){
-        String strtemp = Calculations.getMAF(val1, val2);
-        double temp = Double.parseDouble(String.valueOf(strtemp));
-        MAFArray.add(temp);
-    }
-    public void setFinalFuel(String val){
+    public static void setFinalFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
         finalFuel = temp;
     }
-    public void setFinalMAF(String val1, String val2){
+    public static void setFinalMAF(String val1, String val2){
         String strtemp = Calculations.getMAF(val1, val2);
         double temp = Double.parseDouble(String.valueOf(strtemp));
         finalMAF = temp;
@@ -60,6 +57,15 @@ public class Path {
     public static void addToSpeedArray(String val){
         int speedInt = Calculations.hexToInt(val);
         speedArray.add(speedInt);
+//        calculateAvgSpeed();
+    }
+    public static void calculateAvgSpeed(){
+        double total = 0.0;
+        for(double d: speedArray){
+            total+=d;
+        }
+        averageSpeed = total/speedArray.size();
+        Console.log("Path calculated average speed is "+averageSpeed);
     }
     /*Takes time in milliseconds, converts to seconds, and stores in array*/
     public static void addToTimeArray(String val){
@@ -92,30 +98,34 @@ public class Path {
     public static double getFinalFuel(){return finalFuel;}
     public static double getInitMAF(){return initMAF;}
     public static double getFinalMAF(){return finalMAF;}
-    public String getInitDistance(){ return initDistance; }
-    public String getFinalDistance(){ return finalDistance; }
-    public String getInitTimestamp(){ return initTimestamp; }
     public static String getfinalTime(){ return finalTimestamp; }
     public static String getInitTime(){return initTimestamp;}
 
-    public static String printSpeeds(){
+    public String printSpeeds(){
         String returnString = "";
         for (Integer s: speedArray) returnString += (" "+s);
         return returnString;
     }
-    public static String printMAFs(){
-        String returnString = "";
-        for (Double d: MAFArray) returnString += (" "+d);
-        return returnString;
-    }
-    public static String printTimes(){
+
+    public String printTimes(){
         String returnString = "";
         for (Double t: timeArray) returnString += (" "+t);
         return returnString;
     }
 
     public void printData() {
-        Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF);
+        Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF+" average speed "+averageSpeed);
+        Console.log("Gallons "+gallonsUsed+", Carbon "+carbonUsed+", Trees "+treesKilled);
         Console.log("Speed array is: "+printSpeeds());
     }
+
+    @Override
+    public String toString(){
+        Gson gson = new Gson();
+        String speedArrayFromJSON = gson.toJson(speedArray);
+        String timeArrayFromJSON = gson.toJson(timeArray);
+
+        return "Path: [initFuel="+initFuel+", initMAF="+initMAF+", finalFuel="+finalFuel+", finalMAF="+finalMAF+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", initTimestamp="+initTimestamp+", finalTimestamp="+finalTimestamp+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", averageSpeed="+averageSpeed+", speedArray="+speedArrayFromJSON+", timeArray="+timeArrayFromJSON+"]";
+    }
+
 }

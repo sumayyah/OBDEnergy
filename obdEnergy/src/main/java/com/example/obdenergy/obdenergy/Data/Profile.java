@@ -18,9 +18,11 @@ public class Profile implements Parcelable{
     private static String capacity;
     private static String citympg;
     private static String highwaympg;
-    public static ArrayList<Path> pathArray;
+    public static ArrayList<Path> pathArray = new ArrayList<Path>();
+    public static ArrayList<String> pathArr; //TODO: change all arrays to path types
 
 
+    public Profile(){};
 
     public Profile(Parcel in){
         make = in.readString();
@@ -51,9 +53,26 @@ public class Profile implements Parcelable{
     public static void setHighwaympg(String highwaympg) {
         Profile.highwaympg = highwaympg;}
 
+    public static void addToPathArray(Path p){
+
+        if(p == null) {
+            Console.log("PAth is null");
+            return;
+        }
+        pathArray.add(p);
+        Console.log("Profile added path to array, size is "+pathArray.size());
+
+    }
     public static String checkContents(){
         String returnString = "Make "+make+" Model "+model+" Year "+year+" Capacity "+capacity+" CityMPG "+citympg+" HighwayMPG"+highwaympg;
         return returnString;
+    }
+    public static void checkArray(){
+        int counter = 0;
+        for(Path p: pathArray){
+            Console.log("Path "+(++counter));
+            p.printData();
+        }
     }
 
     public static void printPath(){

@@ -58,6 +58,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private final String INIT_REQUEST = "ATE0"; //Returns OK
     private final String CHANGE_PROTOCOL = "ATSP3"; //Changes protocol to ISO 9141-2
     private final String AUTO_PROTOCOL = "ATSP0"; //Lets logger find closest protocol automatically
+
     private final String USER_DATA_FILE = "MyCarData";
 
 
@@ -255,7 +256,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             public void run() {
                 while (!stop) {
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(5000);
                         speedHandler.post(new Runnable() {
 
                             @Override
@@ -382,6 +383,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         } else sendMessage(FUEL_REQUEST + "\r");
 
     }
+
     private void sendMAFRequest() {
         Console.log(classID+"sending MAF request");
         sendMessage(MAF_REQUEST + "\r");
@@ -438,6 +440,12 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         String bufferString = new String(readBuffer, 0, msg.arg1);
         Console.log(classID+"Command: "+command+" Message is "+bufferString);
 
+        String fourByteNormal="\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n?";
+        String fourByteAbnormal="\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n? (\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n?)* \\s*\\r*\\n?";
+        String threeByteNormal="\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?";
+        String threeByteAbnormal="\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n? (\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)* ";
+
+
 //        DataLogger.writeData("Command: "+command+" Message: "+bufferString+"\n");
 
         if(command.equals(FUEL_REQUEST) && start){
@@ -468,8 +476,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             }else Console.log("Init failed");
         }
 
-        /*If we get 4 bytes of data returned*/
-        if(bufferString!="" && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r?\n?")){
+        /*If we get 4 bytes of data returned*/ //TODO: test with different baud rates and or timeouts
+        if(bufferString!="" && (bufferString.matches(fourByteNormal) || bufferString.matches(fourByteAbnormal))){
 
             bufferString.trim();
             String[] bytes = bufferString.split(" ");
@@ -501,7 +509,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             } else Console.log("NUll pieces in first regex check :(");
         }
         /*If we get 3 bytes of data returned*/
-        else if (!bufferString.equals("") && bufferString.matches("\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\r?\n?")){
+
+else if (!bufferString.equals("")&&(bufferString.matches(threeByteNormal) || bufferString.matches(threeByteAbnormal))){
 
             bufferString.trim();
             String[] bytes = bufferString.split(" ");
@@ -535,6 +544,12 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         }
         else {
             Console.log("Buffer string doesn't match regex, it's "+bufferString);
+
+            if(stop) {
+                Console.log(classID+" No data calculated at all");
+//                listener.DriveFragmentDataComm(4);
+            }
+
         }
 
     }
