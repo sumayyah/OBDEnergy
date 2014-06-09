@@ -497,7 +497,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             } else Console.log("NUll pieces in first regex check :(");
         }
         /*If we get 3 bytes of data returned*/
-else if (!bufferString.equals("")&&(bufferString.matches("(\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)")||bufferString.matches("(\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)"))){// (\\s*[0-9A-Fa-f]{1} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)*"))){
+else if (!bufferString.equals("")&&(bufferString.matches("(\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)") || bufferString.matches("(\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)(\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)* ") ) ){
 
             bufferString.trim();
             String[] bytes = bufferString.split(" ");

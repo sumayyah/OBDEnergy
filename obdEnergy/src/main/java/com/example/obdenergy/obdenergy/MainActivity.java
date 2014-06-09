@@ -258,7 +258,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
         Gson gson = new Gson();
         Type listType = new TypeToken<ArrayList<Path>>(){}.getType();
-        String jsonArray = gson.toJson(path);
+        String jsonArray = gson.toJson(path.timeArray);
 
 //        Gson gson = new GsonBuilder().create();
 //        JsonArray jsonArray = gson.toJsonTree(Profile.pathArray).getAsJsonArray();
