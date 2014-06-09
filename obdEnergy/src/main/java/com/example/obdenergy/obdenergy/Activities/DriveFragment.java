@@ -363,9 +363,9 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 //        sendMessage(CHECK_PROTOCOL + "\r");
 
         /*Send request for initial fuel data*/
-        sendMessage(FUEL_REQUEST + "\r");
-//        fuelDataGiven = false;
-//        sendMAFRequest();
+//        sendMessage(FUEL_REQUEST + "\r");
+        fuelDataGiven = false;
+        sendMAFRequest();
 
         startInstantSpeedReadings();
     }
@@ -539,7 +539,7 @@ else if (!bufferString.equals("")&&(bufferString.matches(threeByteNormal) || buf
             Console.log("Buffer string doesn't match regex, it's "+bufferString);
             if(stop) {
                 Console.log(classID+" No data calculated at all");
-                listener.DriveFragmentDataComm(4);
+//                listener.DriveFragmentDataComm(4);
             }
         }
 

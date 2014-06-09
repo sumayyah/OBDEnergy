@@ -26,7 +26,6 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -207,14 +206,21 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
             case 47: //Using fuel level data
                 Console.log(classID+"With Fuel");
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
-                if(gallons.equals("0.0")) DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
+                if(gallons.equals("0.0")) {
+                    DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
+                    return;
+                }
                 break;
             case 16: //Using MAF data
                 Console.log(classID+" with MAF");
                 gallons = Calculations.getGallons(path.getInitMAF(), path.getFinalMAF(), path.getInitTime(), path.getfinalTime());
-                if(gallons.equals("0.0")) DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
+                if(gallons.equals("0.0")) {
+                    DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
+                    return;
+                }
                 break;
             case 4:
+                //TODO: get fuelSurveyActivity
                 break;
             default:
                 Console.log(classID+" Create metric activity wrong PID");
