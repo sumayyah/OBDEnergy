@@ -27,27 +27,27 @@ public class Path{
 
     public Path(){}
 
-    public void setInitFuel(String val){
+    public static void setInitFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
         initFuel = temp;
     }
-    public void setInitMAF(String val1, String val2){
+    public static void setInitMAF(String val1, String val2){
         String strtemp = Calculations.getMAF(val1, val2);
         double temp = Double.parseDouble(String.valueOf(strtemp));
         initMAF = temp;
     }
-    public void setFinalFuel(String val){
+    public static void setFinalFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
         finalFuel = temp;
     }
-    public void setFinalMAF(String val1, String val2){
+    public static void setFinalMAF(String val1, String val2){
         String strtemp = Calculations.getMAF(val1, val2);
         double temp = Double.parseDouble(String.valueOf(strtemp));
         finalMAF = temp;
     }
-    public static void setInitTimestamp(String val){ initTimestamp = val;
+    public static  void setInitTimestamp(String val){ initTimestamp = val;
         Console.log("Set init timestamp " + val);}
     public static void setFinalTimestamp(String val){ finalTimestamp = val;
         Console.log("Set final timestamp "+val);}
@@ -99,13 +99,13 @@ public class Path{
     public static String getfinalTime(){ return finalTimestamp; }
     public static String getInitTime(){return initTimestamp;}
 
-    public static String printSpeeds(){
+    public String printSpeeds(){
         String returnString = "";
         for (Integer s: speedArray) returnString += (" "+s);
         return returnString;
     }
 
-    public static String printTimes(){
+    public String printTimes(){
         String returnString = "";
         for (Double t: timeArray) returnString += (" "+t);
         return returnString;

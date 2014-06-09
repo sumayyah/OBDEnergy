@@ -16,14 +16,18 @@ import com.example.obdenergy.obdenergy.Activities.MetricFragment;
 import com.example.obdenergy.obdenergy.Activities.TabListener;
 import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
+import com.example.obdenergy.obdenergy.Data.Test;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
@@ -71,11 +75,13 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
     ActionBar.Tab Tab2;
     ActionBar.Tab Tab3;
 
+    public Test test;
+    public Test test2;
+    public ArrayList<Test> testArray;
+
     public Path path;
     public static SharedPreferences userData;
     public static JSONArray jsonPathArray;
-
-    public ArrayList<String> array;
 
 
     @Override
@@ -102,16 +108,25 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         actionBar.addTab(Tab2);
         actionBar.addTab(Tab3);
 
+        test = new Test();
+        test2 = new Test();
+        testArray = new ArrayList<Test>();
 
+        test.array.add("a");
+        test.array.add("b");
+        test.array.add("c");
+        test.array.add("d");
+        test.array.add("e");
+        test.array.add("f");
+        test.array.add("g");
+        test2.array.add("h");
+        test2.array.add("i");
+        test2.array.add("j");
+        test2.array.add("k");
+        test2.array.add("l");
 
-        array = new ArrayList<String>();
-        array.add("a");
-        array.add("b");
-        array.add("c");
-        array.add("d");
-        array.add("e");
-        array.add("f");
-        array.add("g");
+        testArray.add(test);
+        testArray.add(test2);
 
 
         /*If this is the first time running the app, get user data*/
@@ -199,6 +214,8 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
                 gallons = Calculations.getGallons(path.getInitMAF(), path.getFinalMAF(), path.getInitTime(), path.getfinalTime());
                 if(gallons.equals("0.0")) DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
                 break;
+            case 4:
+                break;
             default:
                 Console.log(classID+" Create metric activity wrong PID");
                 break;
@@ -254,15 +271,14 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
     @Override
     protected void onStop() {
         super.onStop();
-        Console.log(classID+"stopped");
+        Console.log(classID + "stopped");
 
-        Gson gson = new Gson();
+        /*Create GSON builder that can write static variables (Path needs static vars and methods)*/
+        Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
         Type listType = new TypeToken<ArrayList<Path>>(){}.getType();
-        String jsonArray = gson.toJson(path.timeArray);
+        String jsonArray = gson.toJson(Profile.pathArray);
 
-//        Gson gson = new GsonBuilder().create();
-//        JsonArray jsonArray = gson.toJsonTree(Profile.pathArray).getAsJsonArray();
-//        userData.edit().putString("Paths", jsonArray.toString()).commit();
+        userData.edit().putString("Paths", jsonArray.toString()).commit();
 
         Console.log(classID+"Put array "+jsonArray+"in set, commited to SharedPrefs");
     }
