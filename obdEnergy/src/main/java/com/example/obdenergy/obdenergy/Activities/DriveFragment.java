@@ -17,11 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Data.Path;
-import com.example.obdenergy.obdenergy.Data.Profile;
+import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Console;
-import com.example.obdenergy.obdenergy.MainActivity;
 
 /**
  * Created by sumayyah on 5/31/14.
@@ -362,7 +361,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private void onStartPressed() {
 
         mainActivity.path = new Path();
-
+        Console.log(classID+"created new path");
 //        sendMessage(CHECK_PROTOCOL + "\r");
 
         /*Send request for initial fuel data*/
@@ -445,7 +444,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         String threeByteNormal="\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?";
         String threeByteAbnormal="\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n? (\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)* ";
 
-
 //        DataLogger.writeData("Command: "+command+" Message: "+bufferString+"\n");
 
         if(command.equals(FUEL_REQUEST) && start){
@@ -510,7 +508,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         }
         /*If we get 3 bytes of data returned*/
 
-else if (!bufferString.equals("")&&(bufferString.matches(threeByteNormal) || bufferString.matches(threeByteAbnormal))){
+        else if (!bufferString.equals("")&&(bufferString.matches(threeByteNormal) || bufferString.matches(threeByteAbnormal))){
 
             bufferString.trim();
             String[] bytes = bufferString.split(" ");

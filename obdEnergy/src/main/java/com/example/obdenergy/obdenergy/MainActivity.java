@@ -2,12 +2,9 @@ package com.example.obdenergy.obdenergy;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 
 import com.example.obdenergy.obdenergy.Activities.DriveFragment;
 import com.example.obdenergy.obdenergy.Activities.GraphsFragment;
@@ -30,21 +27,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public  class MainActivity extends Activity implements DriveFragment.dataListener {
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-//    SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    ViewPager mViewPager;
-    ArrayList<Fragment> fragmentArray = new ArrayList<Fragment>();
     private final String classID = "Main Activity ";
 
     // Intent request codes
@@ -79,12 +62,6 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
     public static SharedPreferences userData;
     public static JSONArray jsonPathArray;
 
-
-    public static JSONArray jsonTestArray;
-    public static JSONArray jsonTestArray2;
-    public static String jsonStringVersion;
-    public static String jsonStringVersion2;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,22 +95,6 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
             startActivityForResult(intent, REQUEST_CREATE_PROFILE);
         }
         else {createProfile();}
-
-        jsonStringVersion = "[{\"averageSpeed\":127.11111111111111,\"carbonUsed\":-26.0,\"finalFuel\":0.0,\"finalMAF\":280.22}]";
-        jsonStringVersion2 = "[{\"finalTimestamp\":\"1402335049\",\"finalFuel\":0,\"initTimestamp\":\"1402335033\"}, {\"initTimestamp\":\"500000000\"}]";
-        Console.log(classID+"Set strings");
-
-        try {
-            jsonTestArray = new JSONArray(jsonStringVersion);
-            jsonTestArray2 = new JSONArray(jsonStringVersion2);
-//            jsonTestArray.put(jsonTestArray);
-            Console.log(classID+" JSON 1 "+jsonTestArray);
-            Console.log(classID+" JSON 2 "+jsonTestArray2);
-            JSONArray concatenated = new JSONArray(Calculations.concatenateJSON(jsonTestArray, jsonTestArray2).toString());
-            Console.log(classID+" Both "+concatenated);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -181,12 +142,10 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
 
         path.printData();
-        if(path != null) {
-            Profile.pathArray.add(path);
-        }
+
         driveFragment.confirmData(PID);
 
-//        String tankCapacity = Profile.getCapacity();
+//        String tankCapacity = Profile.getCapacity();//TODO: replace with Profile data
         String tankCapacity = "14";
 
         String gallons = "0.0";
@@ -280,7 +239,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
     }
 
     @Override
-    protected void onStop() { //TODO: store all path data in sharedPreferences
+    protected void onStop() {
         super.onStop();
 
         Console.log(classID+"stopped");
@@ -302,6 +261,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         Profile.pathHistoryJSON = finalJSONArray;
 
         userData.edit().putString("Paths", Profile.pathHistoryJSON.toString()).commit();
+//        userData.edit().putString("Paths", "").commit();
 
         Console.log(classID+"Put array "+Profile.pathHistoryJSON+"in set, commited to SharedPrefs");
     }
