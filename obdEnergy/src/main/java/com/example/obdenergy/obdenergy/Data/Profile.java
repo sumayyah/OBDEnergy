@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 /**
@@ -19,8 +21,7 @@ public class Profile implements Parcelable{
     private static String citympg;
     private static String highwaympg;
     public static ArrayList<Path> pathArray = new ArrayList<Path>();
-    public static ArrayList<String> pathArr; //TODO: change all arrays to path types
-
+    public static JSONArray pathHistoryJSON;
 
     public Profile(){};
 
@@ -52,6 +53,7 @@ public class Profile implements Parcelable{
         Profile.citympg = citympg;}
     public static void setHighwaympg(String highwaympg) {
         Profile.highwaympg = highwaympg;}
+
 
     public static void addToPathArray(Path p){
 

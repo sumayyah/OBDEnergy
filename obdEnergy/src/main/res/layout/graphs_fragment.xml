@@ -8,7 +8,6 @@
         android:id="@+id/spacerLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-
         android:orientation="vertical"
         android:layout_weight="1"
         >
@@ -17,11 +16,9 @@
             android:id="@+id/activityTitle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="TITLE OF ACTIVITY"
+            android:text="SEE DATA OVER TIME"
             android:gravity="center"
             android:textColor="@android:color/white"/>
-    </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -47,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="1 MONTH"/>
-            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -75,7 +72,7 @@
                 android:layout_alignBaseline="@+id/fuelNumber"
                 android:textColor="#fff"
                 android:text="gallons of gas"/>
-            </RelativeLayout>
+        </RelativeLayout>
 
 
         <LinearLayout
@@ -101,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/carbonUsed"
                     android:text="1 cloud per kilo of carbon"/>
-                </RelativeLayout>
+            </RelativeLayout>
 
 
             <ImageView
@@ -110,7 +107,7 @@
                 android:src="@drawable/cloud_icon"
                 android:scaleType="fitXY"/>
 
-            </LinearLayout>
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/treesLayout"
             android:layout_width="fill_parent"
@@ -156,7 +153,9 @@
 
         </LinearLayout>
 
-        </LinearLayout>
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="fill_parent"

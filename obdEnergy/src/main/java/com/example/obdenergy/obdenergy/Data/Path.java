@@ -47,8 +47,7 @@ public class Path {
         double temp = Double.parseDouble(String.valueOf(strtemp));
         finalMAF = temp;
     }
-    public void setInitDistance(String val){ initDistance = val;}
-    public void setFinalDistance(String val){ finalDistance = val;}
+
     public static void setInitTimestamp(String val){ initTimestamp = val;
         Console.log("Set init timestamp " + val);}
     public static void setFinalTimestamp(String val){ finalTimestamp = val;

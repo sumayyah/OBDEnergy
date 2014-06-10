@@ -2,8 +2,8 @@ package com.example.obdenergy.obdenergy.Utilities;
 
 import com.example.obdenergy.obdenergy.MainActivity;
 
-
 import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  * Created by sumayyah on 5/13/14.
@@ -130,6 +130,18 @@ public class Calculations {
         }
 
         return jsonArray;
+    }
+
+    public static JSONArray concatenateJSON(JSONArray array1, JSONArray array2){
+        for(int i=0;i<array2.length();i++){
+            try {
+                array1.put(array2.getJSONObject(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Console.log(classID+"Failed to concatenate JSON arrays");
+            }
+        }
+        return array1;
     }
 
 }
