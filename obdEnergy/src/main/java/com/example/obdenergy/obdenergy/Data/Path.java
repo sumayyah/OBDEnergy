@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by sumayyah on 5/13/14.
  */
-public class Path {
+public class Path implements Comparable<Path>{
 
 
     public static Double initFuel = (double) 0.0;
@@ -113,7 +113,7 @@ public class Path {
     }
 
     public void printData() {
-        Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF+" average speed "+averageSpeed);
+        Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF+" average speed "+averageSpeed+" initTime "+initTimestamp+" finalTime "+finalTimestamp);
         Console.log("Gallons "+gallonsUsed+", Carbon "+carbonUsed+", Trees "+treesKilled);
         Console.log("Speed array is: "+printSpeeds());
     }
@@ -127,4 +127,12 @@ public class Path {
         return "Path: [initFuel="+initFuel+", initMAF="+initMAF+", finalFuel="+finalFuel+", finalMAF="+finalMAF+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", initTimestamp="+initTimestamp+", finalTimestamp="+finalTimestamp+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", averageSpeed="+averageSpeed+", speedArray="+speedArrayFromJSON+", timeArray="+timeArrayFromJSON+"]";
     }
 
+    @Override
+    public int compareTo(Path another) {
+
+        long othertime = Long.parseLong(((Path) another).getInitTime());
+        long thistime = Long.parseLong(this.getInitTime());
+
+        return (int)(thistime-othertime);
+    }
 }

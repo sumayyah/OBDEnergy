@@ -1,9 +1,14 @@
 package com.example.obdenergy.obdenergy.Utilities;
 
+import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.MainActivity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.ArrayList;
 
 /**
  * Created by sumayyah on 5/13/14.
@@ -142,6 +147,27 @@ public class Calculations {
             }
         }
         return array1;
+    }
+
+    public static ArrayList<Path> convert(JSONArray jsonArray){
+        ArrayList<Path> patharray;
+        if(jsonArray==null || jsonArray.toString().equals("[]")) {
+            patharray = new ArrayList<Path>();
+            return patharray;
+        }
+        else{
+            Gson gson = new Gson();
+            patharray = new Gson().fromJson(jsonArray.toString(), new TypeToken<ArrayList<Path>>(){}.getType());
+            return patharray;
+        }
+    }
+
+    public static void checkArray(ArrayList<Path> pathArray){
+        int counter = 0;
+        for(Path p: pathArray){
+            Console.log("Path "+(++counter));
+            p.printData();
+        }
     }
 
 }

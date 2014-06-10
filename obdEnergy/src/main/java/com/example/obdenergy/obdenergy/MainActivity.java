@@ -68,7 +68,6 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         setContentView(R.layout.activity_main);
 
         // Set up the action bar.
-//        final ActionBar actionBar = getSupportActionBar();
 
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -145,8 +144,8 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
         driveFragment.confirmData(PID);
 
-//        String tankCapacity = Profile.getCapacity();//TODO: replace with Profile data
-        String tankCapacity = "14";
+        String tankCapacity = Profile.getCapacity();
+//        String tankCapacity = "14";
 
         String gallons = "0.0";
         String street = "";
@@ -236,6 +235,7 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
 
         Console.log(classID+"Created Profile, checking contents");
         Console.log(Profile.checkContents());
+
     }
 
     @Override
@@ -260,8 +260,8 @@ public  class MainActivity extends Activity implements DriveFragment.dataListene
         JSONArray finalJSONArray = Calculations.concatenateJSON(Profile.pathHistoryJSON, jsonPathArray);
         Profile.pathHistoryJSON = finalJSONArray;
 
-        userData.edit().putString("Paths", Profile.pathHistoryJSON.toString()).commit();
-//        userData.edit().putString("Paths", "").commit();
+//        userData.edit().putString("Paths", Profile.pathHistoryJSON.toString()).commit();
+        userData.edit().putString("Paths", "").commit();
 
         Console.log(classID+"Put array "+Profile.pathHistoryJSON+"in set, commited to SharedPrefs");
     }
