@@ -74,6 +74,26 @@
                 android:text="gallons of gas"/>
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/avgSpeedNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="86"
+                android:textSize="40sp"
+                android:layout_centerInParent="true"
+                android:textColor="#fffe"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/avgSpeedNum"
+                android:layout_alignBaseline="@+id/avgSpeedNum"
+                android:textColor="#fff"
+                android:text="km/h"/>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/carbonLayout"
@@ -91,12 +111,14 @@
                     android:id="@+id/carbonUsed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
                     android:text="22 kilos"/>
                 <TextView
                     android:id="@+id/carbonScale"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/carbonUsed"
+                    android:textColor="@android:color/white"
                     android:text="1 cloud per kilo of carbon"/>
             </RelativeLayout>
 
@@ -124,12 +146,14 @@
                     android:id="@+id/treesUsed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
                     android:text="22 kilos"/>
                 <TextView
                     android:id="@+id/treesScale"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/treesUsed"
+                    android:textColor="@android:color/white"
                     android:text="1 leaf per tree killed"/>
             </RelativeLayout>
 

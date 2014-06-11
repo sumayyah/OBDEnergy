@@ -2,8 +2,6 @@ package com.example.obdenergy.obdenergy.Utilities;
 
 import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.MainActivity;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -118,25 +116,6 @@ public class Calculations {
         return value;
     }
 
-    public static JSONArray getPathArray(int id){
-        JSONArray jsonArray = new JSONArray();
-
-        switch (id){
-            case 0:
-
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            default:
-                Console.log(classID+"Wrong id to get Path array");
-                break;
-        }
-
-        return jsonArray;
-    }
-
     public static JSONArray concatenateJSON(JSONArray array1, JSONArray array2){
         for(int i=0;i<array2.length();i++){
             try {
@@ -147,19 +126,6 @@ public class Calculations {
             }
         }
         return array1;
-    }
-
-    public static ArrayList<Path> convert(JSONArray jsonArray){
-        ArrayList<Path> patharray;
-        if(jsonArray==null || jsonArray.toString().equals("[]")) {
-            patharray = new ArrayList<Path>();
-            return patharray;
-        }
-        else{
-            Gson gson = new Gson();
-            patharray = new Gson().fromJson(jsonArray.toString(), new TypeToken<ArrayList<Path>>(){}.getType());
-            return patharray;
-        }
     }
 
     public static void checkArray(ArrayList<Path> pathArray){

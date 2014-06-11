@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.Console;
@@ -27,14 +28,17 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private MainActivity mainActivity;
     private TextView fuelUsed;
+    private TextView avgSpeed;
+    private TextView carbonUsed;
+    private TextView treesKilled;
     private Button today;
     private Button week;
     private Button month;
 
     private final String classID="GraphsFragment ";
 
-    private final long millisInWeek = 604800000;
-    private final long millisInDay = 86400000;
+    private long millisInWeek = 604800000;
+    private long millisInDay = 86400000;
 
     private long dayStartRange;
     private long dayStopRange;
@@ -60,6 +64,9 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.graphs_fragment, container, false);
 
         fuelUsed = (TextView)(view.findViewById(R.id.fuelNumber));
+        avgSpeed = (TextView)(view.findViewById(R.id.avgSpeedNum));
+        carbonUsed = (TextView)(view.findViewById(R.id.carbonUsed));
+        treesKilled = (TextView)(view.findViewById(R.id.treesUsed));
         today = (Button)(view.findViewById(R.id.todayButton));
         week = (Button)(view.findViewById(R.id.weekButton));
         month = (Button)(view.findViewById(R.id.monthButton));
@@ -68,15 +75,17 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         week.setOnClickListener(this);
         month.setOnClickListener(this);
 
+
         fuelUsed.setText(mainActivity.path.gallonsUsed+"");
 
         currentTime = System.currentTimeMillis();
-        dayStartRange = currentTime-millisInDay;
+
+        dayStartRange = currentTime - millisInDay;
         dayStopRange = currentTime+millisInDay;
         weekStartRange = currentTime - millisInWeek;
         weekStopRange = currentTime + millisInWeek;
 
-        String holderString = "[{\"initTimestamp\":\"1402365280\", \"finalMAF\":655.35,\"treesKilled\":7, \"gallonsUsed\":3, \"carbonUsed\":61},{\"initTimestamp\":\"1402365284\", \"finalMAF\":655.35,\"treesKilled\":1,\"carbonUsed\":5,\"initFuel\":0,\"gallonsUsed\":7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402365276\",\"carbonUsed\":9, \"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"treesKilled\":3,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
+        String holderString = "[{\"initTimestamp\":\"1402414587670\", \"finalMAF\":655.35,\"treesKilled\":7, \"gallonsUsed\":3, \"carbonUsed\":61},{\"initTimestamp\":\"1401896187867\", \"finalMAF\":655.35,\"treesKilled\":1,\"carbonUsed\":5,\"initFuel\":0,\"gallonsUsed\":7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402417236395\",\"carbonUsed\":9, \"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"treesKilled\":3,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
 
         try {
             parseJSON(new JSONArray(holderString));
@@ -86,6 +95,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             e.printStackTrace();
         }
 
+        setDefaults();
 
         return view;
     }
@@ -106,15 +116,21 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         switch (v.getId()) {
             case R.id.todayButton: /*Get today's data collected to far - so this is all the paths stored now? no this won't work*/
-                Console.log(classID+"clicked Today");
+                fuelUsed.setText(dayFuelNum+"");
+                carbonUsed.setText(dayCarbonNum+" kilos CO2");
+                treesKilled.setText(dayTreesNum+" trees killed");
                 drawIcons(0);
                 break;
             case R.id.weekButton:
-                Console.log(classID+"clicked Week");
+                fuelUsed.setText(weekFuelNum+"");
+                carbonUsed.setText(weekCarbonNum+" kilos CO2");
+                treesKilled.setText(weekTreesNum+" trees killed");
                 drawIcons(0);
                 break;
             case R.id.monthButton:
-                Console.log(classID+"clicked Month");
+                fuelUsed.setText(monthFuelNum+"");
+                carbonUsed.setText(monthCarbonNum+" kilos CO2");
+                treesKilled.setText(monthTreesNum+" trees killed");
                 drawIcons(0);
                 break;
             default:
@@ -138,19 +154,18 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             JSONObject obj = (JSONObject) jsonArray.get(i);
             objTimestamp = Long.parseLong(obj.getString("initTimestamp"));
 
-            Console.log(classID+" OBject "+i+" "+objTimestamp);
+            /*Get object's data*/
+            fuelNum = obj.getDouble("gallonsUsed");
+            carbonNum = obj.getDouble("carbonUsed");
+            treesNum = obj.getDouble("treesKilled");
 
-            /*Store data for month*/
-            fuelNum = Double.parseDouble(obj.getString("gallonsUsed"));
-            carbonNum = Double.parseDouble(obj.getString("carbonUsed"));
-            treesNum = Double.parseDouble(obj.getString("treesKilled"));
+            Console.log(classID+"Object "+i+" "+objTimestamp+" Data: fuel carbon trees "+fuelNum+" "+carbonNum+" "+treesNum);
 
             monthFuelNum += fuelNum;
             monthCarbonNum += carbonNum;
             monthTreesNum += treesNum;
 
             /*If in range, calculate data for the week*/
-
             if(objTimestamp <= weekStopRange && objTimestamp >= weekStartRange){
                 weekFuelNum += fuelNum;
                 weekCarbonNum += carbonNum;
@@ -158,13 +173,41 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             }
 
             /*If in range, calculate data for the day*/
-
             if(objTimestamp <= dayStopRange && objTimestamp >= dayStartRange){
                 dayFuelNum += fuelNum;
                 dayCarbonNum += carbonNum;
                 dayTreesNum += treesNum;
             }
         }
+
+        printData();
+    }
+
+    private void setDefaults(){
+        if(mainActivity.path != null) {
+            fuelUsed.setText(mainActivity.path.gallonsUsed + "");
+            avgSpeed.setText(mainActivity.path.averageSpeed + "");
+            carbonUsed.setText(mainActivity.path.carbonUsed + " kilos CO2");
+            treesKilled.setText(mainActivity.path.treesKilled + " trees killed");
+        }
+        else if(Profile.pathArray.size() > 0){
+            fuelUsed.setText(Profile.pathArray.get(Profile.pathArray.size()-1).gallonsUsed + "");
+            avgSpeed.setText(Profile.pathArray.get(Profile.pathArray.size()-1).averageSpeed + "");
+            carbonUsed.setText(Profile.pathArray.get(Profile.pathArray.size()-1).carbonUsed + " kilos CO2");
+            treesKilled.setText(Profile.pathArray.get(Profile.pathArray.size()-1).treesKilled + " trees killed");
+        }else{
+            Console.log(classID+"Error getting data from path");
+            fuelUsed.setText(dayFuelNum+"");
+            carbonUsed.setText(dayCarbonNum+" kilos CO2");
+            treesKilled.setText(dayTreesNum+" trees killed");
+        }
+    }
+
+    private void printData(){
+        Console.log(classID+"Printing data now at "+currentTime);
+        Console.log("Day "+dayStartRange+" to "+dayStopRange+" fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
+        Console.log("Week "+weekStartRange+" to "+weekStopRange+" fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
+        Console.log("Month fuel carbon trees "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
     }
 
     /* DISCARDED APPROACH
