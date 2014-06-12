@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Data.Profile;
@@ -27,6 +28,8 @@ import org.json.JSONObject;
 public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private MainActivity mainActivity;
+    private GridAdapter gridAdapter;
+    private GridView gridView;
     private TextView fuelUsed;
     private TextView avgSpeed;
     private TextView carbonUsed;
@@ -62,6 +65,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancestate){
 
         View view = inflater.inflate(R.layout.graphs_fragment, container, false);
+
+        gridView = (GridView)(view.findViewById(R.id.gridView1));
 
         fuelUsed = (TextView)(view.findViewById(R.id.fuelNumber));
         avgSpeed = (TextView)(view.findViewById(R.id.avgSpeedNum));
@@ -181,6 +186,9 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         }
 
         printData();
+
+        gridAdapter = new GridAdapter(mainActivity,jsonArray.length(), "CARBON"); /*Call grid view when parsing is done*/
+        gridView.setAdapter(gridAdapter);
     }
 
     private void setDefaults(){

@@ -26,7 +26,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public  class MainActivity extends Activity implements DriveFragment.dataListener {
+public class MainActivity extends Activity implements DriveFragment.dataListener {
 
     private final String classID = "Main Activity ";
 

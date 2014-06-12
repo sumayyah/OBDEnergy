@@ -12,13 +12,13 @@
         android:layout_weight="1"
         >
 
-        <TextView
-            android:id="@+id/activityTitle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="SEE DATA OVER TIME"
-            android:gravity="center"
-            android:textColor="@android:color/white"/>
+        <!--<TextView-->
+            <!--android:id="@+id/activityTitle"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="SEE DATA OVER TIME"-->
+            <!--android:gravity="center"-->
+            <!--android:textColor="@android:color/white"/>-->
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -99,7 +99,7 @@
             android:id="@+id/carbonLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <!--TODO: setmax width-->
             <RelativeLayout
@@ -122,12 +122,29 @@
                     android:text="1 cloud per kilo of carbon"/>
             </RelativeLayout>
 
+            <GridView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/gridView1"
+                android:numColumns="auto_fit"
+                android:gravity="center"
+                android:columnWidth="100dp"
+                android:stretchMode="columnWidth"
+                >
 
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/cloud_icon"
-                android:scaleType="fitXY"/>
+                </GridView>
+
+
+            <!--<fragment-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"/>-->
+
+
+            <!--<ImageView-->
+                <!--android:layout_width="80dp"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:src="@drawable/cloud_icon"-->
+                <!--android:scaleType="fitXY"/>-->
 
         </LinearLayout>
         <LinearLayout
@@ -158,21 +175,12 @@
             </RelativeLayout>
 
 
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/leafcopy"
-                android:scaleType="fitXY"/>
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/leafcopy"
-                android:scaleType="fitXY"/>
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/leafcopy"
-                android:scaleType="fitXY"/>
+            <!--<ImageView-->
+                <!--android:layout_width="80dp"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:src="@drawable/leafcopy"-->
+                <!--android:scaleType="fitXY"/>-->
+ <!---->
 
 
         </LinearLayout>
