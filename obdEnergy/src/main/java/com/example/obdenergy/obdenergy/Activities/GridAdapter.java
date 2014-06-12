@@ -33,6 +33,7 @@ public class GridAdapter extends BaseAdapter {
         View gridView;
 
         if (convertView == null) {
+//            Console.log("Creating new grid view");
 
             gridView = new View(context);
 
@@ -47,14 +48,21 @@ public class GridAdapter extends BaseAdapter {
                 imageView.setImageResource(R.drawable.cloud_icon);
             }else if(imageType.equals("TREE")) imageView.setImageResource(R.drawable.leafcopy);
 
+
+
+
         } else {
+//            Console.log("using old grid view");
             gridView = (View) convertView;
         }
+
+
         return gridView;
     }
 
     @Override
     public int getCount() {
+//        Console.log("Returning new number "+imageNum);
         return imageNum;
     }
 

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Data.Profile;
@@ -33,10 +34,12 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private TextView fuelUsed;
     private TextView avgSpeed;
     private TextView carbonUsed;
-    private TextView treesKilled;
+    private TextView scale;
     private Button today;
     private Button week;
     private Button month;
+    private ImageView cloudClicker;
+    private ImageView leafClicker;
 
     private final String classID="GraphsFragment ";
 
@@ -62,6 +65,12 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private double monthCarbonNum = 0.0;
     private double monthTreesNum = 0.0;
 
+    private int adapterNum = 0;
+    private String adapterType = "CARBON";
+
+    private boolean cloud = true;
+    private boolean leaf = false;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancestate){
 
         View view = inflater.inflate(R.layout.graphs_fragment, container, false);
@@ -71,15 +80,18 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         fuelUsed = (TextView)(view.findViewById(R.id.fuelNumber));
         avgSpeed = (TextView)(view.findViewById(R.id.avgSpeedNum));
         carbonUsed = (TextView)(view.findViewById(R.id.carbonUsed));
-        treesKilled = (TextView)(view.findViewById(R.id.treesUsed));
+        scale = (TextView)(view.findViewById(R.id.carbonScale));
         today = (Button)(view.findViewById(R.id.todayButton));
         week = (Button)(view.findViewById(R.id.weekButton));
         month = (Button)(view.findViewById(R.id.monthButton));
+        cloudClicker = (ImageView)(view.findViewById(R.id.cloudClicker));
+        leafClicker = (ImageView)(view.findViewById(R.id.leafClicker));
 
         today.setOnClickListener(this);
         week.setOnClickListener(this);
         month.setOnClickListener(this);
-
+        cloudClicker.setOnClickListener(this);
+        leafClicker.setOnClickListener(this);
 
         fuelUsed.setText(mainActivity.path.gallonsUsed+"");
 
@@ -121,33 +133,77 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         switch (v.getId()) {
             case R.id.todayButton: /*Get today's data collected to far - so this is all the paths stored now? no this won't work*/
-                fuelUsed.setText(dayFuelNum+"");
-                carbonUsed.setText(dayCarbonNum+" kilos CO2");
-                treesKilled.setText(dayTreesNum+" trees killed");
-                drawIcons(0);
+                fuelUsed.setText(dayFuelNum + "");
+                if(cloud && !leaf) {
+                    carbonUsed.setText(dayCarbonNum + " kilos CO2");
+                    adapterNum = (int)dayCarbonNum;
+                    adapterType = "CARBON";
+                } else {
+                    carbonUsed.setText(dayTreesNum + " trees killed");
+                    adapterNum = (int)dayTreesNum;
+                    adapterType = "TREE";
+                }
+                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType); //TODO: replace with notifyDataSetChanged()
+                gridView.setAdapter(gridAdapter);
+                Console.log(classID+"Clicked today, send number and type "+adapterNum+" "+adapterType);
+//                gridAdapter.notifyDataSetChanged();
                 break;
             case R.id.weekButton:
                 fuelUsed.setText(weekFuelNum+"");
-                carbonUsed.setText(weekCarbonNum+" kilos CO2");
-                treesKilled.setText(weekTreesNum+" trees killed");
-                drawIcons(0);
+
+                if(cloud && !leaf){
+                    carbonUsed.setText(weekCarbonNum + " kilos CO2");
+                    scale.setText("1 cloud for every 5 kilos of carbon");
+                    adapterNum = (int)(weekCarbonNum/5);
+                    adapterType = "CARBON";
+                }else {
+                    carbonUsed.setText(weekTreesNum + " trees killed");
+                    scale.setText("1 leaf per tree killed");
+                    adapterNum = (int)(weekTreesNum);
+                    adapterType = "TREE";
+                }
+                Console.log(classID+"Clicked week, send number and type "+adapterNum+" "+adapterType);
+                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
+                gridView.setAdapter(gridAdapter);
                 break;
             case R.id.monthButton:
                 fuelUsed.setText(monthFuelNum+"");
-                carbonUsed.setText(monthCarbonNum+" kilos CO2");
-                treesKilled.setText(monthTreesNum+" trees killed");
-                drawIcons(0);
+                if(cloud && !leaf){
+                    carbonUsed.setText(monthCarbonNum + " kilos CO2");
+                    scale.setText("1 cloud for every 5 kilos of carbon");
+                    adapterNum = (int)(monthCarbonNum/10);
+                    adapterType = "CARBON";
+                }else {
+                    carbonUsed.setText(monthTreesNum + " trees killed");
+                    scale.setText("1 leaf per tree killed");
+                    adapterNum = (int)(monthTreesNum);
+                    adapterType = "TREE";
+                }
+                Console.log(classID+"Clicked month, send number and type "+adapterNum+" "+adapterType);
+                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
+                gridView.setAdapter(gridAdapter);
                 break;
+            case R.id.cloudClicker: //Todo: get correct adapterNum based on whether week, month, or day is active right now
+                cloud = true;
+                leaf = false;
+                adapterType = "CARBON";
+                Console.log(classID+"Clicked cloud, send number and type "+adapterNum+" "+adapterType);
+                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
+                gridView.setAdapter(gridAdapter);
+                break;
+            case R.id.leafClicker:
+                cloud = false;
+                leaf = true;
+                adapterType = "TREE";
+                Console.log(classID+"Clicked leaf, send number and type "+adapterNum+" "+adapterType);
+                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
+                gridView.setAdapter(gridAdapter);
             default:
                 break;
         }
     }
 
-    private void drawIcons(int num){
-        
-    }
-
-    private void parseJSON(JSONArray jsonArray) throws JSONException {
+    private void parseJSON(JSONArray jsonArray) throws JSONException {//TODO: make sure this runs once per session
 
         Long objTimestamp;
         double fuelNum;
@@ -185,10 +241,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             }
         }
 
-        printData();
-
-        gridAdapter = new GridAdapter(mainActivity,jsonArray.length(), "CARBON"); /*Call grid view when parsing is done*/
-        gridView.setAdapter(gridAdapter);
+//        printData();
     }
 
     private void setDefaults(){
@@ -196,19 +249,21 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             fuelUsed.setText(mainActivity.path.gallonsUsed + "");
             avgSpeed.setText(mainActivity.path.averageSpeed + "");
             carbonUsed.setText(mainActivity.path.carbonUsed + " kilos CO2");
-            treesKilled.setText(mainActivity.path.treesKilled + " trees killed");
         }
         else if(Profile.pathArray.size() > 0){
             fuelUsed.setText(Profile.pathArray.get(Profile.pathArray.size()-1).gallonsUsed + "");
             avgSpeed.setText(Profile.pathArray.get(Profile.pathArray.size()-1).averageSpeed + "");
-            carbonUsed.setText(Profile.pathArray.get(Profile.pathArray.size()-1).carbonUsed + " kilos CO2");
-            treesKilled.setText(Profile.pathArray.get(Profile.pathArray.size()-1).treesKilled + " trees killed");
+            carbonUsed.setText(Profile.pathArray.get(Profile.pathArray.size() - 1).carbonUsed + " kilos CO2");
         }else{
-            Console.log(classID+"Error getting data from path");
+            Console.log(classID + "Error getting data from path");
             fuelUsed.setText(dayFuelNum+"");
-            carbonUsed.setText(dayCarbonNum+" kilos CO2");
-            treesKilled.setText(dayTreesNum+" trees killed");
+            carbonUsed.setText(dayCarbonNum + " kilos CO2");
         }
+
+        adapterNum = 5;
+        adapterType = "CARBON";
+        gridAdapter = new GridAdapter(mainActivity,adapterNum,adapterType); /*Call grid view when parsing is done*/
+        gridView.setAdapter(gridAdapter);
     }
 
     private void printData(){
@@ -218,39 +273,9 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         Console.log("Month fuel carbon trees "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
     }
 
-    /* DISCARDED APPROACH
-
-    Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 
         //TODO: store running totals in Profile
         //TODO: replace with Profile.pathHistoryJSON - pathArrayJSON = Profile.pathHistoryJSON
-//        String holderString = "[{\"initTimestamp\":\"1402365280\", \"finalMAF\":655.35,\"treesKilled\":-1},{\"initTimestamp\":\"1402365284\", \"finalMAF\":655.35,\"treesKilled\":-1,\"carbonUsed\":-61,\"initFuel\":0,\"gallonsUsed\":-7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402365276\",\"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
-        String holderString = "[{\"initTimestamp\":\"1402365280\", \"finalMAF\":655.35}, {\"initTimestamp\":\"1402365284\", \"finalMAF\":35.35}, {\"initTimestamp\":\"1402365261\", \"finalMAF\":91.35}]";
-        try {
-            pathArrayJSON = new JSONArray(holderString);
-            Console.log(classID+" JSON array is "+pathArrayJSON);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        for(int i=0;i< pathArrayJSON.length();i++){
-            try {
-                JSONObject obj = (JSONObject) pathArrayJSON.get(i);
-                Console.log(classID+" OBject "+i+" "+obj.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Type listType =  new TypeToken<ArrayList<Path>>(){}.getType();
-        pathArray=gson.fromJson(pathArrayJSON.toString(), listType);
-
-//        Calculations.checkArray(pathArray);
-//        Collections.sort(pathArray);
-//        Console.log(classID+ "sorted! ");
-//        Calculations.checkArray(pathArray);
-        stopRange = System.currentTimeMillis();
-    *
-    * */
 
 }
