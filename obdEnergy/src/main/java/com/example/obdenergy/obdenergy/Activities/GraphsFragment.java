@@ -3,6 +3,7 @@ package com.example.obdenergy.obdenergy.Activities;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +72,9 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private boolean cloud = true;
     private boolean leaf = false;
+    private boolean dayPressed = true;
+    private boolean weekPressed = false;
+    private boolean monthPressed = false;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancestate){
 
@@ -129,81 +133,118 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
 
-
         switch (v.getId()) {
             case R.id.todayButton: /*Get today's data collected to far - so this is all the paths stored now? no this won't work*/
-                fuelUsed.setText(dayFuelNum + "");
-                if(cloud && !leaf) {
-                    carbonUsed.setText(dayCarbonNum + " kilos CO2");
-                    adapterNum = (int)dayCarbonNum;
-                    adapterType = "CARBON";
-                } else {
-                    carbonUsed.setText(dayTreesNum + " trees killed");
-                    adapterNum = (int)dayTreesNum;
-                    adapterType = "TREE";
-                }
-                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType); //TODO: replace with notifyDataSetChanged()
-                gridView.setAdapter(gridAdapter);
-                Console.log(classID+"Clicked today, send number and type "+adapterNum+" "+adapterType);
-//                gridAdapter.notifyDataSetChanged();
+                dayPressed =true;weekPressed = false;monthPressed = false;
+                today.setBackgroundColor(Color.BLACK);
+                week.setBackgroundColor(Color.parseColor("#282828"));
+                month.setBackgroundColor(Color.parseColor("#282828"));
+                displayData(dayPressed, weekPressed, monthPressed, cloud, leaf);
                 break;
             case R.id.weekButton:
-                fuelUsed.setText(weekFuelNum+"");
-
-                if(cloud && !leaf){
-                    carbonUsed.setText(weekCarbonNum + " kilos CO2");
-                    scale.setText("1 cloud for every 5 kilos of carbon");
-                    adapterNum = (int)(weekCarbonNum/5);
-                    adapterType = "CARBON";
-                }else {
-                    carbonUsed.setText(weekTreesNum + " trees killed");
-                    scale.setText("1 leaf per tree killed");
-                    adapterNum = (int)(weekTreesNum);
-                    adapterType = "TREE";
-                }
-                Console.log(classID+"Clicked week, send number and type "+adapterNum+" "+adapterType);
-//                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
-//                gridView.setAdapter(gridAdapter);
-                gridAdapter.notifyDataSetChanged();
+                dayPressed =false;weekPressed = true;monthPressed = false;
+                week.setBackgroundColor(Color.BLACK);
+                month.setBackgroundColor(Color.parseColor("#282828"));
+                today.setBackgroundColor(Color.parseColor("#282828"));
+                displayData(dayPressed, weekPressed, monthPressed, cloud, leaf);
                 break;
             case R.id.monthButton:
-                fuelUsed.setText(monthFuelNum+"");
-                if(cloud && !leaf){
-                    carbonUsed.setText(monthCarbonNum + " kilos CO2");
-                    scale.setText("1 cloud for every 10 kilos of carbon");
-                    adapterNum = (int)(monthCarbonNum/10);
-                    adapterType = "CARBON";
-                }else {
-                    carbonUsed.setText(monthTreesNum + " trees killed");
-                    scale.setText("1 leaf per tree killed");
-                    adapterNum = (int)(monthTreesNum);
-                    adapterType = "TREE";
-                }
-                Console.log(classID+"Clicked month, send number and type "+adapterNum+" "+adapterType);
-                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
-                gridView.setAdapter(gridAdapter);
+                dayPressed =false;
+                weekPressed = false;
+                monthPressed = true;
+                month.setBackgroundColor(Color.BLACK);
+                week.setBackgroundColor(Color.parseColor("#282828"));
+                today.setBackgroundColor(Color.parseColor("#282828"));
+                displayData(dayPressed, weekPressed, monthPressed, cloud, leaf);
                 break;
-            case R.id.cloudClicker: //Todo: get correct adapterNum based on whether week, month, or day is active right now
+            case R.id.cloudClicker:
                 cloud = true;
                 leaf = false;
-                adapterType = "CARBON";
-                Console.log(classID+"Clicked cloud, send number and type "+adapterNum+" "+adapterType);
-                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
-                gridView.setAdapter(gridAdapter);
+                displayData(dayPressed, weekPressed, monthPressed, cloud, leaf);
                 break;
             case R.id.leafClicker:
                 cloud = false;
                 leaf = true;
-                adapterType = "TREE";
-                Console.log(classID+"Clicked leaf, send number and type "+adapterNum+" "+adapterType);
-                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
-                gridView.setAdapter(gridAdapter);
+                displayData(dayPressed, weekPressed, monthPressed, cloud, leaf);
             default:
                 break;
         }
     }
 
-    private void parseJSON(JSONArray jsonArray) throws JSONException {//TODO: make sure this runs once per session
+    private void displayData(boolean day, boolean week, boolean month, boolean cloud, boolean leaf){
+        if(cloud && !leaf){
+            if(day && !week && !month){
+                fuelUsed.setText(dayFuelNum + "");
+
+                carbonUsed.setText(dayCarbonNum + " kilos CO2");
+                scale.setText("1 cloud for every kilo of carbon");
+                adapterNum = (int)dayCarbonNum;
+                adapterType = "CARBON";
+
+//                Console.log(classID+"Cloud and day, send number and type "+adapterNum+" "+adapterType);
+            }
+            else if(!day && week && !month){
+                fuelUsed.setText(weekFuelNum+"");
+
+                carbonUsed.setText(weekCarbonNum + " kilos CO2");
+                scale.setText("1 cloud for every 5 kilos of carbon");
+                adapterNum = (int)(weekCarbonNum/5);
+                adapterType = "CARBON";
+
+//                Console.log(classID+"Cloud and week send number and type "+adapterNum+" "+adapterType);
+            }
+            else if(!day && !week && month){
+                fuelUsed.setText(monthFuelNum+"");
+
+                carbonUsed.setText(monthCarbonNum + " kilos CO2");
+                scale.setText("1 cloud for every 10 kilos of carbon");
+                adapterNum = (int)(monthCarbonNum/10);
+                adapterType = "CARBON";
+
+//                Console.log(classID+"Cloud and month, send number and type "+adapterNum+" "+adapterType);
+            }
+            else Console.log(classID+"Wrong time bool for cloud");
+        }
+        else if(leaf && !cloud){
+            if(day && !week && !month){
+                fuelUsed.setText(dayFuelNum + "");
+
+                carbonUsed.setText(dayTreesNum + " trees killed");
+                scale.setText("1 leaf per tree killed");
+                adapterNum = (int)dayTreesNum;
+                adapterType = "TREE";
+
+//                Console.log(classID+"Leaf and day, send number and type "+adapterNum+" "+adapterType);
+            }
+            else if(!day && week && !month){
+                fuelUsed.setText(weekFuelNum+"");
+
+                carbonUsed.setText(weekTreesNum + " trees killed");
+                scale.setText("1 leaf per tree killed");
+                adapterNum = (int)(weekTreesNum);
+                adapterType = "TREE";
+
+//                Console.log(classID+"Leaf and week, send number and type "+adapterNum+" "+adapterType);
+            }
+            else if(!day && !week && month){
+                fuelUsed.setText(monthFuelNum+"");
+
+                carbonUsed.setText(monthTreesNum + " trees killed");
+                scale.setText("1 leaf per tree killed");
+                adapterNum = (int)(monthTreesNum);
+                adapterType = "TREE";
+//                Console.log(classID+"Leaf and month, send number and type "+adapterNum+" "+adapterType);
+            }
+            else Console.log(classID+"Wrong time bool for leaf");
+        }
+
+        else Console.log(classID+"wrong boolean somewhere");
+
+        gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType); //TODO: replace with notifyDataSetChanged()
+        gridView.setAdapter(gridAdapter);
+    }
+
+    private void parseJSON(JSONArray jsonArray) throws JSONException {//TODO: make sure this runs only once per session
 
         Long objTimestamp;
         double fuelNum;
@@ -259,6 +300,11 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             fuelUsed.setText(dayFuelNum+"");
             carbonUsed.setText(dayCarbonNum + " kilos CO2");
         }
+
+        dayPressed =true;weekPressed = false;monthPressed = false;
+        today.setBackgroundColor(Color.BLACK);
+        week.setBackgroundColor(Color.parseColor("#282828"));
+        month.setBackgroundColor(Color.parseColor("#282828"));
 
         adapterNum = 5;
         adapterType = "CARBON";
