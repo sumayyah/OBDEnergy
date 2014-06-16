@@ -16,6 +16,7 @@ import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.example.obdenergy.obdenergy.Utilities.GridAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -123,9 +124,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         this.mainActivity = (MainActivity) activity;
     }
 
-    public void GraphsFragmentDataComm(){
-
-    }
+    public void GraphsFragmentDataComm(){}
 
     @Override
     public void onClick(View v) {
@@ -163,14 +162,15 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                     adapterType = "TREE";
                 }
                 Console.log(classID+"Clicked week, send number and type "+adapterNum+" "+adapterType);
-                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
-                gridView.setAdapter(gridAdapter);
+//                gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
+//                gridView.setAdapter(gridAdapter);
+                gridAdapter.notifyDataSetChanged();
                 break;
             case R.id.monthButton:
                 fuelUsed.setText(monthFuelNum+"");
                 if(cloud && !leaf){
                     carbonUsed.setText(monthCarbonNum + " kilos CO2");
-                    scale.setText("1 cloud for every 5 kilos of carbon");
+                    scale.setText("1 cloud for every 10 kilos of carbon");
                     adapterNum = (int)(monthCarbonNum/10);
                     adapterType = "CARBON";
                 }else {

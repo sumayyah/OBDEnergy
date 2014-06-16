@@ -1,4 +1,4 @@
-package com.example.obdenergy.obdenergy.Activities;
+package com.example.obdenergy.obdenergy.Utilities;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -30,15 +30,8 @@ public class GridAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View gridView;
-
-        if (convertView == null) {
-//            Console.log("Creating new grid view");
-
-            gridView = new View(context);
-
             // get layout from mobile.xml
-            gridView = inflater.inflate(R.layout.grid_contents, null);
+            View gridView = inflater.inflate(R.layout.grid_contents, null);
 
             // set image based on selected text
             ImageView imageView = (ImageView) gridView
@@ -48,16 +41,45 @@ public class GridAdapter extends BaseAdapter {
                 imageView.setImageResource(R.drawable.cloud_icon);
             }else if(imageType.equals("TREE")) imageView.setImageResource(R.drawable.leafcopy);
 
-
-
-
-        } else {
-//            Console.log("using old grid view");
-            gridView = (View) convertView;
-        }
-
-
         return gridView;
+
+//        if (convertView == null) convertView = inflater.inflate(R.layout.grid_contents, null);
+//
+//        //set image based on selected text
+//            ImageView imageView = (ImageView) convertView
+//                    .findViewById(R.id.gridImage);
+//
+//            if(imageType.equals("CARBON")){
+//                imageView.setImageResource(R.drawable.cloud_icon);
+//            }else if(imageType.equals("TREE")) imageView.setImageResource(R.drawable.leafcopy);
+//
+//        return convertView;
+//        View gridView;
+//
+//        if (convertView == null) {
+////            Console.log("Creating new grid view");
+//
+////            gridView = new View(context);
+//
+//            // get layout from mobile.xml
+//            gridView = inflater.inflate(R.layout.grid_contents, null);
+//
+//            // set image based on selected text
+//            ImageView imageView = (ImageView) gridView
+//                    .findViewById(R.id.gridImage);
+//
+//            if(imageType.equals("CARBON")){
+//                imageView.setImageResource(R.drawable.cloud_icon);
+//            }else if(imageType.equals("TREE")) imageView.setImageResource(R.drawable.leafcopy);
+//
+//
+//
+//
+//        } else {
+////            Console.log("using old grid view");
+//            gridView = (View) convertView;
+//        }
+//        return gridView;
     }
 
     @Override

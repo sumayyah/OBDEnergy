@@ -1,100 +1,114 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
     <LinearLayout
-        android:id="@+id/spacerLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/navPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:layout_weight="1"
-        >
+        android:background="#282828"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:text="METRIC:"/>
 
+        <ImageView
+            android:id="@+id/cloudClicker"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/cloud_icon"
+            android:clickable="true"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"/>
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/leafClicker"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/leafcopy"
+            android:clickable="true"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"/>
+        <TextView
+            android:id="@+id/carbonUsed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center"
+            android:text="22 kilos"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:text="DAYS:"/>
+
+        <Button
+            android:id="@+id/todayButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:text="1"/>
 
-            <Button
-                android:id="@+id/todayButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TODAY"/>
+        <Button
+            android:id="@+id/weekButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="7"/>
+        <Button
+            android:id="@+id/monthButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="30"/>
 
-            <Button
-                android:id="@+id/weekButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="1 WEEK"/>
-            <Button
-                android:id="@+id/monthButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="1 MONTH"/>
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/displayPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:layout_weight="2">
+        android:layout_weight="3">
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/fuelDetailLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/cloudClicker"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/cloud_icon"
-            android:clickable="true"
-            android:scaleType="fitXY"/>
+        <TextView
+            android:id="@+id/fuelNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="256"
+            android:textSize="40sp"
+            android:layout_centerInParent="true"
+            android:textColor="#fffe"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/fuelNumber"
+            android:layout_alignBaseline="@+id/fuelNumber"
+            android:textColor="#fff"
+            android:text="gallons of gas"/>
+        </RelativeLayout>
 
-
-            <RelativeLayout
-                android:id="@+id/fuelDetailLayout"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/fuelNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="256"
-                    android:textSize="40sp"
-                    android:layout_centerInParent="true"
-                    android:textColor="#fffe"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/fuelNumber"
-                    android:layout_alignBaseline="@+id/fuelNumber"
-                    android:textColor="#fff"
-                    android:text="gallons of gas"/>
-            </RelativeLayout>
-            </LinearLayout>
-
-
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/leafClicker"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/leafcopy"
-                android:clickable="true"
-                android:scaleType="fitXY"/>
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
@@ -115,63 +129,29 @@
                 android:textColor="#fff"
                 android:text="km/h"/>
         </RelativeLayout>
-            </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/carbonLayout"
+        <GridView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:id="@+id/gridView1"
+            android:numColumns="3"
+            android:gravity="center"
+            android:columnWidth="90dp"
+            android:stretchMode="columnWidth"
+            android:padding="10dp"
+            >
 
-            <!--TODO: setmax width-->
-            <RelativeLayout
-                android:id="@+id/carbonText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+        </GridView>
 
-                <TextView
-                    android:id="@+id/carbonUsed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:text="22 kilos"/>
-                <TextView
-                    android:id="@+id/carbonScale"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/carbonUsed"
-                    android:textColor="@android:color/white"
-                    android:text="1 cloud per kilo of carbon"/>
-            </RelativeLayout>
-
-            <GridView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/gridView1"
-                android:numColumns="auto_fit"
-                android:gravity="center"
-                android:columnWidth="100dp"
-                android:stretchMode="columnWidth"
-                >
-
-                </GridView>
-
-            <!--<ImageView-->
-                <!--android:layout_width="80dp"-->
-                <!--android:layout_height="80dp"-->
-                <!--android:src="@drawable/cloud_icon"-->
-                <!--android:scaleType="fitXY"/>-->
-
-        </LinearLayout>
-
+        <TextView
+            android:id="@+id/carbonScale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/carbonUsed"
+            android:textColor="@android:color/white"
+            android:text="1 cloud per kilo of carbon"/>
 
     </LinearLayout>
 
-
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"></LinearLayout>
 
 </LinearLayout>
