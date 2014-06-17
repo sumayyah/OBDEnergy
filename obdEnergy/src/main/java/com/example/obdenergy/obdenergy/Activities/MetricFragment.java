@@ -66,5 +66,6 @@ public class MetricFragment extends Fragment {
         this.gallons = gallons;
         this.carbonUsed = carbonUsed;
         this.treesKilled = treesKilled;
+        Console.log(classID+"Got gallons carbon trees "+this.gallons+" "+this.carbonUsed+" "+this.treesKilled);
     }
 }

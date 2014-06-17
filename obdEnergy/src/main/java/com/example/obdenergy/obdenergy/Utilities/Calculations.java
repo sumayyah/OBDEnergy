@@ -117,15 +117,19 @@ public class Calculations {
     }
 
     public static JSONArray concatenateJSON(JSONArray array1, JSONArray array2){
-        for(int i=0;i<array2.length();i++){
-            try {
-                array1.put(array2.getJSONObject(i));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Console.log(classID+"Failed to concatenate JSON arrays");
+
+        if(array1 == null) return array2; /*If there exists no master array, just return the newest array to be set as first*/
+        else {
+            for (int i = 0; i < array2.length(); i++) {
+                try {
+                    array1.put(array2.getJSONObject(i));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Console.log(classID + "Failed to concatenate JSON arrays");
+                }
             }
+            return array1;
         }
-        return array1;
     }
 
     public static void checkArray(ArrayList<Path> pathArray){

@@ -188,7 +188,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 Console.log(classID+" Create metric activity wrong PID");
                 break;
         }
-
+        //Todo: check for "invalid double "-In""
         String carbonUsed = Calculations.getCarbon(Double.parseDouble(gallons));
         String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));
 
@@ -200,6 +200,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Profile.addToPathArray(path);
         Console.log(classID+"Added path to Profile array");
         Profile.checkArray();
+        metricFragment.MetricFragmentDataComm(gallons, carbonUsed, treesKilled);
     }
 
     public void printMessage(String data){
@@ -225,12 +226,24 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Profile.setCitympg(city);
         Profile.setHighwaympg(highway);
 
+        if(pathStringArray.equals("")) { //Todo: this is redundant then
+            pathStringArray = ""; /*In case of null data input, JSON needs something to initialize or it will be null and throw null pointer exceptions wildly all over the place*/
+            Console.log(classID+" Path string array is null, setting it to empty");
+        }
         try {
             Profile.pathHistoryJSON = new JSONArray(pathStringArray);
             Console.log(classID+"Path JSON array is "+Profile.pathHistoryJSON);
         } catch (JSONException e) {
             e.printStackTrace();
-            Console.log(classID+" Failed to convert string to JSON");
+            Console.log(classID + " Failed to convert string to JSON");
+//            pathStringArray = "";
+//            try {
+//                Profile.pathHistoryJSON = new JSONArray(pathStringArray);
+//                Console.log(classID+"Set Path History Json to "+Profile.pathHistoryJSON+" From "+pathStringArray);
+//            } catch (JSONException e1) {
+//                e1.printStackTrace();
+//                Console.log(classID+" Second approach failed too");
+//            }
         }
 
         Console.log(classID+"Created Profile, checking contents");
@@ -257,12 +270,13 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             e.printStackTrace();
         }
 
+        Console.log(classID+"Profile path history, json path "+Profile.pathHistoryJSON+" "+jsonPathArray);
         JSONArray finalJSONArray = Calculations.concatenateJSON(Profile.pathHistoryJSON, jsonPathArray);
         Profile.pathHistoryJSON = finalJSONArray;
 
-//        userData.edit().putString("Paths", Profile.pathHistoryJSON.toString()).commit();
-        userData.edit().putString("Paths", "").commit();
+        userData.edit().putString("Paths", Profile.pathHistoryJSON.toString()).commit();
+//        userData.edit().putString("Paths", "").commit(); /*For testing null strings purposes*/
 
-        Console.log(classID+"Put array "+Profile.pathHistoryJSON+"in set, commited to SharedPrefs");
+        Console.log(classID+"Put array "+Profile.pathHistoryJSON+"in set, committed to SharedPrefs");
     }
 }
