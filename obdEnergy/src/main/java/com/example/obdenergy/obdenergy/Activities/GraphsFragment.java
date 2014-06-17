@@ -34,7 +34,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private GridAdapter gridAdapter;
     private GridView gridView;
     private TextView fuelUsed;
-    private TextView avgSpeed;
     private TextView carbonUsed;
     private TextView scale;
     private Button today;
@@ -83,7 +82,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         gridView = (GridView)(view.findViewById(R.id.gridView1));
 
         fuelUsed = (TextView)(view.findViewById(R.id.fuelNumber));
-        avgSpeed = (TextView)(view.findViewById(R.id.avgSpeedNum));
         carbonUsed = (TextView)(view.findViewById(R.id.carbonUsed));
         scale = (TextView)(view.findViewById(R.id.carbonScale));
         today = (Button)(view.findViewById(R.id.todayButton));
@@ -289,12 +287,10 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private void setDefaults(){
         if(mainActivity.path != null) {
             fuelUsed.setText(mainActivity.path.gallonsUsed + "");
-            avgSpeed.setText(mainActivity.path.averageSpeed + "");
             carbonUsed.setText(mainActivity.path.carbonUsed + " kilos CO2");
         }
         else if(Profile.pathArray.size() > 0){
             fuelUsed.setText(Profile.pathArray.get(Profile.pathArray.size()-1).gallonsUsed + "");
-            avgSpeed.setText(Profile.pathArray.get(Profile.pathArray.size()-1).averageSpeed + "");
             carbonUsed.setText(Profile.pathArray.get(Profile.pathArray.size() - 1).carbonUsed + " kilos CO2");
         }else{
             Console.log(classID + "Error getting data from path");

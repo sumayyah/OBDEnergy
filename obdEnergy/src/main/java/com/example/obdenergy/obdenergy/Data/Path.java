@@ -63,7 +63,7 @@ public class Path implements Comparable<Path>{
         for(double d: speedArray){
             total+=d;
         }
-        averageSpeed = total/speedArray.size();
+        averageSpeed = 0.621371*(total/speedArray.size());
         Console.log("Path calculated average speed is "+averageSpeed);
     }
     /*Takes time in milliseconds, converts to seconds, and stores in array*/
@@ -72,13 +72,17 @@ public class Path implements Comparable<Path>{
     }
     public static Double getMiles(){
         Double finalMiles = 0.0;
-
+        double secondsPassed = 0.0;
         for(int i=0;i<speedArray.size();i++){
-            double secondsPassed = timeArray.get(i) - (i==0 ? 0: timeArray.get(i-1));
-            double hoursPassed = secondsPassed/3600;
 
-            finalMiles += speedArray.get(i)*hoursPassed;
+            if(i==0) secondsPassed = 0; /*Discard initial reading since speed at time 0 is negligible*/
+            else secondsPassed = timeArray.get(i) -  timeArray.get(i-1);
+            double hoursPassed = secondsPassed/3600;
+            double kilometers = speedArray.get(i)*hoursPassed;
+            finalMiles += (0.621371*kilometers);
+            Console.log("Path seconds, hours, speed, km, miles "+secondsPassed+" "+hoursPassed+" "+kilometers+" "+finalMiles);
         }
+        Console.log("Path returning miles travelled "+finalMiles);
 
         return finalMiles;
     }

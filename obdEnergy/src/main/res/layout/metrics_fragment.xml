@@ -4,23 +4,9 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <LinearLayout
-        android:id="@+id/spacerLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_weight="2"
-        >
 
-        <TextView
-            android:id="@+id/activityTitle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="TITLE OF ACTIVITY"
-            android:gravity="center"
-            android:textColor="@android:color/white"/>
-    </LinearLayout>
 
+    <!--Carbon Used-->
     <LinearLayout
         android:id="@+id/fuelContainer"
         android:orientation="horizontal"
@@ -29,21 +15,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/spacerLayout"
         >
-
-        <!--<LinearLayout-->
-        <!--android:layout_width="40dp"-->
-        <!--android:layout_height="80dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:layout_gravity="center_vertical"-->
-        <!--android:layout_margin="10dp"-->
-        <!--android:padding="10dp"-->
-        <!--android:background="@drawable/fuel2"></LinearLayout>-->
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1">
+            android:gravity="right"
+            android:layout_weight="2">
 
             <ImageView
                 android:layout_width="80dp"
@@ -51,8 +28,6 @@
                 android:src="@drawable/fuel2"
                 android:scaleType="fitXY"/>
         </LinearLayout>
-
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_weight="3"
@@ -72,10 +47,10 @@
                 android:layout_gravity="center_vertical"
                 android:text="Gals"/>
         </LinearLayout>
-
-
-
     </LinearLayout>
+    <!--End Fuel Used-->
+
+    <!--Carbon Used-->
     <LinearLayout
         android:id="@+id/carbonContainer"
         android:orientation="horizontal"
@@ -85,20 +60,12 @@
         android:layout_below="@id/fuelContainer"
         >
 
-        <!--<LinearLayout-->
-        <!--android:layout_width="40dp"-->
-        <!--android:layout_height="80dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:layout_gravity="center_vertical"-->
-        <!--android:layout_margin="10dp"-->
-        <!--android:padding="10dp"-->
-        <!--android:background="@drawable/cloud_icon"></LinearLayout>-->
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1">
+            android:gravity="right"
+            android:layout_weight="2">
 
             <ImageView
                 android:layout_width="80dp"
@@ -126,9 +93,10 @@
                 android:layout_gravity="center_vertical"
                 android:text="kg carbon"/>
         </LinearLayout>
-
-
     </LinearLayout>
+    <!--End Carbon Used-->
+
+    <!--Trees Killed-->
     <LinearLayout
         android:id="@+id/treesContainer"
         android:orientation="horizontal"
@@ -138,20 +106,12 @@
         android:layout_below="@id/treesContainer"
         >
 
-        <!--<LinearLayout-->
-        <!--android:layout_width="40dp"-->
-        <!--android:layout_height="75dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:layout_gravity="center_vertical"-->
-        <!--android:layout_margin="10dp"-->
-        <!--android:padding="10dp"-->
-        <!--android:background="@drawable/leafcopy">-->
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1">
+            android:gravity="right"
+            android:layout_weight="2">
 
             <ImageView
                 android:layout_width="80dp"
@@ -160,7 +120,6 @@
                 android:scaleType="fitXY"/>
         </LinearLayout>
 
-        <!--</LinearLayout>-->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="150dp"
@@ -183,10 +142,107 @@
         </LinearLayout>
 
     </LinearLayout>
+    <!--End Trees Killed-->
 
+    <!--Average Speed-->
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:id="@+id/speedDataContainer"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_weight="3"
         android:layout_height="wrap_content"
-        android:layout_weight="2"></LinearLayout>
+        android:layout_below="@id/treesContainer"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="right"
+            android:layout_weight="2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Avg Speed:"
+            android:layout_marginRight="10dp"
+            android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_weight="3"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/avgSpeedNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="86"
+                android:textSize="40sp"
+                android:layout_gravity="center_vertical"
+                android:textColor="#fffe"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textColor="#fff"
+                android:text="mi/h"/>
+        </LinearLayout>
+
+    </LinearLayout>
+    <!--End Average Speed-->
+
+    <!--Average Speed-->
+    <LinearLayout
+        android:id="@+id/milesDataContainer"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_weight="3"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/treesContainer"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="right"
+            android:layout_weight="2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mi. Driven:"
+                android:layout_marginRight="10dp"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_weight="3"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/milesNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="86"
+                android:textSize="40sp"
+                android:layout_gravity="center_vertical"
+                android:textColor="#fffe"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textColor="#fff"
+                android:text="Mi"/>
+        </LinearLayout>
+
+    </LinearLayout>
+    <!--End Average Speed-->
+
 
 </LinearLayout>

@@ -8,9 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.obdenergy.obdenergy.Data.Path;
+import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.Console;
-import com.example.obdenergy.obdenergy.MainActivity;
 
 
 /**
@@ -19,10 +20,11 @@ import com.example.obdenergy.obdenergy.MainActivity;
 public class MetricFragment extends Fragment {
 
     private MainActivity mainActivity;
-    private TextView activityTitle;
     private TextView fuelData;
     private TextView carbonData;
     private TextView treesData;
+    private TextView avgSpeed;
+    private TextView milesNum;
 
     private String gallons = "0.0";
     private String carbonUsed = "0.0";
@@ -38,15 +40,17 @@ public class MetricFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.metrics_fragment, container, false);
 
-        activityTitle = (TextView)(view.findViewById(R.id.activityTitle));
         fuelData = (TextView)(view.findViewById(R.id.fuelData));
         carbonData = (TextView)(view.findViewById(R.id.carbonData));
         treesData = (TextView)(view.findViewById(R.id.metricData));
-        activityTitle.setText(messageFromMain);
+        avgSpeed = (TextView)(view.findViewById(R.id.avgSpeedNum));
+        milesNum = (TextView)(view.findViewById(R.id.milesNum));
 
         fuelData.setText(gallons);
         carbonData.setText(carbonUsed);
         treesData.setText(treesKilled);
+        avgSpeed.setText(mainActivity.path.averageSpeed + "");
+        milesNum.setText(Path.getMiles()+"");
 
         return view;
     }
