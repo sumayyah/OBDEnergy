@@ -16,12 +16,17 @@ import android.widget.TextView;
 import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
+import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.example.obdenergy.obdenergy.Utilities.GridAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Modifier;
 
 
 /**
@@ -35,6 +40,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private GridView gridView;
     private TextView fuelUsed;
     private TextView carbonUsed;
+    private TextView treesUsed;
     private TextView scale;
     private Button today;
     private Button week;
@@ -83,6 +89,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         fuelUsed = (TextView)(view.findViewById(R.id.fuelNumber));
         carbonUsed = (TextView)(view.findViewById(R.id.carbonUsed));
+        treesUsed = (TextView)(view.findViewById(R.id.treesUsed));
         scale = (TextView)(view.findViewById(R.id.carbonScale));
         today = (Button)(view.findViewById(R.id.todayButton));
         week = (Button)(view.findViewById(R.id.weekButton));
@@ -97,6 +104,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         leafClicker.setOnClickListener(this);
 
         fuelUsed.setText(mainActivity.path.gallonsUsed+"");
+        treesUsed.setText(mainActivity.path.treesKilled+"");
 
         currentTime = System.currentTimeMillis();
 
@@ -104,12 +112,28 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         dayStopRange = currentTime+millisInDay;
         weekStartRange = currentTime - millisInWeek;
         weekStopRange = currentTime + millisInWeek;
+        JSONArray todayJSONArray = null;
+        String jsonArrayString;
 
+        Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+        if(Profile.pathArray.size() > 0) jsonArrayString = gson.toJson(Profile.pathArray);
+        else jsonArrayString = "[{}]";
+        Console.log(classID+"Collected path "+jsonArrayString);
+        try {
+            todayJSONArray = new JSONArray(jsonArrayString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Console.log(classID+"failed to create today's json array");
+        }
 
+        Console.log(classID+"Pieces are today: "+todayJSONArray);
+        Console.log(classID+"Hisotrical "+Profile.pathHistoryJSON);
 //        String holderString = "[{\"initTimestamp\":\"1402414587670\", \"finalMAF\":655.35,\"treesKilled\":7, \"gallonsUsed\":3, \"carbonUsed\":61},{\"initTimestamp\":\"1401896187867\", \"finalMAF\":655.35,\"treesKilled\":1,\"carbonUsed\":5,\"initFuel\":0,\"gallonsUsed\":7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402417236395\",\"carbonUsed\":9, \"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"treesKilled\":3,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
 
+        JSONArray finalJSONArray = Calculations.concatenateJSON(Profile.pathHistoryJSON, todayJSONArray);
+        Console.log(classID+"Parsing final version "+finalJSONArray);
         try {
-            parseJSON(new JSONArray(Profile.pathHistoryJSON.toString()));
+            parseJSON(new JSONArray(finalJSONArray.toString()));
 
         } catch (JSONException e) {
             Console.log(classID+" failed to get JSON array");
@@ -281,7 +305,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             }
         }
 
-//        printData();
+        printData();
     }
 
     private void setDefaults(){
@@ -319,7 +343,5 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
 
         //TODO: store running totals in Profile
-        //TODO: replace with Profile.pathHistoryJSON - pathArrayJSON = Profile.pathHistoryJSON
-
 
 }

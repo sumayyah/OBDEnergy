@@ -73,14 +73,14 @@ public class Path implements Comparable<Path>{
     public static Double getMiles(){
         Double finalMiles = 0.0;
         double secondsPassed = 0.0;
-        for(int i=0;i<speedArray.size();i++){
-
+        Console.log("Path speed array size, time array size "+speedArray.size()+" "+timeArray.size());
+        for(int i=0;i<=speedArray.size()-1;i++){
             if(i==0) secondsPassed = 0; /*Discard initial reading since speed at time 0 is negligible*/
             else secondsPassed = timeArray.get(i) -  timeArray.get(i-1);
             double hoursPassed = secondsPassed/3600;
             double kilometers = speedArray.get(i)*hoursPassed;
             finalMiles += (0.621371*kilometers);
-            Console.log("Path seconds, hours, speed, km, miles "+secondsPassed+" "+hoursPassed+" "+kilometers+" "+finalMiles);
+//            Console.log("Path seconds, hours, speed, km, miles "+secondsPassed+" "+hoursPassed+" "+kilometers+" "+finalMiles);
         }
         Console.log("Path returning miles travelled "+finalMiles);
 

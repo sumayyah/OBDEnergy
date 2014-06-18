@@ -27,9 +27,19 @@
             android:layout_height="60dp"
             android:src="@drawable/cloud_icon"
             android:clickable="true"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center"
             android:scaleType="fitXY"/>
+        <TextView
+            android:id="@+id/carbonUsed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center"
+            android:text="22 kilos"/>
+
 
         <ImageView
             android:id="@+id/leafClicker"
@@ -41,12 +51,12 @@
             android:layout_gravity="center"
             android:scaleType="fitXY"/>
         <TextView
-            android:id="@+id/carbonUsed"
+            android:id="@+id/treesUsed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:layout_gravity="center"
-            android:text="22 kilos"/>
+            android:text="1 tree"/>
 
         <TextView
             android:layout_width="wrap_content"

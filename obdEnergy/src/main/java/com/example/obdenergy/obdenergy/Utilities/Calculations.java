@@ -118,7 +118,11 @@ public class Calculations {
 
     public static JSONArray concatenateJSON(JSONArray array1, JSONArray array2){
 
-        if(array1 == null) return array2; /*If there exists no master array, just return the newest array to be set as first*/
+        JSONArray jsonArray = new JSONArray();
+        if(array1 == null && array2 == null) return jsonArray;
+        else if(array1 == null) return array2; /*If there exists no master array, just return the newest array to be set as first*/
+        else if(array2 == null) return array1;
+        /*Do the actual concatenation*/
         else {
             for (int i = 0; i < array2.length(); i++) {
                 try {
