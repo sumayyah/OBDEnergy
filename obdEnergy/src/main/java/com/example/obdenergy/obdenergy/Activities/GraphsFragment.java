@@ -109,9 +109,9 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         currentTime = System.currentTimeMillis();
 
         dayStartRange = currentTime - millisInDay;
-        dayStopRange = currentTime+millisInDay;
+//        dayStopRange = currentTime+millisInDay;
         weekStartRange = currentTime - millisInWeek;
-        weekStopRange = currentTime + millisInWeek;
+//        weekStopRange = currentTime + millisInWeek;
         JSONArray todayJSONArray = null;
         String jsonArrayString;
 
@@ -127,7 +127,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         }
 
         Console.log(classID+"Pieces are today: "+todayJSONArray);
-        Console.log(classID+"Hisotrical "+Profile.pathHistoryJSON);
+        Console.log(classID+"Historical "+Profile.pathHistoryJSON);
 //        String holderString = "[{\"initTimestamp\":\"1402414587670\", \"finalMAF\":655.35,\"treesKilled\":7, \"gallonsUsed\":3, \"carbonUsed\":61},{\"initTimestamp\":\"1401896187867\", \"finalMAF\":655.35,\"treesKilled\":1,\"carbonUsed\":5,\"initFuel\":0,\"gallonsUsed\":7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402417236395\",\"carbonUsed\":9, \"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"treesKilled\":3,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
 
         JSONArray finalJSONArray = Calculations.concatenateJSON(Profile.pathHistoryJSON, todayJSONArray);
@@ -196,12 +196,13 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private void displayData(boolean day, boolean week, boolean month, boolean cloud, boolean leaf){
         if(cloud && !leaf){
+            scale.setText("1 cloud for every 10 kilos of carbon");
+
             if(day && !week && !month){
                 fuelUsed.setText(dayFuelNum + "");
 
                 carbonUsed.setText(dayCarbonNum + " kilos CO2");
-                scale.setText("1 cloud for every kilo of carbon");
-                adapterNum = (int)dayCarbonNum;
+                adapterNum = (int)(dayCarbonNum/10);
                 adapterType = "CARBON";
 
 //                Console.log(classID+"Cloud and day, send number and type "+adapterNum+" "+adapterType);
@@ -210,8 +211,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 fuelUsed.setText(weekFuelNum+"");
 
                 carbonUsed.setText(weekCarbonNum + " kilos CO2");
-                scale.setText("1 cloud for every 5 kilos of carbon");
-                adapterNum = (int)(weekCarbonNum/5);
+                adapterNum = (int)(weekCarbonNum/10);
                 adapterType = "CARBON";
 
 //                Console.log(classID+"Cloud and week send number and type "+adapterNum+" "+adapterType);
@@ -220,7 +220,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 fuelUsed.setText(monthFuelNum+"");
 
                 carbonUsed.setText(monthCarbonNum + " kilos CO2");
-                scale.setText("1 cloud for every 10 kilos of carbon");
                 adapterNum = (int)(monthCarbonNum/10);
                 adapterType = "CARBON";
 
@@ -229,11 +228,11 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             else Console.log(classID+"Wrong time bool for cloud");
         }
         else if(leaf && !cloud){
+            scale.setText("1 leaf per tree required");
             if(day && !week && !month){
                 fuelUsed.setText(dayFuelNum + "");
 
-                carbonUsed.setText(dayTreesNum + " trees killed");
-                scale.setText("1 leaf per tree killed");
+                carbonUsed.setText(dayTreesNum + " trees required");
                 adapterNum = (int)dayTreesNum;
                 adapterType = "TREE";
 
@@ -242,8 +241,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             else if(!day && week && !month){
                 fuelUsed.setText(weekFuelNum+"");
 
-                carbonUsed.setText(weekTreesNum + " trees killed");
-                scale.setText("1 leaf per tree killed");
+                carbonUsed.setText(weekTreesNum + " trees required");
                 adapterNum = (int)(weekTreesNum);
                 adapterType = "TREE";
 
@@ -252,8 +250,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             else if(!day && !week && month){
                 fuelUsed.setText(monthFuelNum+"");
 
-                carbonUsed.setText(monthTreesNum + " trees killed");
-                scale.setText("1 leaf per tree killed");
+                carbonUsed.setText(monthTreesNum + " trees required");
                 adapterNum = (int)(monthTreesNum);
                 adapterType = "TREE";
 //                Console.log(classID+"Leaf and month, send number and type "+adapterNum+" "+adapterType);
@@ -291,14 +288,14 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             monthTreesNum += treesNum;
 
             /*If in range, calculate data for the week*/
-            if(objTimestamp <= weekStopRange && objTimestamp >= weekStartRange){
+            if(objTimestamp <= currentTime && objTimestamp >= weekStartRange){
                 weekFuelNum += fuelNum;
                 weekCarbonNum += carbonNum;
                 weekTreesNum += treesNum;
             }
 
             /*If in range, calculate data for the day*/
-            if(objTimestamp <= dayStopRange && objTimestamp >= dayStartRange){
+            if(objTimestamp <= currentTime && objTimestamp >= dayStartRange){
                 dayFuelNum += fuelNum;
                 dayCarbonNum += carbonNum;
                 dayTreesNum += treesNum;
@@ -322,7 +319,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             carbonUsed.setText(dayCarbonNum + " kilos CO2");
         }
 
-        //Todo: set based on latest path's data from JSON array
+        //Todo: set based on latest path driven - case if person opens app and goes straight to Graphs
         dayPressed =true;weekPressed = false;monthPressed = false;
         today.setBackgroundColor(Color.BLACK);
         week.setBackgroundColor(Color.parseColor("#282828"));
@@ -336,8 +333,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private void printData(){
         Console.log(classID+"Printing data now at "+currentTime);
-        Console.log("Day "+dayStartRange+" to "+dayStopRange+" fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
-        Console.log("Week "+weekStartRange+" to "+weekStopRange+" fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
+        Console.log("Day "+dayStartRange+" to "+currentTime+" fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
+        Console.log("Week "+weekStartRange+" to "+currentTime+" fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
         Console.log("Month fuel carbon trees "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
     }
 

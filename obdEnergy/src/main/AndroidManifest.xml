@@ -32,6 +32,9 @@
         <activity android:name=".Activities.InitActivity"
             android:theme="@android:style/Theme.Dialog">
         </activity>
+        <activity android:name=".Activities.Info"
+            android:theme="@android:style/Theme.Dialog">
+        </activity>
 
     </application>
 

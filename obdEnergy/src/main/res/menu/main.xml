@@ -3,8 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.obdenergy.obdenergy.MainActivity" >
     
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    <item android:id="@+id/editCarInfo"
+        android:title="Edit Car Info"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+         />
+    <item android:id="@+id/info"
+        android:title="Emissions Info"
+        android:orderInCategory="100"
+        />
 </menu>

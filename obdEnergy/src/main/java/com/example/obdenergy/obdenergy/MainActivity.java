@@ -5,9 +5,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.example.obdenergy.obdenergy.Activities.DriveFragment;
 import com.example.obdenergy.obdenergy.Activities.GraphsFragment;
+import com.example.obdenergy.obdenergy.Activities.Info;
 import com.example.obdenergy.obdenergy.Activities.InitActivity;
 import com.example.obdenergy.obdenergy.Activities.MetricFragment;
 import com.example.obdenergy.obdenergy.Activities.TabListener;
@@ -236,14 +240,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         } catch (JSONException e) {
             e.printStackTrace();
             Console.log(classID + " Failed to convert string to JSON");
-//            pathStringArray = "";
-//            try {
-//                Profile.pathHistoryJSON = new JSONArray(pathStringArray);
-//                Console.log(classID+"Set Path History Json to "+Profile.pathHistoryJSON+" From "+pathStringArray);
-//            } catch (JSONException e1) {
-//                e1.printStackTrace();
-//                Console.log(classID+" Second approach failed too");
-//            }
         }
 
         Console.log(classID+"Created Profile, checking contents");
@@ -279,4 +275,28 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         Console.log(classID+"Put array "+Profile.pathHistoryJSON+"in set, committed to SharedPrefs");
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.editCarInfo: /*This will overwrite info in SharedPrefs*/
+                Intent intent = new Intent(this, InitActivity.class);
+                startActivityForResult(intent, REQUEST_CREATE_PROFILE);
+                return true;
+            default:
+                Intent intentInfo = new Intent(this, Info.class);
+                startActivity(intentInfo);
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }
