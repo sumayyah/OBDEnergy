@@ -4,6 +4,7 @@ import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.google.gson.Gson;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -59,11 +60,14 @@ public class Path implements Comparable<Path>{
 //        calculateAvgSpeed();
     }
     public static void calculateAvgSpeed(){
+
+        DecimalFormat df = new DecimalFormat("#.00");
         double total = 0.0;
         for(double d: speedArray){
             total+=d;
         }
-        averageSpeed = 0.621371*(total/speedArray.size());
+        double temp = 0.621371*(total/speedArray.size());
+        averageSpeed = Double.valueOf(df.format(temp));
         Console.log("Path calculated average speed is "+averageSpeed);
     }
     /*Takes time in milliseconds, converts to seconds, and stores in array*/
@@ -73,6 +77,8 @@ public class Path implements Comparable<Path>{
     public static Double getMiles(){
         Double finalMiles = 0.0;
         double secondsPassed = 0.0;
+        DecimalFormat df = new DecimalFormat("#.00");
+
         Console.log("Path speed array size, time array size "+speedArray.size()+" "+timeArray.size());
         for(int i=0;i<=speedArray.size()-1;i++){
             if(i==0) secondsPassed = 0; /*Discard initial reading since speed at time 0 is negligible*/
@@ -83,7 +89,7 @@ public class Path implements Comparable<Path>{
 //            Console.log("Path seconds, hours, speed, km, miles "+secondsPassed+" "+hoursPassed+" "+kilometers+" "+finalMiles);
         }
         Console.log("Path returning miles travelled "+finalMiles);
-
+        finalMiles = Double.valueOf(df.format(finalMiles)); //TODO; test this
         return finalMiles;
     }
     public static boolean isHighway(){

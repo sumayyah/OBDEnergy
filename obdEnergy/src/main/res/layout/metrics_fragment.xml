@@ -4,14 +4,36 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/DetailLayout"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:background="#111111"-->
+        <!--android:layout_height="100dp">-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/fuelNumber"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="256"-->
+            <!--android:textSize="40sp"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:textColor="#fffe"/>-->
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_toRightOf="@+id/fuelNumber"-->
+            <!--android:layout_alignBaseline="@+id/fuelNumber"-->
+            <!--android:textColor="#fff"-->
+            <!--android:text="gallons of gas"/>-->
+    <!--</RelativeLayout>-->
 
 
-    <!--Carbon Used-->
+    <!--Fuel Used-->
     <LinearLayout
         android:id="@+id/fuelContainer"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:layout_height="wrap_content"
         android:layout_below="@+id/spacerLayout"
         >
@@ -19,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:gravity="right"
+            android:gravity="center"
             android:layout_weight="2">
 
             <ImageView
@@ -33,6 +55,7 @@
             android:layout_weight="3"
             android:layout_height="150dp"
             android:layout_gravity="center_vertical">
+
             <TextView
                 android:id="@+id/fuelData"
                 android:layout_width="wrap_content"
@@ -55,7 +78,7 @@
         android:id="@+id/carbonContainer"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:layout_height="wrap_content"
         android:layout_below="@id/fuelContainer"
         >
@@ -64,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:gravity="right"
+            android:gravity="center"
             android:layout_weight="2">
 
             <ImageView
@@ -101,7 +124,7 @@
         android:id="@+id/treesContainer"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:layout_height="wrap_content"
         android:layout_below="@id/treesContainer"
         >
@@ -110,7 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:gravity="right"
+            android:gravity="center"
             android:layout_weight="2">
 
             <ImageView
@@ -149,7 +172,7 @@
         android:id="@+id/speedDataContainer"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_below="@id/treesContainer"
         >
@@ -171,7 +194,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:layout_weight="3"
             android:layout_gravity="center_vertical">
 
@@ -199,7 +222,7 @@
         android:id="@+id/milesDataContainer"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_below="@id/treesContainer"
         >
@@ -221,7 +244,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:layout_weight="3"
             android:layout_gravity="center_vertical">
 

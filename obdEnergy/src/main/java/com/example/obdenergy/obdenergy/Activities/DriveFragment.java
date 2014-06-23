@@ -65,7 +65,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private Button startButton;
     private Button stopButton;
     private TextView connectStatus;
-    private TextView activityTitle;
     private TextView timer;
     private ProgressBar progressBar;
 
@@ -112,7 +111,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
 
         connectStatus = (TextView) (view.findViewById(R.id.connectStatus));
-        activityTitle = (TextView) (view.findViewById(R.id.activityTitle));
         timer = (TextView) (view.findViewById(R.id.timer));
         progressBar = (ProgressBar) (view.findViewById(R.id.progressSpinner));
 
@@ -174,7 +172,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     }
 
     public void confirmData(int data) {
-        activityTitle.setText("MAIN SENT BACK " + data);
+
     }
 
     /*
@@ -291,7 +289,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             case R.id.startButton:
                 mainActivity.path.setInitTimestamp(timeString);
 
-                activityTitle.setText("START");
                 startButton.setVisibility(View.GONE);
                 stopButton.setVisibility(View.VISIBLE);
 
@@ -306,7 +303,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.stopButton:
                 mainActivity.path.setFinalTimestamp(timeString);
-                activityTitle.setText("STOP");
 
                 timeSwapper += timeInProgress;
                 timeHandler.removeCallbacks(timerThread);
