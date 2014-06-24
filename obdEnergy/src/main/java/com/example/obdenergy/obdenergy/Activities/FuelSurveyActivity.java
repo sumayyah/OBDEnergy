@@ -1,7 +1,6 @@
 package com.example.obdenergy.obdenergy.Activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.example.obdenergy.obdenergy.Data.DisplayData;
 import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
@@ -86,9 +84,6 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
 
             Console.log("User entered miles, mpg, gallons "+miles+" "+mpg+" "+gallons);
             miles = "10";
-
-            DisplayData datapoint = new DisplayData(gallons, miles, timeString, street);
-            datapoint.setStreet(text);
 
 //            Intent intent = new Intent(this, MetricActivity.class);
 //            intent.putExtra("DATAPOINT", datapoint);

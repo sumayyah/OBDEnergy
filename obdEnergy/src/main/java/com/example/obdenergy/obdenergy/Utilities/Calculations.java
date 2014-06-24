@@ -32,20 +32,18 @@ public class Calculations {
     }
 
     /*Calculates gallons with Mass Airflow parameters*/
-    public static String getGallons(double initMAF, double finalMAF, String initTime, String finalTime){
-        String finalGallonString = "";
+    public static String getGallons(ArrayList<Double> MAFarray, double timeInterval){
+        double gallons = 0.0;
 
-        int timeTaken = (Integer.parseInt(finalTime))-(Integer.parseInt(initTime));
-        double initFuel = 1/(14.75*6.26*initMAF*timeTaken);
-        double finalFuel = 1/(14.75*6.26*finalMAF*timeTaken);
+        if(MAFarray == null){return String.valueOf(gallons);}
 
-        double fuelUsed = finalFuel - initFuel;
+        for(double d: MAFarray){
+            double value = d*0.000024*timeInterval;
+            gallons += value;
+        }
+        Console.log(classID+" MAF gallon calculation returns "+gallons);
 
-        String tempString = String.valueOf(fuelUsed);
-        finalGallonString = tempString.length() > 4? (tempString.substring(0,3)): (tempString);
-        Console.log(classID+" init fuel "+initFuel+" - final fuel "+finalFuel+" equals "+finalGallonString+" from "+initTime+" to "+finalTime);
-
-        return finalGallonString; //TODO: double check - does formula give back gallons?
+        return String.valueOf(gallons);
     }
 
     /*Calculate gallons with user input*/
@@ -98,16 +96,15 @@ public class Calculations {
         return finalTreesKilled;
     }
 
-    public static String getMAF(String val1, String val2){
-        String finalString = "";
+    public static Double getMAF(String val1, String val2){
+        double value = 0.0;
 
         double byte1 = hexToInt(val1);
         double byte2 = hexToInt(val2);
 
-        double value = ((byte1*256)+byte2)/100;
-        finalString = String.valueOf(value);
-        Console.log(classID+"MAF is calculated "+finalString);
-        return finalString;
+        value = ((byte1*256)+byte2)/100;
+        Console.log(classID+" MAF is calculated "+value);
+        return value;
     }
 
     public static int hexToInt(String hexString){

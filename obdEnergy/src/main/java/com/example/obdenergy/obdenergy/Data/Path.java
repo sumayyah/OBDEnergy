@@ -25,6 +25,7 @@ public class Path implements Comparable<Path>{
     public static String finalTimestamp = "";
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
     public static ArrayList<Double> timeArray = new ArrayList<Double>();
+    public static ArrayList<Double> MAFarray = new ArrayList<Double>();
 
     public Path(){}
 
@@ -33,21 +34,13 @@ public class Path implements Comparable<Path>{
         double temp = Double.parseDouble(String.valueOf(temp1));
         initFuel = temp;
     }
-    public static void setInitMAF(String val1, String val2){
-        String strtemp = Calculations.getMAF(val1, val2);
-        double temp = Double.parseDouble(String.valueOf(strtemp));
-        initMAF = temp;
-    }
+
     public static void setFinalFuel(String val){
         int temp1 = Calculations.hexToInt(val);
         double temp = Double.parseDouble(String.valueOf(temp1));
         finalFuel = temp;
     }
-    public static void setFinalMAF(String val1, String val2){
-        String strtemp = Calculations.getMAF(val1, val2);
-        double temp = Double.parseDouble(String.valueOf(strtemp));
-        finalMAF = temp;
-    }
+
 
     public static void setInitTimestamp(String val){ initTimestamp = val;
         Console.log("Set init timestamp " + val);}
@@ -58,6 +51,10 @@ public class Path implements Comparable<Path>{
         int speedInt = Calculations.hexToInt(val);
         speedArray.add(speedInt);
 //        calculateAvgSpeed();
+    }
+    public static void addToMAFarray(String val1, String val2){
+        double value = Calculations.getMAF(val1, val2);
+        MAFarray.add(value);
     }
     public static void calculateAvgSpeed(){
 

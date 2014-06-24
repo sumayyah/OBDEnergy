@@ -113,9 +113,9 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         currentTime = System.currentTimeMillis()/1000;
 
-        dayStartRange = currentTime - millisInDay;
+        dayStartRange = currentTime - secsInDay;
 //        dayStopRange = currentTime+millisInDay;
-        weekStartRange = currentTime - millisInWeek;
+        weekStartRange = currentTime - secsInWeek;
 //        weekStopRange = currentTime + millisInWeek;
 
         JSONArray todayJSONArray = null;

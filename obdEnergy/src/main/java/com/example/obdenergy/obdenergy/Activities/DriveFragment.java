@@ -245,7 +245,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         }
     };
 
-    private void startInstantSpeedReadings() {
+    private void startInstantReadings() {
 
 
         speedThread = new Thread(new Runnable() {
@@ -259,6 +259,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void run() {
                                 sendMessage(SPEED_REQUEST + "\r");
+                                sendMAFRequest();
                                 Long time = System.currentTimeMillis() / 1000;
                                 String timeString = time.toString();
                                 mainActivity.path.addToTimeArray(timeString);
@@ -278,7 +279,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        Long time = System.currentTimeMillis()/1000;
+        Long time = System.currentTimeMillis()/1000; /*Time in seconds*/
         String timeString = time.toString();
 
         switch (v.getId()) {
@@ -365,7 +366,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         fuelDataGiven = false;
         sendMAFRequest();
 
-        startInstantSpeedReadings();
+        startInstantReadings();
 
     }
 
@@ -446,7 +447,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
                 fuelDataGiven = false;
                 Console.log(classID+"Start tried fuel and failed");
-                startInstantSpeedReadings();
+                startInstantReadings();
                 sendMAFRequest();
                 return;
             }
@@ -486,15 +487,16 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 switch(PID){
                     case 16: //MAF - airflow rate
                         Console.log(classID+"MAF Fuel data recieved "+finalString);
-                        if(start && !stop){
-                            mainActivity.path.setInitMAF(firstPart, secondPart);
-                            Console.log(classID+" set as MAF initial fuel");
-                        }else if(!start && stop){
-                            mainActivity.path.setFinalMAF(firstPart, secondPart);
-                            Console.log(classID+" set as MAF final fuel");
-//                            checkData();
-                            listener.DriveFragmentDataComm(PID);
-                        }else Console.log("Some other bool");
+                        mainActivity.path.addToMAFarray(firstPart, secondPart);
+//                        if(start && !stop){
+//                            mainActivity.path.setInitMAF(firstPart, secondPart);
+//                            Console.log(classID+" set as MAF initial fuel");
+//                        }else if(!start && stop){
+//                            mainActivity.path.setFinalMAF(firstPart, secondPart);
+//                            Console.log(classID+" set as MAF final fuel");
+////                            checkData();
+//                            listener.DriveFragmentDataComm(PID);
+//                        }else Console.log("Some other bool");
                         break;
                     default:
                         Console.log(classID+" switch case done got some other PID");

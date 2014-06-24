@@ -11,7 +11,7 @@ import com.example.obdenergy.obdenergy.R;
 /**
  * Created by Sumayyah on 6/21/2014.
  */
-public class Info extends Activity implements View.OnClickListener{
+public class InfoActivity extends Activity implements View.OnClickListener{
 
     private TextView calculationsInfo;
     private Button closeButton;

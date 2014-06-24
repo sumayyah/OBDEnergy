@@ -11,7 +11,7 @@ import android.view.MenuItem;
 
 import com.example.obdenergy.obdenergy.Activities.DriveFragment;
 import com.example.obdenergy.obdenergy.Activities.GraphsFragment;
-import com.example.obdenergy.obdenergy.Activities.Info;
+import com.example.obdenergy.obdenergy.Activities.InfoActivity;
 import com.example.obdenergy.obdenergy.Activities.InitActivity;
 import com.example.obdenergy.obdenergy.Activities.MetricFragment;
 import com.example.obdenergy.obdenergy.Activities.TabListener;
@@ -179,7 +179,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
             case 16: //Using MAF data
                 Console.log(classID+" with MAF");
-                gallons = Calculations.getGallons(path.getInitMAF(), path.getFinalMAF(), path.getInitTime(), path.getfinalTime());
+                gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
                 if(gallons.equals("0.0")) {
                     DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
                     return;
@@ -293,7 +293,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 startActivityForResult(intent, REQUEST_CREATE_PROFILE);
                 return true;
             default:
-                Intent intentInfo = new Intent(this, Info.class);
+                Intent intentInfo = new Intent(this, InfoActivity.class);
                 startActivity(intentInfo);
                 return super.onOptionsItemSelected(item);
         }
