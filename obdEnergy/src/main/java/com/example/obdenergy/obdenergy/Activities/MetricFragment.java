@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
+import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
 
@@ -50,7 +51,7 @@ public class MetricFragment extends Fragment {
         carbonData.setText(carbonUsed);
         treesData.setText(treesKilled);
         avgSpeed.setText(mainActivity.path.averageSpeed + "");
-        milesNum.setText(Path.getMiles()+"");
+        milesNum.setText(mainActivity.path.milesTravelled + "");
 
         return view;
     }

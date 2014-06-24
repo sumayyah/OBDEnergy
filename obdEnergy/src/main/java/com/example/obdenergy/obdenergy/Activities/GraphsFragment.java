@@ -114,9 +114,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         currentTime = System.currentTimeMillis()/1000;
 
         dayStartRange = currentTime - secsInDay;
-//        dayStopRange = currentTime+millisInDay;
         weekStartRange = currentTime - secsInWeek;
-//        weekStopRange = currentTime + millisInWeek;
 
         JSONArray todayJSONArray = null;
         String jsonArrayString;
@@ -166,9 +164,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()) {
             case R.id.todayButton: /*Get today's data collected to far - so this is all the paths stored now? no this won't work*/
                 dayPressed =true;weekPressed = false;monthPressed = false;
-//                today.setBackgroundColor(Color.parseColor("#222222"));
-//                week.setBackgroundColor(Color.BLACK);
-//                month.setBackgroundColor(Color.BLACK);
+
                 today.setTextColor(Color.parseColor("#A4C739"));
                 week.setTextColor(Color.WHITE);
                 month.setTextColor(Color.WHITE);
@@ -176,31 +172,23 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.weekButton:
                 dayPressed =false;weekPressed = true;monthPressed = false;
-//                week.setBackgroundColor(Color.parseColor("#222222"));
-//                month.setBackgroundColor(Color.BLACK);
-//                today.setBackgroundColor(Color.BLACK);
+
                 week.setTextColor(Color.parseColor("#A4C739"));
                 today.setTextColor(Color.WHITE);
                 month.setTextColor(Color.WHITE);
                 displayData(dayPressed, weekPressed, monthPressed, cloud, leaf);
                 break;
             case R.id.monthButton:
-                dayPressed =false;
-                weekPressed = false;
-                monthPressed = true;
-//                month.setBackgroundColor(Color.parseColor("#222222"));
-//                week.setBackgroundColor(Color.BLACK);
-//                today.setBackgroundColor(Color.BLACK);
+                dayPressed =false;weekPressed = false;monthPressed = true;
+
                 month.setTextColor(Color.parseColor("#A4C739"));
                 today.setTextColor(Color.WHITE);
                 week.setTextColor(Color.WHITE);
                 displayData(dayPressed, weekPressed, monthPressed, cloud, leaf);
                 break;
             case R.id.cloudClicker:
-                cloud = true;
-                leaf = false;
-//                leafImageLayout.setBackgroundColor((Color.BLACK));
-//                cloudImageLayout.setBackgroundColor(Color.parseColor("#222222"));
+                cloud = true;leaf = false;
+
                 cloudClicker.setImageDrawable(getResources().getDrawable(R.drawable.cloud_icon_green));
                 carbonUsed.setTextColor(Color.parseColor("#A4C739"));
                 leafClicker.setImageDrawable(getResources().getDrawable(R.drawable.leafcopy));
@@ -208,10 +196,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 displayData(dayPressed, weekPressed, monthPressed, cloud, leaf);
                 break;
             case R.id.leafClicker:
-                cloud = false;
-                leaf = true;
-//                leafImageLayout.setBackgroundColor((Color.parseColor("#222222")));
-//                cloudImageLayout.setBackgroundColor(Color.BLACK);
+                cloud = false;leaf = true;
+
                 cloudClicker.setImageDrawable(getResources().getDrawable(R.drawable.cloud_icon));
                 carbonUsed.setTextColor(Color.WHITE);
                 leafClicker.setImageDrawable(getResources().getDrawable(R.drawable.leafgreen));
@@ -260,7 +246,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             if(day && !week && !month){
                 fuelUsed.setText(dayFuelNum + "");
 
-                carbonUsed.setText(dayTreesNum + " carbon used");
+                carbonUsed.setText(dayCarbonNum + " kilos CO2");
                 treesUsed.setText(dayTreesNum + " trees required");
                 scale.setText("1 leaf per tree required");
                 adapterNum = (int)dayTreesNum;
@@ -271,7 +257,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             else if(!day && week && !month){
                 fuelUsed.setText(weekFuelNum+"");
 
-                carbonUsed.setText(weekTreesNum + " carbon used");
+                carbonUsed.setText(weekCarbonNum + " kilos CO2");
                 treesUsed.setText(weekTreesNum + " trees required");
                 scale.setText("1 leaf per tree required");
                 adapterNum = (int)(weekTreesNum);
@@ -281,7 +267,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             }
             else if(!day && !week && month){
                 fuelUsed.setText(monthFuelNum+"");
-                carbonUsed.setText(monthTreesNum + " carbon used");
+                carbonUsed.setText(monthCarbonNum + " kilos CO2");
                 treesUsed.setText(monthTreesNum + " trees required");
                 scale.setText("1 leaf per tree required");
                 adapterNum = (int)(monthTreesNum);
@@ -357,9 +343,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         //Todo: set based on latest path driven - case if person opens app and goes straight to Graphs
         dayPressed =true;weekPressed = false;monthPressed = false;
-//        today.setBackgroundColor(Color.parseColor("#222222"));
         today.setTextColor(Color.parseColor("#A4C739"));
-//        cloudImageLayout.setBackgroundColor(Color.parseColor("#222222"));
         cloudClicker.setImageDrawable(getResources().getDrawable(R.drawable.cloud_icon_green));
         carbonUsed.setTextColor(Color.parseColor("#A4C739"));
 

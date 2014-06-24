@@ -143,9 +143,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     public void DriveFragmentDataComm(int PID) {
         Console.log(classID+" recieved PID "+ PID);
 
-
-        path.printData();
-
         driveFragment.confirmData(PID);
 
         String tankCapacity = Profile.getCapacity();
@@ -153,7 +150,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         String gallons = "0.0";
         String street = "";
-        Double miles = path.getMiles();
+        path.milesTravelled = Calculations.getMiles(path.speedArray, path.timeArray);
+        Double miles = path.milesTravelled;
 
         switch(PID){
             case 0:
@@ -270,8 +268,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         JSONArray finalJSONArray = Calculations.concatenateJSON(Profile.pathHistoryJSON, jsonPathArray);
         Profile.pathHistoryJSON = finalJSONArray;
 
-//        userData.edit().putString("Paths", Profile.pathHistoryJSON.toString()).commit();
-        userData.edit().putString("Paths", "").commit(); /*For testing null strings purposes*/
+        userData.edit().putString("Paths", Profile.pathHistoryJSON.toString()).commit();
+//        userData.edit().putString("Paths", "").commit(); /*For testing null strings purposes*/
 
         Console.log(classID+"Put array "+Profile.pathHistoryJSON+"in set, committed to SharedPrefs");
     }

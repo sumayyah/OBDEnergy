@@ -4,6 +4,7 @@ import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.google.gson.Gson;
 
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -21,6 +22,7 @@ public class Path implements Comparable<Path>{
     public static Double carbonUsed = (double)0.0;
     public static Double treesKilled = (double) 0.0;
     public static Double averageSpeed = (double) 0.0;
+    public static Double milesTravelled = (double) 0.0;
     public static String initTimestamp = "";
     public static String finalTimestamp = "";
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
@@ -71,24 +73,7 @@ public class Path implements Comparable<Path>{
     public static void addToTimeArray(String val){
         timeArray.add(Double.parseDouble(val));
     }
-    public static Double getMiles(){
-        Double finalMiles = 0.0;
-        double secondsPassed = 0.0;
-        DecimalFormat df = new DecimalFormat("#.00");
 
-        Console.log("Path speed array size, time array size "+speedArray.size()+" "+timeArray.size());
-        for(int i=0;i<=speedArray.size()-1;i++){
-            if(i==0) secondsPassed = 0; /*Discard initial reading since speed at time 0 is negligible*/
-            else secondsPassed = timeArray.get(i) -  timeArray.get(i-1);
-            double hoursPassed = secondsPassed/3600;
-            double kilometers = speedArray.get(i)*hoursPassed;
-            finalMiles += (0.621371*kilometers);
-//            Console.log("Path seconds, hours, speed, km, miles "+secondsPassed+" "+hoursPassed+" "+kilometers+" "+finalMiles);
-        }
-        Console.log("Path returning miles travelled "+finalMiles);
-        finalMiles = Double.valueOf(df.format(finalMiles)); //TODO; test this
-        return finalMiles;
-    }
     public static boolean isHighway(){
 
         if(speedArray.size() < 10) return false;
@@ -107,22 +92,21 @@ public class Path implements Comparable<Path>{
     public static String getfinalTime(){ return finalTimestamp; }
     public static String getInitTime(){return initTimestamp;}
 
-    public String printSpeeds(){
-        String returnString = "";
-        for (Integer s: speedArray) returnString += (" "+s);
-        return returnString;
-    }
-
-    public String printTimes(){
-        String returnString = "";
-        for (Double t: timeArray) returnString += (" "+t);
-        return returnString;
-    }
 
     public void printData() {
         Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF+" average speed "+averageSpeed+" initTime "+initTimestamp+" finalTime "+finalTimestamp);
         Console.log("Gallons "+gallonsUsed+", Carbon "+carbonUsed+", Trees "+treesKilled);
-        Console.log("Speed array is: "+printSpeeds());
+        Console.log("Speed array is: "+printArray(speedArray));
+        Console.log("MAF array is: "+printArray(MAFarray));
+    }
+
+    public String printArray(ArrayList<?> list){
+        String returnString = "";
+
+        for(int i=0;i<list.size()-1;i++){
+            returnString += (" "+list.get(i));
+        }
+        return returnString;
     }
 
     @Override
