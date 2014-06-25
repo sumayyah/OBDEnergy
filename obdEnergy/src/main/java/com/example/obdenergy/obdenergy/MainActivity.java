@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.obdenergy.obdenergy.Activities.DriveFragment;
+import com.example.obdenergy.obdenergy.Activities.FuelSurveyActivity;
 import com.example.obdenergy.obdenergy.Activities.GraphsFragment;
 import com.example.obdenergy.obdenergy.Activities.InfoActivity;
 import com.example.obdenergy.obdenergy.Activities.InitActivity;
@@ -19,6 +20,7 @@ import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -107,19 +109,16 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         switch (requestCode){
             case REQUEST_CONNECT_DEVICE_SECURE:
-
-                if (resultCode == Activity.RESULT_OK) { //TODO: create one function in drivefragment
-                    driveFragment.setConnectStatus("Connecting...");
-                    driveFragment.setProgressBar(true);
+                if (resultCode == Activity.RESULT_OK) {
+                    driveFragment.setConnectValidators("Connecting...", true);
                     driveFragment.connectDevice(data, true);
-                    Console.log(classID+"Got connect requet, sent off to drive");
+                    Console.log(classID+"Got connect request, sent off to drive");
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
 
                 if (resultCode == Activity.RESULT_OK) {
-                    driveFragment.setConnectStatus("Connecting...");
-                    driveFragment.setProgressBar(true);
+                    driveFragment.setConnectValidators("Connecting...", true);
                     driveFragment.connectDevice(data, false);
                 }
                 break;
@@ -146,9 +145,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         driveFragment.confirmData(PID);
 
         String tankCapacity = Profile.getCapacity();
-//        String tankCapacity = "14";
 
-        String gallons = "0.0";
+        double gallons = 0.0;
         String street = "";
         path.milesTravelled = Calculations.getMiles(path.speedArray, path.timeArray);
         Double miles = path.milesTravelled;
@@ -168,7 +166,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             case 47: //Using fuel level data
                 Console.log(classID+"With Fuel");
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
-                if(gallons.equals("0.0")) {
+                if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
                     return;
                 }
@@ -178,31 +176,31 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             case 16: //Using MAF data
                 Console.log(classID+" with MAF");
                 gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
-                if(gallons.equals("0.0")) {
+                if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
                     return;
                 }
                 break;
             case 4:
-                //TODO: get fuelSurveyActivity
+                Intent intent = new Intent(this, FuelSurveyActivity.class);
+                startActivity(intent);
                 break;
             default:
                 Console.log(classID+" Create metric activity wrong PID");
                 break;
         }
-        //Todo: check for "invalid double "-In""
-        String carbonUsed = Calculations.getCarbon(Double.parseDouble(gallons));
-        String treesKilled = Calculations.getTrees(Double.parseDouble(gallons));
+        String carbonUsed = Calculations.getCarbon(gallons);
+        String treesKilled = Calculations.getTrees(gallons);
 
-        path.gallonsUsed = Double.parseDouble(gallons);
+        path.gallonsUsed = gallons;
         path.carbonUsed = Double.parseDouble(carbonUsed);
         path.treesKilled = Double.parseDouble(treesKilled);
 
-        path.calculateAvgSpeed();
+        path.averageSpeed = Calculations.getAvgSpeed(path.speedArray);
         Profile.addToPathArray(path);
         Console.log(classID+"Added path to Profile array");
         Profile.checkArray();
-        metricFragment.MetricFragmentDataComm(gallons, carbonUsed, treesKilled);
+        metricFragment.MetricFragmentDataComm(String.valueOf(gallons), carbonUsed, treesKilled);
     }
 
     public void printMessage(String data){
@@ -228,10 +226,10 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Profile.setCitympg(city);
         Profile.setHighwaympg(highway);
 
-        if(pathStringArray.equals("")) { //Todo: this is redundant then
-            pathStringArray = ""; /*In case of null data input, JSON needs something to initialize or it will be null and throw null pointer exceptions wildly all over the place*/
-            Console.log(classID+" Path string array is null, setting it to empty");
-        }
+//        if(pathStringArray.equals("")) {
+//            pathStringArray = ""; /*In case of null data input, JSON needs something to initialize or it will be null and throw null pointer exceptions wildly all over the place*/
+//            Console.log(classID+" Path string array is null, setting it to empty");
+//        }
         try {
             Profile.pathHistoryJSON = new JSONArray(pathStringArray);
             Console.log(classID+"Path JSON array is "+Profile.pathHistoryJSON);
@@ -272,6 +270,11 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 //        userData.edit().putString("Paths", "").commit(); /*For testing null strings purposes*/
 
         Console.log(classID+"Put array "+Profile.pathHistoryJSON+"in set, committed to SharedPrefs");
+
+        /*Write data to permanent storage in device*/
+        for(Path p: Profile.pathArray){ //TODO: test
+            DataLogger.writeData(p.returnData());
+        }
     }
 
     @Override

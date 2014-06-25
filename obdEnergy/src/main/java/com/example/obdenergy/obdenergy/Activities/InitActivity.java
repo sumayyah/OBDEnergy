@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.obdenergy.obdenergy.R;
+import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 
 /**
  * Created by sumayyah on 5/7/14.
@@ -24,6 +25,13 @@ public class InitActivity extends Activity implements View.OnClickListener{
     private EditText citympg;
     private EditText highwaympg;
     private Button doneButton;
+
+    String make;
+    String model;
+    String year;
+    String tank;
+    String city;
+    String highway;
 
     private final String USER_DATA_FILE = "MyCarData";
     SharedPreferences settings;
@@ -61,8 +69,15 @@ public class InitActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
 
-        //Check that all fields are filled in
-        if( checkNull(makeField) == false || checkNull(modelField) == false || checkNull(yearField) == false || checkNull(capacityField) == false || checkNull(citympg) == false || checkNull(highwaympg) == false){
+        make = makeField.getText().toString();
+        model = modelField.getText().toString();
+        year = yearField.getText().toString();
+        tank = capacityField.getText().toString();
+        city = citympg.getText().toString();
+        highway = highwaympg.getText().toString();
+
+        /*Check that all fields are filled in*/
+        if( !checkNull(makeField) || !checkNull(modelField) || !checkNull(yearField) || !checkNull(capacityField) || !checkNull(citympg) || !checkNull(highwaympg)){
 
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -84,12 +99,16 @@ public class InitActivity extends Activity implements View.OnClickListener{
         }
         else {
 
-            settings.edit().putString("car_make", makeField.getText().toString()).commit();
-            settings.edit().putString("car_model", modelField.getText().toString()).commit();
-            settings.edit().putString("car_year", yearField.getText().toString()).commit();
-            settings.edit().putString("tank_capacity", capacityField.getText().toString()).commit();
-            settings.edit().putString("City", citympg.getText().toString()).commit();
-            settings.edit().putString("Highway", highwaympg.getText().toString()).commit();
+
+
+            settings.edit().putString("car_make", make).commit();
+            settings.edit().putString("car_model", model).commit();
+            settings.edit().putString("car_year", year).commit();
+            settings.edit().putString("tank_capacity", tank).commit();
+            settings.edit().putString("City", city).commit();
+            settings.edit().putString("Highway", highway).commit();
+
+            DataLogger.writeData("Car information: "+printData());
 
             Intent intent = new Intent();
             setResult(Activity.RESULT_OK, intent);
@@ -107,4 +126,11 @@ public class InitActivity extends Activity implements View.OnClickListener{
         }
         else return true;
     }
+
+    private String printData(){
+        String finalString = "Car Make: "+make+"\nCar model: "+ model+"\nYear of manufacture: "+year+"\nTank capacity: "+tank+"\nCity mileage: "+city+"\nHighway mileage: "+highway+"\n";
+        return finalString;
+    }
+
+
 }

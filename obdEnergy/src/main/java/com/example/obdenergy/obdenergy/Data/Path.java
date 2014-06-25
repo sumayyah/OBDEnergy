@@ -52,23 +52,13 @@ public class Path implements Comparable<Path>{
     public static void addToSpeedArray(String val){
         int speedInt = Calculations.hexToInt(val);
         speedArray.add(speedInt);
-//        calculateAvgSpeed();
+//        getAvgSpeed();
     }
     public static void addToMAFarray(String val1, String val2){
         double value = Calculations.getMAF(val1, val2);
         MAFarray.add(value);
     }
-    public static void calculateAvgSpeed(){
 
-        DecimalFormat df = new DecimalFormat("#.00");
-        double total = 0.0;
-        for(double d: speedArray){
-            total+=d;
-        }
-        double temp = 0.621371*(total/speedArray.size());
-        averageSpeed = Double.valueOf(df.format(temp));
-        Console.log("Path calculated average speed is "+averageSpeed);
-    }
     /*Takes time in milliseconds, converts to seconds, and stores in array*/
     public static void addToTimeArray(String val){
         timeArray.add(Double.parseDouble(val));
@@ -98,6 +88,20 @@ public class Path implements Comparable<Path>{
         Console.log("Gallons "+gallonsUsed+", Carbon "+carbonUsed+", Trees "+treesKilled);
         Console.log("Speed array is: "+printArray(speedArray));
         Console.log("MAF array is: "+printArray(MAFarray));
+    }
+
+    public String returnData(){
+        String finalString = "";
+
+        String constants = "Init fuel: "+initFuel+"\nFinalFuel: "+finalFuel+"\nAverage speed: "+averageSpeed+"\nMiles driven: "+milesTravelled;
+        String calculations ="\nGallons: "+gallonsUsed+"\nCarbon: "+carbonUsed+"\nTrees: "+treesKilled;
+        String speeds = "\nSpeeds are "+printArray(speedArray);
+        String mafs = "\nMAF values are "+printArray(MAFarray);
+        String times = "\n Time values are "+printArray(timeArray);
+
+        finalString = finalString + constants+calculations+speeds+mafs+times;
+
+        return finalString;
     }
 
     public String printArray(ArrayList<?> list){

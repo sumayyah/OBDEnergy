@@ -21,7 +21,7 @@ public class TabListener implements ActionBar.TabListener {
         this.fragment = fragment;
     }
 
-    //TODO: fix v7.tablistener vs tablistener issues - basically actionbar vs v7.actionbar
+
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         fragmentTransaction.replace(R.id.fragment_container, fragment);

@@ -1,6 +1,8 @@
 package com.example.obdenergy.obdenergy.Activities;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -85,9 +87,8 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
             Console.log("User entered miles, mpg, gallons "+miles+" "+mpg+" "+gallons);
             miles = "10";
 
-//            Intent intent = new Intent(this, MetricActivity.class);
-//            intent.putExtra("DATAPOINT", datapoint);
-//            startActivity(intent);
+            Intent intent = new Intent(this, MetricFragment.class);
+            startActivity(intent);
 
             finish();
 

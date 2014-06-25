@@ -17,27 +17,28 @@ public class Calculations {
     private final static String classID = "Calculations ";
 
     /*Gets gallons used from fuel level data*/
-    public static String getGallons(double initFuel, double finalFuel, String tankCapacity){
-        String finalGallonString = "";
+    public static Double getGallons(double initFuel, double finalFuel, String tankCapacity){
+        double gallons = 0.0;
+        DecimalFormat df = new DecimalFormat("#.00");
+
         Console.log("Calculations - initfuel, final fuel, tankcapacity"+initFuel+" "+finalFuel+" "+tankCapacity);
         int tankCapacityNum = Integer.parseInt(tankCapacity);
 
         double fuelVal = finalFuel - initFuel;
         double percentage = (fuelVal/255);
-        double gallons = percentage*tankCapacityNum;
+        gallons = percentage*tankCapacityNum;
 
-        String tempString = String.valueOf(gallons);
-        finalGallonString = tempString.length() > 4? (tempString.substring(0,3)): (tempString);
+        gallons = Double.valueOf(df.format(gallons));
 
-        return finalGallonString;
+        return gallons;
     }
 
     /*Calculates gallons with Mass Air Flow parameters*/
-    public static String getGallons(ArrayList<Double> MAFarray, double timeInterval){
+    public static Double getGallons(ArrayList<Double> MAFarray, double timeInterval){
         double gallons = 0.0;
         DecimalFormat df = new DecimalFormat("#.00");
 
-        if(MAFarray == null){return String.valueOf(gallons);}
+        if(MAFarray == null){return gallons;}
 
         for(double d: MAFarray){
             double value = d*0.000024*timeInterval;
@@ -47,43 +48,45 @@ public class Calculations {
         gallons = Double.valueOf(df.format(gallons));
         Console.log(classID+" MAF gallon calculation returns "+gallons);
 
-        return String.valueOf(gallons);
+        return gallons;
     }
 
     /*Calculate gallons with user input*/
-    public static String getGallons(String mpg, String miles){
-        String finalGallonString = "";
+    public static Double getGallons(String mpg, String miles){
+        double gallons = 0.0;
+        DecimalFormat df = new DecimalFormat("#.00");
 
         double mpgNum = Double.parseDouble(mpg);
         double milesNum = Double.parseDouble(miles);
         double finalGallons = milesNum/mpgNum;
 
-        String tempString = String.valueOf(finalGallons);
-        finalGallonString = tempString.length() > 4? (tempString.substring(0,3)): (tempString);
+        gallons = Double.parseDouble(df.format(finalGallons));
 
-        return finalGallonString;
+        return gallons;
     }
 
     /*Calculate gallons with array of instantaneous speed readings*/
-    public static String getGallons(double miles, String street){ //TODO: test this function
-        String finalGallonString = "0.0";
+    public static Double getGallons(double miles, String street){
+        double gallons = 0.0;
+        DecimalFormat df = new DecimalFormat("#.00");
 
         String mpg = MainActivity.userData.getString(street, "city");
 
-        Double answer = miles*Double.parseDouble(mpg);
-        finalGallonString = String.valueOf(answer);
+        Double answer = miles*(1/(Double.parseDouble(mpg)));
+        gallons = Double.parseDouble(df.format(answer));
 
-        return finalGallonString;
+        return gallons;
     }
 
     public static String getCarbon(double gallonsUsed){
         String finalCarbon = "0.0";
+        DecimalFormat df = new DecimalFormat("#.00");
 
         double multiplier = 8.85; //Kilos of carbon per gallon of gas
         double carbon = multiplier*gallonsUsed;
 
-        String tempString = String.valueOf(carbon);
-        finalCarbon = tempString.length() > 4 ? tempString.substring(0,3): tempString; //TODO; replace with decimal formatting for carbon
+        finalCarbon = String.valueOf(df.format(carbon));
+//        finalCarbon = tempString.length() > 4 ? tempString.substring(0,3): tempString;
 
         return finalCarbon;
     }
@@ -128,6 +131,20 @@ public class Calculations {
         finalMiles = Double.valueOf(df.format(finalMiles));
         Console.log(classID+"Miles travelled "+finalMiles);
         return finalMiles;
+    }
+
+    public static Double getAvgSpeed(ArrayList<Integer> speedArray){
+
+        double averageSpeed = 0.0;
+        DecimalFormat df = new DecimalFormat("#.00");
+        double total = 0.0;
+        for(double d: speedArray){
+            total+=d;
+        }
+        double temp = 0.621371*(total/speedArray.size());
+        averageSpeed = Double.valueOf(df.format(temp));
+        Console.log("Path calculated average speed is "+averageSpeed);
+        return averageSpeed;
     }
 
     public static int hexToInt(String hexString){

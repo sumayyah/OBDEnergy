@@ -181,14 +181,14 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     * Functions that handle operations upon connect
     *
     * */
-    public void setConnectStatus(String status) {
+
+    public void setConnectValidators(String status, boolean on){
         connectStatus.setText(status);
         connectButton.setVisibility(View.GONE);
-    }
 
-    public void setProgressBar(boolean on) {
         if (on) progressBar.setVisibility(View.VISIBLE);
         else progressBar.setVisibility(View.GONE);
+
     }
 
     public void connectDevice(Intent data, boolean secure) {
@@ -450,15 +450,14 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         String bufferString = new String(readBuffer, 0, msg.arg1);
         Console.log(classID+"Command: "+command+" Message is "+bufferString);
 
+        //TODO: recheck abnormal regexes
         String fourByteNormal="\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n?";
         String fourByteAbnormal="\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n? (\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n?)* \\s*\\r*\\n?";
         String threeByteNormal="\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?";
         String threeByteAbnormal="\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n? (\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)* ";
 
-//        DataLogger.writeData("Command: "+command+" Message: "+bufferString+"\n");
 
         /*If data returned is absent or in an unacceptable format*/
-
         if(command.equals(FUEL_REQUEST) && start){
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
                 fuelDataGiven = false;

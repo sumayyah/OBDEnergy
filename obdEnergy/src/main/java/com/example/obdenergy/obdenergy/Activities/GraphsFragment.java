@@ -57,11 +57,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private long secsInDay = 86400;
 
     private long dayStartRange;
-    private long dayStopRange;
     private long currentTime;
-
     private long weekStartRange;
-    private long weekStopRange;
 
     private double dayFuelNum = 0.0;
     private double dayCarbonNum = 0.0;
@@ -116,6 +113,16 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         dayStartRange = currentTime - secsInDay;
         weekStartRange = currentTime - secsInWeek;
 
+        setDefaults();
+
+        return view;
+    }
+
+    /*This runs only once, so parsing and storing of data is done only on creation of activity*/
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         JSONArray todayJSONArray = null;
         String jsonArrayString;
 
@@ -130,7 +137,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             Console.log(classID+"failed to create today's json array");
         }
 
-
 //        Console.log(classID+"Pieces are today: "+todayJSONArray);
 //        Console.log(classID+"Historical "+Profile.pathHistoryJSON);
 //        String holderString = "[{\"initTimestamp\":\"1402414587670\", \"finalMAF\":655.35,\"treesKilled\":7, \"gallonsUsed\":3, \"carbonUsed\":61},{\"initTimestamp\":\"1401896187867\", \"finalMAF\":655.35,\"treesKilled\":1,\"carbonUsed\":5,\"initFuel\":0,\"gallonsUsed\":7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402417236395\",\"carbonUsed\":9, \"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"treesKilled\":3,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
@@ -144,10 +150,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             Console.log(classID+" failed to get JSON array");
             e.printStackTrace();
         }
-
-        setDefaults();
-
-        return view;
     }
 
     @Override
@@ -279,11 +281,11 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         else Console.log(classID+"wrong boolean somewhere");
 
-        gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType); //TODO: replace with notifyDataSetChanged()
+        gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
         gridView.setAdapter(gridAdapter);
     }
 
-    private void parseJSON(JSONArray jsonArray) throws JSONException {//TODO: make sure this runs only once per session
+    private void parseJSON(JSONArray jsonArray) throws JSONException {
 
         Long objTimestamp;
         double fuelNum;
