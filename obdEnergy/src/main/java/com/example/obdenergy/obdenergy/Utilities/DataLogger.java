@@ -97,7 +97,7 @@ public class DataLogger {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         java.util.Date date= new java.util.Date();
-        String sDate = sdf.format(date.getTime());//TODO: see what is the actual date in the title - it should just be years months days
+        String sDate = sdf.format(date.getTime());
         return sDate;
     }
 

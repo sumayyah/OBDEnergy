@@ -82,7 +82,7 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
             }
             else Console.log(classID+" wrong radio button data "+text);
 
-            String gallons = Calculations.getGallons(mpg, miles);
+            Double gallons = Calculations.getGallons(mpg, miles);
 
             Console.log("User entered miles, mpg, gallons "+miles+" "+mpg+" "+gallons);
             miles = "10";

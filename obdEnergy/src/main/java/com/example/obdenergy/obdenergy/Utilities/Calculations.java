@@ -91,16 +91,15 @@ public class Calculations {
         return finalCarbon;
     }
 
-    public static String getTrees(double gallonsUsed){
-        String finalTreesKilled = "0.0";
+    public static Double getTrees(double gallonsUsed){
+        DecimalFormat df = new DecimalFormat("#.00");
 
         double multiplier = 0.228; //Tree seedlings grown for 10 years, per gallon of gas
         double treesKilled = multiplier*gallonsUsed;
 
-        String tempString = String.valueOf(treesKilled);
-        finalTreesKilled= tempString.length() > 4 ? tempString.substring(0,3): tempString;
-
-        return finalTreesKilled;
+       treesKilled = Double.parseDouble(df.format(treesKilled));
+        Console.log(classID+"Trees calculated "+treesKilled);
+        return treesKilled;
     }
 
     public static Double getMAF(String val1, String val2){

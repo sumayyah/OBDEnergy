@@ -181,7 +181,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                     return;
                 }
                 break;
-            case 4:
+            case 4:/*This should never get called*/
                 Intent intent = new Intent(this, FuelSurveyActivity.class);
                 startActivity(intent);
                 break;
@@ -190,17 +190,16 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 break;
         }
         String carbonUsed = Calculations.getCarbon(gallons);
-        String treesKilled = Calculations.getTrees(gallons);
+        Double treesKilled = Calculations.getTrees(gallons);
 
         path.gallonsUsed = gallons;
         path.carbonUsed = Double.parseDouble(carbonUsed);
-        path.treesKilled = Double.parseDouble(treesKilled);
+        path.treesKilled = treesKilled;
 
         path.averageSpeed = Calculations.getAvgSpeed(path.speedArray);
         Profile.addToPathArray(path);
-        Console.log(classID+"Added path to Profile array");
         Profile.checkArray();
-        metricFragment.MetricFragmentDataComm(String.valueOf(gallons), carbonUsed, treesKilled);
+        metricFragment.MetricFragmentDataComm(String.valueOf(gallons), carbonUsed, String.valueOf(treesKilled));
     }
 
     public void printMessage(String data){
@@ -272,8 +271,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Console.log(classID+"Put array "+Profile.pathHistoryJSON+"in set, committed to SharedPrefs");
 
         /*Write data to permanent storage in device*/
-        for(Path p: Profile.pathArray){ //TODO: test
-            DataLogger.writeData(p.returnData());
+        for(Path p: Profile.pathArray){
+            DataLogger.writeData("PATH: \n"+p.returnData());
         }
     }
 

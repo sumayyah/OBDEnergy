@@ -121,6 +121,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     /*This runs only once, so parsing and storing of data is done only on creation of activity*/
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Console.log(classID+"onCreate");
         super.onCreate(savedInstanceState);
 
         JSONArray todayJSONArray = null;
@@ -212,13 +213,14 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private void displayData(boolean day, boolean week, boolean month, boolean cloud, boolean leaf){
         if(cloud && !leaf){
-            scale.setText("1 cloud for every 10 kilos of carbon");
+
 
             if(day && !week && !month){
                 fuelUsed.setText(dayFuelNum + "");
 
                 carbonUsed.setText(dayCarbonNum + " kilos CO2");
-                adapterNum = (int)(dayCarbonNum/10);
+                if(dayCarbonNum<=10) {adapterNum = (int)(dayCarbonNum); scale.setText("1 cloud per kilo of carbon");}
+                else {adapterNum = (int)(dayCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
                 adapterType = "CARBON";
 
 //                Console.log(classID+"Cloud and day, send number and type "+adapterNum+" "+adapterType);
@@ -227,7 +229,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 fuelUsed.setText(weekFuelNum+"");
 
                 carbonUsed.setText(weekCarbonNum + " kilos CO2");
-                adapterNum = (int)(weekCarbonNum/10);
+                if(weekCarbonNum<=10) {adapterNum = (int)(weekCarbonNum); scale.setText("1 cloud per kilo of carbon");}
+                else {adapterNum = (int)(weekCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
                 adapterType = "CARBON";
 
 //                Console.log(classID+"Cloud and week send number and type "+adapterNum+" "+adapterType);
@@ -236,7 +239,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 fuelUsed.setText(monthFuelNum+"");
 
                 carbonUsed.setText(monthCarbonNum + " kilos CO2");
-                adapterNum = (int)(monthCarbonNum/10);
+                if(monthCarbonNum<=10) {adapterNum = (int)(monthCarbonNum); scale.setText("1 cloud per kilo of carbon");}
+                else {adapterNum = (int)(monthCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
                 adapterType = "CARBON";
 
 //                Console.log(classID+"Cloud and month, send number and type "+adapterNum+" "+adapterType);
@@ -287,12 +291,19 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private void parseJSON(JSONArray jsonArray) throws JSONException {
 
+        Console.log(classID + "Parsing JSON");
+
         Long objTimestamp;
         double fuelNum;
         double carbonNum;
         double treesNum;
 
         for(int i=0;i<jsonArray.length();i++){
+
+            if(jsonArray.isNull(i)){
+                Console.log(classID+"Array is null at index "+i);
+                continue;
+            }
 
             JSONObject obj = (JSONObject) jsonArray.get(i);
             objTimestamp = Long.parseLong(obj.getString("initTimestamp"));
@@ -302,7 +313,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             carbonNum = obj.getDouble("carbonUsed");
             treesNum = obj.getDouble("treesKilled");
 
-            Console.log(classID+"Object "+i+" "+objTimestamp+" Data: fuel carbon trees "+fuelNum+" "+carbonNum+" "+treesNum);
+            Console.log(classID+"Object "+i+" at "+objTimestamp+" Current time " + currentTime+" Data: fuel carbon trees "+fuelNum+" "+carbonNum+" "+treesNum);
 
             monthFuelNum += fuelNum;
             monthCarbonNum += carbonNum;
@@ -310,6 +321,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
             /*If in range, calculate data for the week*/
             if(objTimestamp <= currentTime && objTimestamp >= weekStartRange){
+                Console.log(classID+" Week from "+weekStartRange+" to "+currentTime);
                 weekFuelNum += fuelNum;
                 weekCarbonNum += carbonNum;
                 weekTreesNum += treesNum;
@@ -317,6 +329,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
             /*If in range, calculate data for the day*/
             if(objTimestamp <= currentTime && objTimestamp >= dayStartRange){
+                Console.log(classID+" Today from "+dayStartRange+" to "+currentTime);
                 dayFuelNum += fuelNum;
                 dayCarbonNum += carbonNum;
                 dayTreesNum += treesNum;
@@ -324,6 +337,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         }
 
         printData();
+
+
     }
 
     private void setDefaults(){
