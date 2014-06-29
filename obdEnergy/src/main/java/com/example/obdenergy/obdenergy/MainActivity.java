@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 
 import com.example.obdenergy.obdenergy.Activities.DriveFragment;
 import com.example.obdenergy.obdenergy.Activities.FuelSurveyActivity;
@@ -67,6 +68,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     public Path path;
     public static SharedPreferences userData;
     public static JSONArray jsonPathArray;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,9 +218,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         String highway = userData.getString("Highway", "");
         String pathStringArray = userData.getString("Paths", "");
 
-        Console.log(classID+"Path string is "+pathStringArray);
-
-
         Profile.setMake(make);
         Profile.setModel(model);
         Profile.setYear(year);
@@ -225,10 +225,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Profile.setCitympg(city);
         Profile.setHighwaympg(highway);
 
-//        if(pathStringArray.equals("")) {
-//            pathStringArray = ""; /*In case of null data input, JSON needs something to initialize or it will be null and throw null pointer exceptions wildly all over the place*/
-//            Console.log(classID+" Path string array is null, setting it to empty");
-//        }
+
         try {
             Profile.pathHistoryJSON = new JSONArray(pathStringArray);
             Console.log(classID+"Path JSON array is "+Profile.pathHistoryJSON);
@@ -236,23 +233,22 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             e.printStackTrace();
             Console.log(classID + " Failed to convert string to JSON");
         }
-
-        Console.log(classID+"Created Profile, checking contents");
-        Console.log(Profile.checkContents());
-
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        Console.log(classID+"stopped");
-
         /*Create GSON builder that can write static variables (Path needs static vars and methods)*/
         Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
-        Type listType = new TypeToken<ArrayList<Path>>(){}.getType();
+
+
+        Profile.cleanArray();
+        Profile.checkArray();
         String jsonArrayString = gson.toJson(Profile.pathArray);
         Console.log(classID+"Collected path "+jsonArrayString);
+
+        JSONArray finalJSONArray = null;
 
         try {
              jsonPathArray = new JSONArray(jsonArrayString);
@@ -261,19 +257,33 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             e.printStackTrace();
         }
 
-        Console.log(classID+"Profile path history, json path "+Profile.pathHistoryJSON+" "+jsonPathArray);
-        JSONArray finalJSONArray = Calculations.concatenateJSON(Profile.pathHistoryJSON, jsonPathArray);
-        Profile.pathHistoryJSON = finalJSONArray;
-
-        userData.edit().putString("Paths", Profile.pathHistoryJSON.toString()).commit();
-//        userData.edit().putString("Paths", "").commit(); /*For testing null strings purposes*/
-
-        Console.log(classID+"Put array "+Profile.pathHistoryJSON+"in set, committed to SharedPrefs");
-
         /*Write data to permanent storage in device*/
         for(Path p: Profile.pathArray){
             DataLogger.writeData("PATH: \n"+p.returnData());
         }
+
+        Console.log(classID+"Profile path history, json path "+Profile.pathHistoryJSON+" "+jsonPathArray);
+
+        /*Check what exactly should be pushed into SharedPreferences, to avoid null data*/
+        if(Profile.pathHistoryJSON== null && Profile.pathArray.size() ==0){
+            Console.log(classID+"No data to push to Shared prefs");
+            return;
+        }
+        else if(Profile.pathHistoryJSON== null || Profile.pathHistoryJSON.length()==0){
+            finalJSONArray = jsonPathArray;
+            Console.log(classID+"history is null");
+        }
+        else if(Profile.pathArray.size() ==0){
+            finalJSONArray = Profile.pathHistoryJSON;
+            Console.log(classID+"Paths are null");
+        } else finalJSONArray = Calculations.concatenateJSON(Profile.pathHistoryJSON, jsonPathArray);
+
+        userData.edit().putString("Paths", finalJSONArray.toString()).commit();
+//        userData.edit().putString("Paths", "").commit(); /*For testing null strings purposes*/
+
+        Console.log(classID+"Put array "+finalJSONArray+"in set, committed to SharedPrefs");
+
+
     }
 
     @Override

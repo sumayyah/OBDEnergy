@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Data.Path;
@@ -70,6 +72,9 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private TextView timer;
     private ProgressBar progressBar;
 
+    private RelativeLayout greenRing;
+    private RelativeLayout redRing;
+
     dataListener listener;
 
     public int counter;
@@ -115,6 +120,9 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         connectStatus = (TextView) (view.findViewById(R.id.connectStatus));
         timer = (TextView) (view.findViewById(R.id.timer));
         progressBar = (ProgressBar) (view.findViewById(R.id.progressSpinner));
+
+        greenRing = (RelativeLayout)(view.findViewById(R.id.ringLayoutGreen));
+        redRing = (RelativeLayout)(view.findViewById(R.id.ringLayoutRed));
 
         BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -293,8 +301,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         speedThread.start();
     }
 
-
-
     @Override
     public void onClick(View v) {
 
@@ -311,6 +317,9 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
                 startButton.setVisibility(View.GONE);
                 stopButton.setVisibility(View.VISIBLE);
+
+                greenRing.setVisibility(View.INVISIBLE);
+                redRing.setVisibility(View.VISIBLE);
 
                 startTime = SystemClock.uptimeMillis();
                 timeHandler.postDelayed(timerThread, 0);
@@ -340,6 +349,9 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
                 startButton.setVisibility(View.VISIBLE);
                 stopButton.setVisibility(View.GONE);
+
+                greenRing.setVisibility(View.VISIBLE);
+                redRing.setVisibility(View.INVISIBLE);
 
                 onStopPressed();
 

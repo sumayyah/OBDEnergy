@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
@@ -43,8 +44,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private TextView carbonUsed;
     private TextView treesUsed;
     private TextView scale;
-    private RelativeLayout cloudImageLayout;
-    private RelativeLayout leafImageLayout;
+
     private Button today;
     private Button week;
     private Button month;
@@ -96,8 +96,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         month = (Button)(view.findViewById(R.id.monthButton));
         cloudClicker = (ImageView)(view.findViewById(R.id.cloudClicker));
         leafClicker = (ImageView)(view.findViewById(R.id.leafClicker));
-        cloudImageLayout = (RelativeLayout)(view.findViewById(R.id.cloudImageContainer));
-        leafImageLayout = (RelativeLayout)(view.findViewById(R.id.leafImageContainer));
 
         today.setOnClickListener(this);
         week.setOnClickListener(this);
@@ -112,6 +110,39 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         dayStartRange = currentTime - secsInDay;
         weekStartRange = currentTime - secsInWeek;
+        Console.log(classID+"Timings: Current: "+currentTime+" day from "+dayStartRange+" week from "+weekStartRange);
+
+        /*If the user has paths in the current session*/
+        if(Profile.pathArray.size() > 0){
+            Console.log(classID+"Paths in current session");
+            for(Path p: Profile.pathArray){
+                dayFuelNum += p.gallonsUsed;
+                dayCarbonNum += p.carbonUsed;
+                dayTreesNum += p.treesKilled;
+
+                weekFuelNum += p.gallonsUsed;
+                weekCarbonNum += p.carbonUsed;
+                weekTreesNum += p.treesKilled;
+
+                monthFuelNum += p.gallonsUsed;
+                monthCarbonNum += p.carbonUsed;
+                monthTreesNum += p.treesKilled;
+            }
+
+            Console.log(classID+"Before parsing, day: "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum+" week "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum+" month "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
+        }
+
+        try { //Go ahead and parse all the previous paths
+            parseJSON(new JSONArray(String.valueOf(Profile.pathHistoryJSON)));
+
+        } catch (JSONException e) {
+            Console.log(classID+" failed to get JSON array");
+            e.printStackTrace();
+        }
+
+//        Console.log(classID+"Pieces are today: "+todayJSONArray);
+//        Console.log(classID+"Historical "+Profile.pathHistoryJSON);
+//        String holderString = "[{\"initTimestamp\":\"1402414587670\", \"finalMAF\":655.35,\"treesKilled\":7, \"gallonsUsed\":3, \"carbonUsed\":61},{\"initTimestamp\":\"1401896187867\", \"finalMAF\":655.35,\"treesKilled\":1,\"carbonUsed\":5,\"initFuel\":0,\"gallonsUsed\":7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402417236395\",\"carbonUsed\":9, \"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"treesKilled\":3,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
 
         setDefaults();
 
@@ -123,38 +154,11 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         Console.log(classID+"onCreate");
         super.onCreate(savedInstanceState);
-
-        JSONArray todayJSONArray = null;
-        String jsonArrayString;
-
-        Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
-        if(Profile.pathArray.size() > 0) jsonArrayString = gson.toJson(Profile.pathArray);
-        else jsonArrayString = "[{}]";
-        Console.log(classID+"Collected path "+jsonArrayString);
-        try {
-            todayJSONArray = new JSONArray(jsonArrayString);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Console.log(classID+"failed to create today's json array");
-        }
-
-//        Console.log(classID+"Pieces are today: "+todayJSONArray);
-//        Console.log(classID+"Historical "+Profile.pathHistoryJSON);
-//        String holderString = "[{\"initTimestamp\":\"1402414587670\", \"finalMAF\":655.35,\"treesKilled\":7, \"gallonsUsed\":3, \"carbonUsed\":61},{\"initTimestamp\":\"1401896187867\", \"finalMAF\":655.35,\"treesKilled\":1,\"carbonUsed\":5,\"initFuel\":0,\"gallonsUsed\":7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402417236395\",\"carbonUsed\":9, \"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"treesKilled\":3,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
-
-        JSONArray finalJSONArray = Calculations.concatenateJSON(Profile.pathHistoryJSON, todayJSONArray);
-        Console.log(classID+"Parsing final version "+finalJSONArray);
-        try {
-            parseJSON(new JSONArray(finalJSONArray.toString()));
-
-        } catch (JSONException e) {
-            Console.log(classID+" failed to get JSON array");
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void onAttach(Activity activity) {
+        Console.log(classID+"on attach");
         super.onAttach(activity);
         this.mainActivity = (MainActivity) activity;
     }
@@ -291,14 +295,14 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private void parseJSON(JSONArray jsonArray) throws JSONException {
 
-        Console.log(classID + "Parsing JSON");
+        Console.log(classID + "Parsing JSON "+jsonArray);
 
         Long objTimestamp;
         double fuelNum;
         double carbonNum;
         double treesNum;
 
-        for(int i=0;i<jsonArray.length();i++){
+        for(int i=0;i<jsonArray.length()-1;i++){
 
             if(jsonArray.isNull(i)){
                 Console.log(classID+"Array is null at index "+i);
@@ -321,50 +325,38 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
             /*If in range, calculate data for the week*/
             if(objTimestamp <= currentTime && objTimestamp >= weekStartRange){
-                Console.log(classID+" Week from "+weekStartRange+" to "+currentTime);
+
                 weekFuelNum += fuelNum;
                 weekCarbonNum += carbonNum;
                 weekTreesNum += treesNum;
+                Console.log(classID+" Week from "+weekStartRange+" to "+currentTime+" Data: fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
             }
 
             /*If in range, calculate data for the day*/
             if(objTimestamp <= currentTime && objTimestamp >= dayStartRange){
-                Console.log(classID+" Today from "+dayStartRange+" to "+currentTime);
+
                 dayFuelNum += fuelNum;
                 dayCarbonNum += carbonNum;
                 dayTreesNum += treesNum;
+                Console.log(classID+" Today from "+dayStartRange+" to "+currentTime+" Data: fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
             }
         }
 
         printData();
-
-
     }
 
     private void setDefaults(){
-        if(mainActivity.path != null) {
-            fuelUsed.setText(mainActivity.path.gallonsUsed + "");
-            carbonUsed.setText(mainActivity.path.carbonUsed + " kilos CO2");
-            treesUsed.setText(mainActivity.path.treesKilled + " trees killed");
-        }
-        else if(Profile.pathArray.size() > 0){
-            fuelUsed.setText(Profile.pathArray.get(Profile.pathArray.size()-1).gallonsUsed + "");
-            carbonUsed.setText(Profile.pathArray.get(Profile.pathArray.size() - 1).carbonUsed + " kilos CO2");
-            carbonUsed.setText(Profile.pathArray.get(Profile.pathArray.size() - 1).treesKilled + " trees killed");
-        }else{
-            Console.log(classID + "Error getting data from path");
-            fuelUsed.setText(dayFuelNum+"");
-            carbonUsed.setText(dayCarbonNum + " kilos CO2");
-            treesUsed.setText(dayTreesNum + " trees killed");
-        }
 
-        //Todo: set based on latest path driven - case if person opens app and goes straight to Graphs
+        fuelUsed.setText(dayFuelNum+"");
+        carbonUsed.setText(dayCarbonNum + " kilos CO2");
+        treesUsed.setText(dayTreesNum + " trees required");
+
         dayPressed =true;weekPressed = false;monthPressed = false;
         today.setTextColor(Color.parseColor("#A4C739"));
         cloudClicker.setImageDrawable(getResources().getDrawable(R.drawable.cloud_icon_green));
         carbonUsed.setTextColor(Color.parseColor("#A4C739"));
 
-        adapterNum = 5;
+        adapterNum = (int)dayCarbonNum;
         adapterType = "CARBON";
         gridAdapter = new GridAdapter(mainActivity,adapterNum,adapterType); /*Call grid view when parsing is done*/
         gridView.setAdapter(gridAdapter);
@@ -376,8 +368,5 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         Console.log("Week "+weekStartRange+" to "+currentTime+" fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
         Console.log("Month fuel carbon trees "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
     }
-
-
-        //TODO: store running totals in Profile
 
 }

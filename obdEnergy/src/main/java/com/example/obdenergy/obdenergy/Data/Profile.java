@@ -6,13 +6,15 @@ import android.os.Parcelable;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 /**
  * Created by sumayyah on 5/8/14.
  */
-public class Profile implements Parcelable{
+public class Profile{
 
     private static String make;
     private static String model;
@@ -24,15 +26,6 @@ public class Profile implements Parcelable{
     public static JSONArray pathHistoryJSON;
 
     public Profile(){};
-
-    public Profile(Parcel in){
-        make = in.readString();
-        model = in.readString();
-        year = in.readString();
-        capacity = in.readString();
-        citympg = in.readString();
-        highwaympg = in.readString();
-    }
 
     public String getMake(){return make;}
     public String getModel(){return model;}
@@ -58,7 +51,10 @@ public class Profile implements Parcelable{
     public static void addToPathArray(Path p){
 
         if(p == null) {
-            Console.log("PAth is null");
+            Console.log("Profile: current Path is null");
+            return;
+        } else if (pathArray.contains(p)){
+            Console.log("Profile: current Path is duplicate");
             return;
         }
         pathArray.add(p);
@@ -76,6 +72,13 @@ public class Profile implements Parcelable{
             p.printData();
         }
     }
+    public static void cleanArray(){
+
+        for(int i=0;i<pathArray.size()-1;i++){
+            if(pathArray.get(i) == null) Console.log("Profile: path at "+i+" is null");
+            else pathArray.get(i).printData();
+        }
+    }
 
     public static void printPath(){
         Console.log("Printing paths array");
@@ -87,28 +90,4 @@ public class Profile implements Parcelable{
         }
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeString(make);
-        out.writeString(model);
-        out.writeString(year);
-        out.writeString(capacity);
-        out.writeString(citympg);
-        out.writeString(highwaympg);
-    }
-
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public Profile createFromParcel(Parcel in) {
-            return new Profile(in);
-        }
-
-        public Profile[] newArray(int size) {
-            return new Profile[size];
-        }
-    };
 }
