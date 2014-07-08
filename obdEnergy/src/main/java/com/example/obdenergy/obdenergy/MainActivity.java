@@ -2,8 +2,11 @@ package com.example.obdenergy.obdenergy;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,12 +25,14 @@ import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.example.obdenergy.obdenergy.Utilities.DataLogger;
+import com.example.obdenergy.obdenergy.Utilities.HttpTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -69,7 +74,11 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     public static SharedPreferences userData;
     public static JSONArray jsonPathArray;
 
+    public ArrayList<String> dbPathArray;
+    public String queuedPathsFromMemory;
 
+    Gson gson;
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +101,9 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         actionBar.addTab(Tab1);
         actionBar.addTab(Tab2);
         actionBar.addTab(Tab3);
+
+        gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+        dbPathArray = new ArrayList<String>();
 
         /*If this is the first time running the app, get user data*/
         userData = getSharedPreferences(USER_DATA_FILE, 0);
@@ -200,7 +212,20 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         path.treesKilled = treesKilled;
 
         path.averageSpeed = Calculations.getAvgSpeed(path.speedArray);
-        Profile.addToPathArray(path);
+        if(Profile.checkPath(path)){
+            Profile.addToPathArray(path);
+            String json = username+" "+gson.toJson(path);
+            Console.log(classID+" Path DBJSON is "+json);
+            if(isNetworkAvailable()){
+                Console.log(classID+"We have wifi, adding path to db");
+                sendToDatabase(json);
+            } else {
+                Console.log(classID+"no wifi :( adding to queue");
+                dbPathArray.add(json);
+                Console.log(classID+" Queue is now "+dbPathArray);
+                }
+        }
+
         Profile.checkArray();
         metricFragment.MetricFragmentDataComm(String.valueOf(gallons), carbonUsed, String.valueOf(treesKilled));
     }
@@ -210,6 +235,19 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     }
 
     private void createProfile(){
+
+        username = userData.getString("name", "");
+        queuedPathsFromMemory = userData.getString("pathQueue", "");
+
+        /*If there is a queue and we have wifi, write to database*/
+        if(!queuedPathsFromMemory.matches("")) {
+            if(isNetworkAvailable()){
+                /*Write to database and wipe memory clean*/
+                sendToDatabase(queuedPathsFromMemory);
+                userData.edit().putString("pathQueue", "").commit();
+            }
+        }
+
         String make = userData.getString("car_make", "");
         String model = userData.getString("car_model", "");
         String year = userData.getString("car_year", "");
@@ -225,7 +263,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Profile.setCitympg(city);
         Profile.setHighwaympg(highway);
 
-
         try {
             Profile.pathHistoryJSON = new JSONArray(pathStringArray);
             Console.log(classID+"Path JSON array is "+Profile.pathHistoryJSON);
@@ -240,7 +277,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         super.onStop();
 
         /*Create GSON builder that can write static variables (Path needs static vars and methods)*/
-        Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+//        Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 
 
         Profile.cleanArray();
@@ -257,12 +294,14 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             e.printStackTrace();
         }
 
+
         /*Write data to permanent storage in device*/
         for(Path p: Profile.pathArray){
             DataLogger.writeData("PATH: \n"+p.returnData());
         }
 
         Console.log(classID+"Profile path history, json path "+Profile.pathHistoryJSON+" "+jsonPathArray);
+
 
         /*Check what exactly should be pushed into SharedPreferences, to avoid null data*/
         if(Profile.pathHistoryJSON== null && Profile.pathArray.size() ==0){
@@ -281,9 +320,31 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         userData.edit().putString("Paths", finalJSONArray.toString()).commit();
 //        userData.edit().putString("Paths", "").commit(); /*For testing null strings purposes*/
 
+        String finalPaths = queuedPathsFromMemory+gson.toJson(dbPathArray);
+        if(isNetworkAvailable()) {
+            Console.log(classID+"We have wifi!");
+            sendToDatabase(finalPaths);
+        } else {
+            Console.log(classID+" no wifi :(((");
+            userData.edit().putString("pathQueue", finalPaths).commit();
+        }
+
         Console.log(classID+"Put array "+finalJSONArray+"in set, committed to SharedPrefs");
+    }
 
+    public void sendToDatabase(String json){
+        String url = "http://192.168.1.8:8888/";
+        String[] params = {url, json};
 
+        HttpTask task = new HttpTask();
+        task.execute(params);
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.obdenergy.obdenergy.Data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
 import org.json.JSONArray;
@@ -49,21 +50,25 @@ public class Profile{
 
 
     public static void addToPathArray(Path p){
-
-        if(p == null) {
-            Console.log("Profile: current Path is null");
-            return;
-        } else if (pathArray.contains(p)){
-            Console.log("Profile: current Path is duplicate");
-            return;
-        }
         pathArray.add(p);
         Console.log("Profile added path to array, size is "+pathArray.size());
-
     }
+
     public static String checkContents(){
         String returnString = "Make "+make+" Model "+model+" Year "+year+" Capacity "+capacity+" CityMPG "+citympg+" HighwayMPG"+highwaympg;
         return returnString;
+    }
+
+    public static boolean checkPath(Path p){
+        Console.log("progile checking path");
+        if(p == null) {
+            Console.log("Profile: current Path is null");
+            return false;
+        } else if (pathArray.contains(p)){
+            Console.log("Profile: current Path is duplicate");
+            return false;
+        }
+        else return true;
     }
     public static void checkArray(){
         int counter = 0;

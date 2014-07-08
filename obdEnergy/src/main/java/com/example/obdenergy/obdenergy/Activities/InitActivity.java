@@ -18,6 +18,7 @@ import com.example.obdenergy.obdenergy.Utilities.DataLogger;
  */
 public class InitActivity extends Activity implements View.OnClickListener{
 
+    private EditText nameField;
     private EditText makeField;
     private EditText modelField;
     private EditText yearField;
@@ -26,6 +27,7 @@ public class InitActivity extends Activity implements View.OnClickListener{
     private EditText highwaympg;
     private Button doneButton;
 
+    String name;
     String make;
     String model;
     String year;
@@ -43,6 +45,7 @@ public class InitActivity extends Activity implements View.OnClickListener{
 
         settings = getSharedPreferences(USER_DATA_FILE, 0);
 
+        nameField = (EditText) (findViewById(R.id.nameField));
         makeField = (EditText)(findViewById(R.id.makeField));
         modelField = (EditText)(findViewById(R.id.modelField));
         yearField = (EditText)(findViewById(R.id.yearField));
@@ -58,6 +61,7 @@ public class InitActivity extends Activity implements View.OnClickListener{
     }
 
     private void setDefaults() {
+        nameField.setText("Sumayyah");
         makeField.setText("Honda");
         modelField.setText("Accord");
         yearField.setText("1996");
@@ -69,6 +73,7 @@ public class InitActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
 
+        name = nameField.getText().toString();
         make = makeField.getText().toString();
         model = modelField.getText().toString();
         year = yearField.getText().toString();
@@ -77,7 +82,7 @@ public class InitActivity extends Activity implements View.OnClickListener{
         highway = highwaympg.getText().toString();
 
         /*Check that all fields are filled in*/
-        if( !checkNull(makeField) || !checkNull(modelField) || !checkNull(yearField) || !checkNull(capacityField) || !checkNull(citympg) || !checkNull(highwaympg)){
+        if( !checkNull(nameField) ||!checkNull(makeField) || !checkNull(modelField) || !checkNull(yearField) || !checkNull(capacityField) || !checkNull(citympg) || !checkNull(highwaympg)){
 
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -99,8 +104,7 @@ public class InitActivity extends Activity implements View.OnClickListener{
         }
         else {
 
-
-
+            settings.edit().putString("name", name).commit();
             settings.edit().putString("car_make", make).commit();
             settings.edit().putString("car_model", model).commit();
             settings.edit().putString("car_year", year).commit();
@@ -128,7 +132,7 @@ public class InitActivity extends Activity implements View.OnClickListener{
     }
 
     private String printData(){
-        String finalString = "Car Make: "+make+"\nCar model: "+ model+"\nYear of manufacture: "+year+"\nTank capacity: "+tank+"\nCity mileage: "+city+"\nHighway mileage: "+highway+"\n";
+        String finalString = "Name: "+name+"\nCar Make: "+make+"\nCar model: "+ model+"\nYear of manufacture: "+year+"\nTank capacity: "+tank+"\nCity mileage: "+city+"\nHighway mileage: "+highway+"\n";
         return finalString;
     }
 
