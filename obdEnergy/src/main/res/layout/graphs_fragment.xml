@@ -158,5 +158,50 @@
 
     </LinearLayout>
 
+    <com.example.obdenergy.obdenergy.Utilities.SlideoutMenu
+        android:id="@+id/slideoutMenu_layout"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:padding="40dp"
+        android:background="#888"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="About our Calculations"
+            android:textColor="@android:color/black"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/hidemenuButton"
+            android:text="Hide"
+            android:visibility="gone"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center_horizontal"
+            />
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/scrollview"
+            android:padding="10dp"
+            android:paddingTop="50dp"
+            >
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/scrollViewText"
+                android:textColor="@android:color/black"
+                android:textSize="15sp">
+            </TextView>
+        </ScrollView>
+
+        </com.example.obdenergy.obdenergy.Utilities.SlideoutMenu>
+
+    <!--TODO:add imageview of info icon-->
+
 
 </LinearLayout>

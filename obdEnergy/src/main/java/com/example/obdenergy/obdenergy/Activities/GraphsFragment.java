@@ -5,30 +5,28 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
-import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.example.obdenergy.obdenergy.Utilities.GridAdapter;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.example.obdenergy.obdenergy.Utilities.SlideoutMenu;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
 
 
@@ -51,6 +49,11 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private Button month;
     private ImageView cloudClicker;
     private ImageView leafClicker;
+
+    private SlideoutMenu slideoutMenu;
+    private ScrollView scrollView;
+    private TextView scrollViewText;
+    private Button hideMenuButton;
 
     private final String classID="GraphsFragment ";
 
@@ -153,6 +156,21 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Console.log(classID+"onCreate");
+
+        slideoutMenu = (SlideoutMenu)(getView().findViewById(R.id.slideoutMenu_layout));
+        scrollView = (ScrollView)(getView().findViewById(R.id.scrollview));
+        scrollViewText = (TextView)(getView().findViewById(R.id.scrollViewText));
+        hideMenuButton = (Button)(getView().findViewById(R.id.hidemenuButton));
+        hideMenuButton.setOnClickListener(this);
+
+        //get width and height of window
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        slideoutMenu.height(metrics.heightPixels);
+        slideoutMenu.width(metrics.widthPixels);
+
+        scrollViewText.setText("Blah blah blah CO2");
         super.onCreate(savedInstanceState);
     }
 
@@ -169,6 +187,11 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
 
         switch (v.getId()) {
+
+            case R.id.hidemenuButton:
+                Console.log(classID+"hide menu button clicked");
+                slideoutMenu.toggle();
+                break;
             case R.id.todayButton: /*Get today's data collected to far - so this is all the paths stored now? no this won't work*/
                 dayPressed =true;weekPressed = false;monthPressed = false;
 
