@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Modifier;
+import java.text.DecimalFormat;
 
 
 /**
@@ -149,7 +150,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         return view;
     }
 
-    /*This runs only once, so parsing and storing of data is done only on creation of activity*/
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Console.log(classID+"onCreate");
@@ -223,8 +223,10 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 fuelUsed.setText(dayFuelNum + "");
 
                 carbonUsed.setText(dayCarbonNum + " kilos CO2");
-                if(dayCarbonNum<=10) {adapterNum = (int)(dayCarbonNum); scale.setText("1 cloud per kilo of carbon");}
-                else {adapterNum = (int)(dayCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
+//                if(dayCarbonNum<=10) {adapterNum = (int)(dayCarbonNum); scale.setText("1 cloud per kilo of carbon");}
+//                else {adapterNum = (int)(dayCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
+                adapterNum = (int)dayCarbonNum;
+                scale.setText("1 cloud per kilo of carbon");
                 adapterType = "CARBON";
 
 //                Console.log(classID+"Cloud and day, send number and type "+adapterNum+" "+adapterType);
@@ -258,8 +260,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
                 carbonUsed.setText(dayCarbonNum + " kilos CO2");
                 treesUsed.setText(dayTreesNum + " trees required");
-                scale.setText("1 leaf per tree required");
-                adapterNum = (int)dayTreesNum;
+                scale.setText("1 leaf per 0.1 tree required");
+                adapterNum = (int)(dayTreesNum*10);
                 adapterType = "TREE";
 
 //                Console.log(classID+"Leaf and day, send number and type "+adapterNum+" "+adapterType);
@@ -269,8 +271,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
                 carbonUsed.setText(weekCarbonNum + " kilos CO2");
                 treesUsed.setText(weekTreesNum + " trees required");
-                scale.setText("1 leaf per tree required");
-                adapterNum = (int)(weekTreesNum);
+                scale.setText("1 leaf per 0.1 tree required");
+                adapterNum = (int)(weekTreesNum*10);
                 adapterType = "TREE";
 
 //                Console.log(classID+"Leaf and week, send number and type "+adapterNum+" "+adapterType);
@@ -279,8 +281,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 fuelUsed.setText(monthFuelNum+"");
                 carbonUsed.setText(monthCarbonNum + " kilos CO2");
                 treesUsed.setText(monthTreesNum + " trees required");
-                scale.setText("1 leaf per tree required");
-                adapterNum = (int)(monthTreesNum);
+                scale.setText("1 leaf per 0.1 tree required");
+                adapterNum = (int)(monthTreesNum*10);
                 adapterType = "TREE";
 //                Console.log(classID+"Leaf and month, send number and type "+adapterNum+" "+adapterType);
             }
@@ -296,6 +298,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private void parseJSON(JSONArray jsonArray) throws JSONException {
 
         Console.log(classID + "Parsing JSON "+jsonArray);
+
+        DecimalFormat df = new DecimalFormat("#.00");
 
         Long objTimestamp;
         double fuelNum;
@@ -341,6 +345,16 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 Console.log(classID+" Today from "+dayStartRange+" to "+currentTime+" Data: fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
             }
         }
+
+        dayCarbonNum = Double.parseDouble(df.format(dayCarbonNum));
+        dayTreesNum = Double.parseDouble(df.format(dayTreesNum));
+        dayFuelNum = Double.parseDouble(df.format(dayFuelNum));
+        weekCarbonNum = Double.parseDouble(df.format(weekCarbonNum));
+        weekTreesNum = Double.parseDouble(df.format(weekTreesNum));
+        weekFuelNum = Double.parseDouble(df.format(weekFuelNum));
+        monthCarbonNum = Double.parseDouble(df.format(monthCarbonNum));
+        monthTreesNum = Double.parseDouble(df.format(monthTreesNum));
+        monthFuelNum = Double.parseDouble(df.format(monthFuelNum));
 
         printData();
     }

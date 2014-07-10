@@ -46,7 +46,7 @@ public class Calculations {
         }
 
         gallons = Double.valueOf(df.format(gallons));
-        Console.log(classID+" MAF gallon calculation returns "+gallons);
+//        Console.log(classID+" MAF gallon calculation returns "+gallons);
 
         return gallons;
     }
@@ -69,8 +69,10 @@ public class Calculations {
     public static Double getGallons(double miles, String street){
         double gallons = 0.0;
         DecimalFormat df = new DecimalFormat("#.00");
+        String mpg = "0.0";
 
-        String mpg = MainActivity.userData.getString(street, "city");
+        if(street.equals("City")) mpg = MainActivity.userData.getString(street, "city");
+        else mpg = MainActivity.userData.getString(street, "highway");
 
         Double answer = miles*(1/(Double.parseDouble(mpg)));
         gallons = Double.parseDouble(df.format(answer));
@@ -98,7 +100,7 @@ public class Calculations {
         double treesKilled = multiplier*gallonsUsed;
 
        treesKilled = Double.parseDouble(df.format(treesKilled));
-        Console.log(classID+"Trees calculated "+treesKilled);
+//        Console.log(classID+"Trees calculated "+treesKilled);
         return treesKilled;
     }
 
@@ -109,7 +111,7 @@ public class Calculations {
         double byte2 = hexToInt(val2);
 
         value = ((byte1*256)+byte2)/100;
-        Console.log(classID+" MAF is calculated "+value);
+//        Console.log(classID+" MAF is calculated "+value);
         return value;
     }
 
@@ -128,7 +130,7 @@ public class Calculations {
         }
 
         finalMiles = Double.valueOf(df.format(finalMiles));
-        Console.log(classID+"Miles travelled "+finalMiles);
+//        Console.log(classID+"Miles travelled "+finalMiles);
         return finalMiles;
     }
 
@@ -142,7 +144,7 @@ public class Calculations {
         }
         double temp = 0.621371*(total/speedArray.size());
         averageSpeed = Double.valueOf(df.format(temp));
-        Console.log("Path calculated average speed is "+averageSpeed);
+//        Console.log("Path calculated average speed is "+averageSpeed);
         return averageSpeed;
     }
 

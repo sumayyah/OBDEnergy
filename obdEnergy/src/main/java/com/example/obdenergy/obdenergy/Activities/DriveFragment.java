@@ -335,6 +335,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
                 timeSwapper += timeInProgress;
                 timeHandler.removeCallbacks(timerThread);
+                speedHandler.removeCallbacks(speedThread);
 
                 /*Reset the timer*/
                 timer.setText("00:00:00");
@@ -389,6 +390,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private void onStartPressed() {
 
         mainActivity.path = new Path();
+        mainActivity.path.username = mainActivity.username;
+
         Console.log(classID+"created new path");
 //        sendMessage(CHECK_PROTOCOL + "\r");
 
@@ -401,13 +404,12 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onStopPressed() {
+        Console.log(classID+"Stop pressed");
 
         timeHandler.removeCallbacks(timerThread);
         speedHandler.removeCallbacks(speedThread);
 
         if(fuelDataGiven) sendMessage(FUEL_REQUEST+"\r");
-
-        mainActivity.path.printData();
 
     }
 
@@ -517,6 +519,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                         if(start && !stop){
                             mainActivity.path.addToMAFarray(firstPart, secondPart);
                         }else if(!start && stop){
+                            Console.log(classID+"MAF and STOP");
                             listener.DriveFragmentDataComm(PID);
                         }else Console.log("Some other bool");
                         break;
@@ -556,7 +559,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                         mainActivity.path.addToSpeedArray(secondPart);
                         break;
                 }
-
             }
         }
         else {
@@ -564,7 +566,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
             if(stop) {
                 Console.log(classID+" No data calculated at all");
-//                listener.DriveFragmentDataComm(4);
             }
 
         }

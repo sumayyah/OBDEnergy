@@ -60,7 +60,7 @@ public class Profile{
     }
 
     public static boolean checkPath(Path p){
-        Console.log("progile checking path");
+        Console.log("profile checking path");
         if(p == null) {
             Console.log("Profile: current Path is null");
             return false;

@@ -25,6 +25,7 @@ public class Path implements Comparable<Path>{
     public static Double milesTravelled = (double) 0.0;
     public static String initTimestamp = "";
     public static String finalTimestamp = "";
+    public static String username = "";
     public static ArrayList<Integer> speedArray = new ArrayList<Integer>();
     public static ArrayList<Double> timeArray = new ArrayList<Double>();
     public static ArrayList<Double> MAFarray = new ArrayList<Double>();
@@ -42,7 +43,6 @@ public class Path implements Comparable<Path>{
         double temp = Double.parseDouble(String.valueOf(temp1));
         finalFuel = temp;
     }
-
 
     public static void setInitTimestamp(String val){ initTimestamp = val;
         Console.log("Set init timestamp " + val);}
@@ -66,12 +66,11 @@ public class Path implements Comparable<Path>{
 
     public static boolean isHighway(){
 
-        if(speedArray.size() < 10) return false;
+        if(speedArray.size() < 20) return false;
         for(int i=10;i<speedArray.size()-10;i++){
             if(speedArray.get(i) > 80 && speedArray.get(i-10) > 80 && speedArray.get(i+10) > 80)
                 return true;
         }
-
         return false;
     }
 
@@ -84,8 +83,10 @@ public class Path implements Comparable<Path>{
 
 
     public void printData() {
-        Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF+" average speed "+averageSpeed+" initTime "+initTimestamp+" finalTime "+finalTimestamp);
+        Console.log("Name "+username);
+        Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF+" initTime "+initTimestamp+" finalTime "+finalTimestamp);
         Console.log("Gallons "+gallonsUsed+", Carbon "+carbonUsed+", Trees "+treesKilled);
+        Console.log("Miles travelled "+milesTravelled+" average speed "+averageSpeed);
         Console.log("Speed array is: "+printArray(speedArray));
         Console.log("MAF array is: "+printArray(MAFarray));
     }
@@ -93,13 +94,14 @@ public class Path implements Comparable<Path>{
     public String returnData(){
         String finalString = "";
 
-        String constants = "Init fuel: "+initFuel+"\nFinalFuel: "+finalFuel+"\nAverage speed: "+averageSpeed+"\nMiles driven: "+milesTravelled;
+        String name = "Name: "+username;
+        String constants = "\nInit fuel: "+initFuel+"\nFinalFuel: "+finalFuel+"\nAverage speed: "+averageSpeed+"\nMiles driven: "+milesTravelled;
         String calculations ="\nGallons: "+gallonsUsed+"\nCarbon: "+carbonUsed+"\nTrees: "+treesKilled;
         String speeds = "\nSpeeds are "+printArray(speedArray);
         String mafs = "\nMAF values are "+printArray(MAFarray);
         String times = "\n Time values are "+printArray(timeArray);
 
-        finalString = finalString + constants+calculations+speeds+mafs+times;
+        finalString = finalString + name+constants+calculations+speeds+mafs+times;
 
         return finalString;
     }

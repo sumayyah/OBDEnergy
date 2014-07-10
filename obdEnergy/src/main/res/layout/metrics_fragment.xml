@@ -4,29 +4,6 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <!--<RelativeLayout-->
-        <!--android:id="@+id/DetailLayout"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:background="#111111"-->
-        <!--android:layout_height="100dp">-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/fuelNumber"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="256"-->
-            <!--android:textSize="40sp"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:textColor="#fffe"/>-->
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_toRightOf="@+id/fuelNumber"-->
-            <!--android:layout_alignBaseline="@+id/fuelNumber"-->
-            <!--android:textColor="#fff"-->
-            <!--android:text="gallons of gas"/>-->
-    <!--</RelativeLayout>-->
-
 
     <!--Fuel Used-->
     <LinearLayout
@@ -62,12 +39,14 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:textSize="60sp"
+                android:textColor="#aaa"
                 android:layout_gravity="center_vertical"
                 android:text="100"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:textColor="#aaa"
                 android:text="Gals"/>
         </LinearLayout>
     </LinearLayout>
@@ -108,12 +87,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
+                android:textColor="#aaa"
                 android:textSize="60sp"
                 android:text="50"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:textColor="#aaa"
                 android:text="kg carbon"/>
         </LinearLayout>
     </LinearLayout>
@@ -156,11 +137,13 @@
                 android:padding="10dp"
                 android:textSize="60sp"
                 android:layout_gravity="center_vertical"
+                android:textColor="#aaa"
                 android:text="50"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:textColor="#aaa"
                 android:text="trees required"/>
         </LinearLayout>
 
@@ -205,7 +188,7 @@
                 android:text="86"
                 android:textSize="40sp"
                 android:layout_gravity="center_vertical"
-                android:textColor="#fffe"/>
+                android:textColor="#fff"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
