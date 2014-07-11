@@ -3,6 +3,7 @@ package com.example.obdenergy.obdenergy.Activities;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -21,7 +22,6 @@ import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.example.obdenergy.obdenergy.Utilities.GridAdapter;
-import com.example.obdenergy.obdenergy.Utilities.SlideoutMenu;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,11 +49,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private Button month;
     private ImageView cloudClicker;
     private ImageView leafClicker;
-
-    private SlideoutMenu slideoutMenu;
-    private ScrollView scrollView;
-    private TextView scrollViewText;
-    private Button hideMenuButton;
+    private ImageView infoView;
 
     private final String classID="GraphsFragment ";
 
@@ -100,12 +96,14 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         month = (Button)(view.findViewById(R.id.monthButton));
         cloudClicker = (ImageView)(view.findViewById(R.id.cloudClicker));
         leafClicker = (ImageView)(view.findViewById(R.id.leafClicker));
+        infoView = (ImageView)(view.findViewById(R.id.info_icon_layout));
 
         today.setOnClickListener(this);
         week.setOnClickListener(this);
         month.setOnClickListener(this);
         cloudClicker.setOnClickListener(this);
         leafClicker.setOnClickListener(this);
+        infoView.setOnClickListener(this);
 
         fuelUsed.setText(mainActivity.path.gallonsUsed+"");
         treesUsed.setText(mainActivity.path.treesKilled+"");
@@ -115,6 +113,17 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         dayStartRange = currentTime - secsInDay;
         weekStartRange = currentTime - secsInWeek;
         Console.log(classID+"Timings: Current: "+currentTime+" day from "+dayStartRange+" week from "+weekStartRange);
+
+
+//        RelativeLayout imageLayout = (RelativeLayout)(view.findViewById(R.id.imageLayout));
+//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50,50);
+//        params.leftMargin = 100;
+//        params.rightMargin = 100;
+//
+//        ImageView imgView = new ImageView(getActivity());
+//        imgView.setBackgroundResource(R.drawable.launcher_icon1);
+//
+//        imageLayout.addView(imgView, params);
 
         /*If the user has paths in the current session*/
         if(Profile.pathArray.size() > 0){
@@ -157,20 +166,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         Console.log(classID+"onCreate");
 
-        slideoutMenu = (SlideoutMenu)(getView().findViewById(R.id.slideoutMenu_layout));
-        scrollView = (ScrollView)(getView().findViewById(R.id.scrollview));
-        scrollViewText = (TextView)(getView().findViewById(R.id.scrollViewText));
-        hideMenuButton = (Button)(getView().findViewById(R.id.hidemenuButton));
-        hideMenuButton.setOnClickListener(this);
 
-        //get width and height of window
-        DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        slideoutMenu.height(metrics.heightPixels);
-        slideoutMenu.width(metrics.widthPixels);
-
-        scrollViewText.setText("Blah blah blah CO2");
         super.onCreate(savedInstanceState);
     }
 
@@ -188,9 +184,10 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         switch (v.getId()) {
 
-            case R.id.hidemenuButton:
-                Console.log(classID+"hide menu button clicked");
-                slideoutMenu.toggle();
+            case R.id.info_icon_layout:
+                Console.log(classID+"clicked info!");
+                Intent intent = new Intent(getActivity(), InfoActivity.class);
+                startActivity(intent);
                 break;
             case R.id.todayButton: /*Get today's data collected to far - so this is all the paths stored now? no this won't work*/
                 dayPressed =true;weekPressed = false;monthPressed = false;
@@ -216,6 +213,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 week.setTextColor(Color.WHITE);
                 displayData(dayPressed, weekPressed, monthPressed, cloud, leaf);
                 break;
+
             case R.id.cloudClicker:
                 cloud = true;leaf = false;
 
@@ -233,6 +231,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 leafClicker.setImageDrawable(getResources().getDrawable(R.drawable.leafgreen));
                 treesUsed.setTextColor(Color.parseColor("#A4C739"));
                 displayData(dayPressed, weekPressed, monthPressed, cloud, leaf);
+                break;
+
             default:
                 break;
         }
