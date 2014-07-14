@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
 
 import com.example.obdenergy.obdenergy.Activities.DriveFragment;
 import com.example.obdenergy.obdenergy.Activities.FuelSurveyActivity;
@@ -28,14 +27,11 @@ import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 import com.example.obdenergy.obdenergy.Utilities.HttpTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity implements DriveFragment.dataListener {
@@ -84,6 +80,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // Set up the action bar.
 
@@ -388,11 +385,14 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 Intent intent = new Intent(this, InitActivity.class);
                 startActivityForResult(intent, REQUEST_CREATE_PROFILE);
                 return true;
-            default:
+            case R.id.info:
                 Intent intentInfo = new Intent(this, InfoActivity.class);
                 startActivity(intentInfo);
+                break;
+            default:
                 return super.onOptionsItemSelected(item);
         }
+        return true;
     }
 
 }

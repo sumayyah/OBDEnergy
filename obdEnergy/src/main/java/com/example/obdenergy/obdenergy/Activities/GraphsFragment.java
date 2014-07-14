@@ -3,17 +3,14 @@ package com.example.obdenergy.obdenergy.Activities;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.Data.Path;
@@ -49,7 +46,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private Button month;
     private ImageView cloudClicker;
     private ImageView leafClicker;
-    private ImageView infoView;
 
     private final String classID="GraphsFragment ";
 
@@ -96,14 +92,12 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         month = (Button)(view.findViewById(R.id.monthButton));
         cloudClicker = (ImageView)(view.findViewById(R.id.cloudClicker));
         leafClicker = (ImageView)(view.findViewById(R.id.leafClicker));
-        infoView = (ImageView)(view.findViewById(R.id.info_icon_layout));
 
         today.setOnClickListener(this);
         week.setOnClickListener(this);
         month.setOnClickListener(this);
         cloudClicker.setOnClickListener(this);
         leafClicker.setOnClickListener(this);
-        infoView.setOnClickListener(this);
 
         fuelUsed.setText(mainActivity.path.gallonsUsed+"");
         treesUsed.setText(mainActivity.path.treesKilled+"");
@@ -165,7 +159,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Console.log(classID+"onCreate");
-
+        setHasOptionsMenu(true);
 
         super.onCreate(savedInstanceState);
     }
@@ -184,11 +178,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         switch (v.getId()) {
 
-            case R.id.info_icon_layout:
-                Console.log(classID+"clicked info!");
-                Intent intent = new Intent(getActivity(), InfoActivity.class);
-                startActivity(intent);
-                break;
             case R.id.todayButton: /*Get today's data collected to far - so this is all the paths stored now? no this won't work*/
                 dayPressed =true;weekPressed = false;monthPressed = false;
 
