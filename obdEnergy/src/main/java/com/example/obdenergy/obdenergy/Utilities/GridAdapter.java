@@ -17,17 +17,24 @@ import java.util.ArrayList;
 public class GridAdapter extends BaseAdapter {
 
     private Context context;
-    private int imageNum;
-    private String imageType;
-    private String[] treeList;
+//    private int imageNum;
+//    private String imageType;
+    private ArrayList<Integer> imageList;
 
-    public GridAdapter(Context context, int imageNum, String imageType){
+//    public GridAdapter(Context context, int imageNum, String imageType){
+//        this.context = context;
+//        this.imageNum = imageNum;
+//        this.imageType = imageType;
+//
+//        imageList = new String[]{"R.drawable.tree1leaf", "R.drawable.tree2leaves", "R.drawable.tree3leaves", "R.drawable.tree4leaves", "R.drawable.tree5leaves", "R.drawable.tree6leaves", "R.drawable.tree7leaves", "R.drawable.tree8leaves", "R.drawable.tree9leaves", "R.drawable.tree10leaves"};
+//    }
+
+    public GridAdapter(Context context, ArrayList<Integer> imageList){
         this.context = context;
-        this.imageNum = imageNum;
-        this.imageType = imageType;
+//        this.imageType = imageType;
+        this.imageList = imageList;
 
-        treeList = new String[]{"R.drawable.tree1leaf", "R.drawable.tree2leaves", "R.drawable.tree3leaves", "R.drawable.tree4leaves", "R.drawable.tree5leaves", "R.drawable.tree6leaves", "R.drawable.tree7leaves", "R.drawable.tree8leaves", "R.drawable.tree9leaves", "R.drawable.tree10leaves"};
-        Console.log("New GridAdapter with treelist 1 and 3 "+treeList[0]+" "+treeList[1]);
+        Console.log("New gridadapter ");
     }
 
     @Override
@@ -43,31 +50,29 @@ public class GridAdapter extends BaseAdapter {
             ImageView imageView = (ImageView) gridView
                     .findViewById(R.id.gridImage);
 
-            if(imageType.equals("CARBON")){
-                imageView.setImageResource(R.drawable.cloud_icon);
-            }else if(imageType.equals("TREE")) {
-                imageView.setImageResource(R.drawable.leafcopy);
-                setTreeImage();
-            }
+            imageView.setImageResource(imageList.get(position));
+
+//            if(imageType.equals("CARBON")){
+//                imageView.setImageResource(R.drawable.cloud_icon);
+//            }else if(imageType.equals("TREE")) {
+////                Console.log("setting leaf image at " + position+" with "+imageList.get(position));
+//                imageView.setImageResource(imageList.get(position));
+//            }
 
         return gridView;
 
     }
 
-    private void setTreeImage(){
-        Console.log("Gridview set tree image with number "+imageNum);
-
-
-    }
-
     @Override
     public int getCount() {
-//        Console.log("Returning new number "+imageNum);
-        return imageNum;
+        Console.log("Returning count " + imageList.size());
+//        return imageNum;
+        return imageList.size();
     }
 
     @Override
     public Object getItem(int position) {
+        Console.log("Get Item, position is "+position);
         return null;
     }
 

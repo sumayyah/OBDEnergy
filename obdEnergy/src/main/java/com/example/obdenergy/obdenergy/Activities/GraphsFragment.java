@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 
 /**
@@ -46,6 +47,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private Button month;
     private ImageView cloudClicker;
     private ImageView leafClicker;
+
+    private Integer[] treeList;
 
     private final String classID="GraphsFragment ";
 
@@ -70,6 +73,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private int adapterNum = 0;
     private String adapterType = "CARBON";
+    private ArrayList<Integer> imagelist;
 
     private boolean cloud = true;
     private boolean leaf = false;
@@ -106,7 +110,10 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         dayStartRange = currentTime - secsInDay;
         weekStartRange = currentTime - secsInWeek;
-        Console.log(classID+"Timings: Current: "+currentTime+" day from "+dayStartRange+" week from "+weekStartRange);
+
+        imagelist = new ArrayList<Integer>();
+
+//        Console.log(classID+"Timings: Current: "+currentTime+" day from "+dayStartRange+" week from "+weekStartRange);
 
 
 //        RelativeLayout imageLayout = (RelativeLayout)(view.findViewById(R.id.imageLayout));
@@ -152,8 +159,12 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 //        String holderString = "[{\"initTimestamp\":\"1402414587670\", \"finalMAF\":655.35,\"treesKilled\":7, \"gallonsUsed\":3, \"carbonUsed\":61},{\"initTimestamp\":\"1401896187867\", \"finalMAF\":655.35,\"treesKilled\":1,\"carbonUsed\":5,\"initFuel\":0,\"gallonsUsed\":7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402417236395\",\"carbonUsed\":9, \"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"treesKilled\":3,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
 
         setDefaults();
+        treeList = new Integer[]{R.drawable.tree1leaf, R.drawable.tree2leaves,  R.drawable.tree3leaves,  R.drawable.tree4leaves,  R.drawable.tree5leaves,  R.drawable.tree6leaves,  R.drawable.tree7leaves,  R.drawable.tree8leaves,  R.drawable.tree9leaves,  R.drawable.tree10leaves};
+//        setImageArray();
+
 
         return view;
+
     }
 
     @Override
@@ -227,10 +238,44 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    private ArrayList<Integer> setImageArray(int imagenumber, int type){
+//        double imagenumber = 5.2;
+        ArrayList<Integer> finalImages = new ArrayList<Integer>();
+        int wholenum = (int) imagenumber;
+        double decimalportion = imagenumber%1;
+        int finaldecimal = (int)(decimalportion*10);
+
+        switch(type){
+            case 1: /*If carbon*/
+
+                for(int i=0;i<wholenum;i++){
+                    finalImages.add(R.drawable.cloud_icon);
+                }
+
+                break;
+            case 2: /*If trees*/
+
+                for(int i=0;i<wholenum;i++){
+                    finalImages.add(treeList[9]);
+                }
+                if(decimalportion > 0){
+                    finalImages.add(treeList[finaldecimal - 1]);
+                }
+                break;
+            default:
+                break;
+        }
+
+        Console.log(classID+"Number of whole images is "+wholenum+" and parts are "+decimalportion+" ie "+finaldecimal);
+//        gridAdapter = new GridAdapter(mainActivity, finalImages, "TREE");
+//        gridView.setAdapter(gridAdapter);
+
+        return finalImages;
+    }
+
     private void displayData(boolean day, boolean week, boolean month, boolean cloud, boolean leaf){
+
         if(cloud && !leaf){
-
-
             if(day && !week && !month){
                 fuelUsed.setText(dayFuelNum + "");
 
@@ -239,7 +284,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 //                else {adapterNum = (int)(dayCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
                 adapterNum = (int)dayCarbonNum;
                 scale.setText("1 cloud per kilo of carbon");
-                adapterType = "CARBON";
+//                adapterType = "CARBON";
+                imagelist = setImageArray(adapterNum, 1);
 
 //                Console.log(classID+"Cloud and day, send number and type "+adapterNum+" "+adapterType);
             }
@@ -249,7 +295,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 carbonUsed.setText(weekCarbonNum + " kilos CO2");
                 if(weekCarbonNum<=10) {adapterNum = (int)(weekCarbonNum); scale.setText("1 cloud per kilo of carbon");}
                 else {adapterNum = (int)(weekCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
-                adapterType = "CARBON";
+//                adapterType = "CARBON";
+                imagelist = setImageArray(adapterNum, 1);
 
 //                Console.log(classID+"Cloud and week send number and type "+adapterNum+" "+adapterType);
             }
@@ -259,7 +306,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 carbonUsed.setText(monthCarbonNum + " kilos CO2");
                 if(monthCarbonNum<=10) {adapterNum = (int)(monthCarbonNum); scale.setText("1 cloud per kilo of carbon");}
                 else {adapterNum = (int)(monthCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
-                adapterType = "CARBON";
+//                adapterType = "CARBON";
+                imagelist = setImageArray(adapterNum, 1);
 
 //                Console.log(classID+"Cloud and month, send number and type "+adapterNum+" "+adapterType);
             }
@@ -274,7 +322,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 treesUsed.setText(dayTreesNum + " trees required");
                 scale.setText("1 leaf per 0.1 tree required");
                 adapterNum = (int)(dayTreesNum*10);
-                adapterType = "TREE";
+//                adapterType = "TREE";
+                imagelist = setImageArray(adapterNum, 2);
 
 //                Console.log(classID+"Leaf and day, send number and type "+adapterNum+" "+adapterType);
             }
@@ -285,7 +334,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 treesUsed.setText(weekTreesNum + " trees required");
                 scale.setText("1 leaf per 0.1 tree required");
                 adapterNum = (int)(weekTreesNum*10);
-                adapterType = "TREE";
+//                adapterType = "TREE";
+                imagelist = setImageArray(adapterNum, 2);
 
 //                Console.log(classID+"Leaf and week, send number and type "+adapterNum+" "+adapterType);
             }
@@ -295,7 +345,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 treesUsed.setText(monthTreesNum + " trees required");
                 scale.setText("1 leaf per 0.1 tree required");
                 adapterNum = (int)(monthTreesNum*10);
-                adapterType = "TREE";
+//                adapterType = "TREE";
+                imagelist = setImageArray(adapterNum, 2);
 //                Console.log(classID+"Leaf and month, send number and type "+adapterNum+" "+adapterType);
             }
             else Console.log(classID+"Wrong time bool for leaf");
@@ -303,7 +354,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         else Console.log(classID+"wrong boolean somewhere");
 
-        gridAdapter = new GridAdapter(mainActivity, adapterNum, adapterType);
+        gridAdapter = new GridAdapter(mainActivity, imagelist);
         gridView.setAdapter(gridAdapter);
     }
 
@@ -383,8 +434,9 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         carbonUsed.setTextColor(Color.parseColor("#A4C739"));
 
         adapterNum = (int)dayCarbonNum;
-        adapterType = "CARBON";
-        gridAdapter = new GridAdapter(mainActivity,adapterNum,adapterType); /*Call grid view when parsing is done*/
+//        adapterType = "CARBON";
+        imagelist = setImageArray(adapterNum, 1);
+        gridAdapter = new GridAdapter(mainActivity,imagelist); /*Call grid view when parsing is done*/
         gridView.setAdapter(gridAdapter);
     }
 
