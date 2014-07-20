@@ -8,15 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
-import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
 
 /**
  * Created by sumayyah on 5/31/14.
+ *
+ *
+ *
  */
 public class MetricFragment extends Fragment {
 

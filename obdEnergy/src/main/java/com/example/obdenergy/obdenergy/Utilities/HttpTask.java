@@ -32,7 +32,7 @@ public class HttpTask extends AsyncTask<String, Void, Void> {
 
 //            String json = "[{\"initTimestamp\":\"1402414587670\", \"finalMAF\":655.35,\"treesKilled\":7, \"gallonsUsed\":3, \"carbonUsed\":61},{\"initTimestamp\":\"1401896187867\", \"finalMAF\":655.35,\"treesKilled\":1,\"carbonUsed\":5,\"initFuel\":0,\"gallonsUsed\":7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402417236395\",\"carbonUsed\":9, \"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"treesKilled\":3,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
 
-//            json.put("name", "SUmayyah");
+//            json.put("name", "Sumayyah");
 //            json.put("email", "sahmed");
 //            StringEntity entity = new StringEntity(json.toString());
             StringEntity entity = new StringEntity(data);

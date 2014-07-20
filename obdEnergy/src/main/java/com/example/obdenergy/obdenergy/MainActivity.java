@@ -34,6 +34,20 @@ import org.json.JSONException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
+
+/**
+ * Created by sumayyah on 5/10/14.
+ *
+ *
+ * This is the central activity of the app, and manages the flow of data between fragments. It sets up DriveFragment,
+ * receives data from it, performs calculations functions when DriveFragment finishes data collection,
+ * and stores it in global variables then accessible from MetricsFragment and GraphsFragment.
+ * It is also responsible for reading and writing data to and from storage - SharedPreferences, local memory, and
+ * the cloud database.
+ *
+ * A listener interface allows it to receive data from DriveFragment upon completion of a drive session.
+ */
+
 public class MainActivity extends Activity implements DriveFragment.dataListener {
 
     private final String classID = "Main Activity ";
@@ -214,29 +228,21 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         path.averageSpeed = Calculations.getAvgSpeed(path.speedArray);
         if(Profile.checkPath(path)){
             Profile.addToPathArray(path);
-
+            graphsFragment.GraphsFragmentDataComm(path);
             dbPathArray.add(path);
             if(isNetworkAvailable()){
                 Console.log(classID+"adding to db");
                 concatenateDBData(queuedPathsFromMemory, dbPathArray);
             }
 
-//            String json = queuedPathsFromMemory+gson.toJson(dbPathArray)+username+" "+gson.toJson(path);
-//            queuedPathsFromMemory = "";
-//            dbPathArray.clear();
-//
-//            Console.log(classID+" Path DBJSON is "+json);
-//            if(isNetworkAvailable()){
-//                Console.log(classID+"We have wifi, adding path to db");
-//                sendToDatabase(json);
-//            } else {
-//                Console.log(classID+"no wifi :( adding to queue");
-//                dbPathArray.add(json);
-//                Console.log(classID+" Queue is now "+dbPathArray);
-//                }
         }
         Profile.checkArray();
         metricFragment.MetricFragmentDataComm(String.valueOf(gallons), carbonUsed, String.valueOf(treesKilled));
+    }
+
+    @Override
+    public void pathData() {
+
     }
 
     public void printMessage(String data){
@@ -276,6 +282,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         try {
             Profile.pathHistoryJSON = new JSONArray(pathStringArray);
             Console.log(classID+"Path JSON array is "+Profile.pathHistoryJSON);
+            graphsFragment.GraphsFragmentDataComm();
         } catch (JSONException e) {
             e.printStackTrace();
             Console.log(classID + " Failed to convert string to JSON");

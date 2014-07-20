@@ -30,6 +30,11 @@ import java.util.ArrayList;
 
 /**
  * Created by sumayyah on 5/31/14.
+ *
+ *
+ * This activity is meant to allow the user to see their data across a range of times. It receives
+ * the user's accumulated data in JSON form from the SharedPreferences file, parses it, and stores it in local
+ * variables. These variables supply the data to a Gridview that displays icons representing fuel usage.
  */
 
 public class GraphsFragment extends Fragment implements View.OnClickListener{
@@ -106,66 +111,45 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         fuelUsed.setText(mainActivity.path.gallonsUsed+"");
         treesUsed.setText(mainActivity.path.treesKilled+"");
 
-        currentTime = System.currentTimeMillis()/1000;
 
-        dayStartRange = currentTime - secsInDay;
-        weekStartRange = currentTime - secsInWeek;
 
         imagelist = new ArrayList<Integer>();
 
-//        Console.log(classID+"Timings: Current: "+currentTime+" day from "+dayStartRange+" week from "+weekStartRange);
 
-
-//        RelativeLayout imageLayout = (RelativeLayout)(view.findViewById(R.id.imageLayout));
-//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50,50);
-//        params.leftMargin = 100;
-//        params.rightMargin = 100;
+//        /*If the user has paths in the current session*/
+//        if(Profile.pathArray.size() > 0){
+//            Console.log(classID+"Paths in current session");
+////            for(Path p: Profile.pathArray){
+//                dayFuelNum += p.gallonsUsed;
+//                dayCarbonNum += p.carbonUsed;
+//                dayTreesNum += p.treesKilled;
 //
-//        ImageView imgView = new ImageView(getActivity());
-//        imgView.setBackgroundResource(R.drawable.launcher_icon1);
+//                weekFuelNum += p.gallonsUsed;
+//                weekCarbonNum += p.carbonUsed;
+//                weekTreesNum += p.treesKilled;
 //
-//        imageLayout.addView(imgView, params);
+//                monthFuelNum += p.gallonsUsed;
+//                monthCarbonNum += p.carbonUsed;
+//                monthTreesNum += p.treesKilled;
+//            }
+//
+//            Console.log(classID+"Before parsing, day: "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum+" week "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum+" month "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
+//        }
 
-        /*If the user has paths in the current session*/
-        if(Profile.pathArray.size() > 0){
-            Console.log(classID+"Paths in current session");
-            for(Path p: Profile.pathArray){
-                dayFuelNum += p.gallonsUsed;
-                dayCarbonNum += p.carbonUsed;
-                dayTreesNum += p.treesKilled;
 
-                weekFuelNum += p.gallonsUsed;
-                weekCarbonNum += p.carbonUsed;
-                weekTreesNum += p.treesKilled;
-
-                monthFuelNum += p.gallonsUsed;
-                monthCarbonNum += p.carbonUsed;
-                monthTreesNum += p.treesKilled;
-            }
-
-            Console.log(classID+"Before parsing, day: "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum+" week "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum+" month "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
-        }
-
-        try { //Go ahead and parse all the previous paths
-            parseJSON(new JSONArray(String.valueOf(Profile.pathHistoryJSON)));
-
-        } catch (JSONException e) {
-            Console.log(classID+" failed to get JSON array");
-            e.printStackTrace();
-        }
 
 //        Console.log(classID+"Pieces are today: "+todayJSONArray);
 //        Console.log(classID+"Historical "+Profile.pathHistoryJSON);
 //        String holderString = "[{\"initTimestamp\":\"1402414587670\", \"finalMAF\":655.35,\"treesKilled\":7, \"gallonsUsed\":3, \"carbonUsed\":61},{\"initTimestamp\":\"1401896187867\", \"finalMAF\":655.35,\"treesKilled\":1,\"carbonUsed\":5,\"initFuel\":0,\"gallonsUsed\":7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402417236395\",\"carbonUsed\":9, \"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"treesKilled\":3,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
 
-        setDefaults();
         treeList = new Integer[]{R.drawable.tree1leaf, R.drawable.tree2leaves,  R.drawable.tree3leaves,  R.drawable.tree4leaves,  R.drawable.tree5leaves,  R.drawable.tree6leaves,  R.drawable.tree7leaves,  R.drawable.tree8leaves,  R.drawable.tree9leaves,  R.drawable.tree10leaves};
-//        setImageArray();
 
+        setDefaults();
 
         return view;
 
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -182,7 +166,43 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         this.mainActivity = (MainActivity) activity;
     }
 
-    public void GraphsFragmentDataComm(){}
+    public void GraphsFragmentDataComm(){
+
+        currentTime = System.currentTimeMillis()/1000;
+
+        dayStartRange = currentTime - secsInDay;
+        weekStartRange = currentTime - secsInWeek;
+
+        Console.log(classID+"Called from Main and now parsing historical data ONCE");
+        try { //Go ahead and parse all the previous paths
+            parseJSON(new JSONArray(String.valueOf(Profile.pathHistoryJSON)));
+
+        } catch (JSONException e) {
+            Console.log(classID+" failed to get JSON array");
+            e.printStackTrace();
+        }
+
+    }
+
+    public void GraphsFragmentDataComm(Path p){
+
+        Console.log(classID+"Adding path, data before, day: "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum+" week "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum+" month "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
+
+        Console.log(classID+"Adding data, fuel carbon trees "+p.gallonsUsed+" "+p.carbonUsed+" "+p.treesKilled);
+        monthFuelNum += p.gallonsUsed;
+        monthCarbonNum += p.carbonUsed;
+        monthTreesNum += p.treesKilled;
+
+        weekFuelNum += p.gallonsUsed;
+        weekCarbonNum += p.carbonUsed;
+        weekTreesNum += p.treesKilled;
+
+        dayFuelNum += p.gallonsUsed;
+        dayCarbonNum += p.carbonUsed;
+        dayTreesNum += p.treesKilled;
+        Console.log(classID+"Adding path, data after, day: "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum+" week "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum+" month "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
+
+    }
 
     @Override
     public void onClick(View v) {

@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,6 +25,17 @@ import com.example.obdenergy.obdenergy.Utilities.Console;
 
 /**
  * Created by sumayyah on 5/31/14.
+ *
+ * DriveFragment performs the essential communication to and from the OBD scantool.
+ *
+ * Connect functionalities allow the user to connect to a list of paired Bluetooth devices.
+ *
+ * Pressing the Start and Stop buttons creates Path objects. Pressing Start starts
+ * communication with the scantool, and the fragment maintains asynchronous threads to run
+ * continuous requests in the background. Pressing Stop Finishes creation of the path object
+ * and alerts MainActivity that data collection is over, and to prompt calculations to begin.
+ *
+ * A listener interface allows it to pass data to MainActivity upon completion of a drive session.
  */
 
 public class DriveFragment extends Fragment implements View.OnClickListener {
@@ -362,6 +372,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
     public interface dataListener {
         public void DriveFragmentDataComm(int PID);
+        public void pathData();
     }
 
     public void sendMessage(String message) {
