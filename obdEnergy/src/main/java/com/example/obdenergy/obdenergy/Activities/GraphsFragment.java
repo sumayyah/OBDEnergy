@@ -76,7 +76,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private double monthCarbonNum = 0.0;
     private double monthTreesNum = 0.0;
 
-    private int adapterNum = 0;
+    private double adapterNum = 0;
     private String adapterType = "CARBON";
     private ArrayList<Integer> imagelist;
 
@@ -144,8 +144,9 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         treeList = new Integer[]{R.drawable.tree1leaf, R.drawable.tree2leaves,  R.drawable.tree3leaves,  R.drawable.tree4leaves,  R.drawable.tree5leaves,  R.drawable.tree6leaves,  R.drawable.tree7leaves,  R.drawable.tree8leaves,  R.drawable.tree9leaves,  R.drawable.tree10leaves};
 
-        setDefaults();
+//        setDefaults();
 
+        setImageArray(2, 1);
         return view;
 
     }
@@ -258,12 +259,12 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private ArrayList<Integer> setImageArray(int imagenumber, int type){
-//        double imagenumber = 5.2;
+    private ArrayList<Integer> setImageArray(double imagenumber, int type){
         ArrayList<Integer> finalImages = new ArrayList<Integer>();
         int wholenum = (int) imagenumber;
         double decimalportion = imagenumber%1;
         int finaldecimal = (int)(decimalportion*10);
+
 
         switch(type){
             case 1: /*If carbon*/
@@ -295,16 +296,14 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private void displayData(boolean day, boolean week, boolean month, boolean cloud, boolean leaf){
 
+        /*If the user has selected carbon*/
         if(cloud && !leaf){
             if(day && !week && !month){
                 fuelUsed.setText(dayFuelNum + "");
 
                 carbonUsed.setText(dayCarbonNum + " kilos CO2");
-//                if(dayCarbonNum<=10) {adapterNum = (int)(dayCarbonNum); scale.setText("1 cloud per kilo of carbon");}
-//                else {adapterNum = (int)(dayCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
-                adapterNum = (int)dayCarbonNum;
+                adapterNum = dayCarbonNum;
                 scale.setText("1 cloud per kilo of carbon");
-//                adapterType = "CARBON";
                 imagelist = setImageArray(adapterNum, 1);
 
 //                Console.log(classID+"Cloud and day, send number and type "+adapterNum+" "+adapterType);
@@ -314,8 +313,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
                 carbonUsed.setText(weekCarbonNum + " kilos CO2");
                 if(weekCarbonNum<=10) {adapterNum = (int)(weekCarbonNum); scale.setText("1 cloud per kilo of carbon");}
-                else {adapterNum = (int)(weekCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
-//                adapterType = "CARBON";
+                else {adapterNum = (weekCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
                 imagelist = setImageArray(adapterNum, 1);
 
 //                Console.log(classID+"Cloud and week send number and type "+adapterNum+" "+adapterType);
@@ -325,14 +323,15 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
                 carbonUsed.setText(monthCarbonNum + " kilos CO2");
                 if(monthCarbonNum<=10) {adapterNum = (int)(monthCarbonNum); scale.setText("1 cloud per kilo of carbon");}
-                else {adapterNum = (int)(monthCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
-//                adapterType = "CARBON";
+                else {adapterNum = (monthCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
                 imagelist = setImageArray(adapterNum, 1);
 
 //                Console.log(classID+"Cloud and month, send number and type "+adapterNum+" "+adapterType);
             }
             else Console.log(classID+"Wrong time bool for cloud");
         }
+
+        /*If the user has selected carbon*/
         else if(leaf && !cloud){
             scale.setText("1 leaf per tree required");
             if(day && !week && !month){
@@ -341,8 +340,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 carbonUsed.setText(dayCarbonNum + " kilos CO2");
                 treesUsed.setText(dayTreesNum + " trees required");
                 scale.setText("1 leaf per 0.1 tree required");
-                adapterNum = (int)(dayTreesNum*10);
-//                adapterType = "TREE";
+                adapterNum = (dayTreesNum);
                 imagelist = setImageArray(adapterNum, 2);
 
 //                Console.log(classID+"Leaf and day, send number and type "+adapterNum+" "+adapterType);
@@ -353,8 +351,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 carbonUsed.setText(weekCarbonNum + " kilos CO2");
                 treesUsed.setText(weekTreesNum + " trees required");
                 scale.setText("1 leaf per 0.1 tree required");
-                adapterNum = (int)(weekTreesNum*10);
-//                adapterType = "TREE";
+                adapterNum = (weekTreesNum);
                 imagelist = setImageArray(adapterNum, 2);
 
 //                Console.log(classID+"Leaf and week, send number and type "+adapterNum+" "+adapterType);
@@ -364,8 +361,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 carbonUsed.setText(monthCarbonNum + " kilos CO2");
                 treesUsed.setText(monthTreesNum + " trees required");
                 scale.setText("1 leaf per 0.1 tree required");
-                adapterNum = (int)(monthTreesNum*10);
-//                adapterType = "TREE";
+                adapterNum = (monthTreesNum);
                 imagelist = setImageArray(adapterNum, 2);
 //                Console.log(classID+"Leaf and month, send number and type "+adapterNum+" "+adapterType);
             }

@@ -177,6 +177,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         path.milesTravelled = Calculations.getMiles(path.speedArray, path.timeArray);
         Double miles = path.milesTravelled;
 
+        /*Calculate gallons based on type of data collected*/
         switch(PID){
             case 0:
                 if(path.isHighway())
@@ -218,6 +219,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 Console.log(classID+" Create metric activity wrong PID");
                 break;
         }
+
         String carbonUsed = Calculations.getCarbon(gallons);
         Double treesKilled = Calculations.getTrees(gallons);
 
