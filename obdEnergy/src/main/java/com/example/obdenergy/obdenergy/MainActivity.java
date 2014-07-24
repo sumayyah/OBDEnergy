@@ -24,6 +24,7 @@ import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.example.obdenergy.obdenergy.Utilities.DataLogger;
+import com.example.obdenergy.obdenergy.Utilities.DynamoDBTask;
 import com.example.obdenergy.obdenergy.Utilities.HttpTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,7 +33,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 /**
@@ -260,6 +263,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         if(!queuedPathsFromMemory.matches("") && isNetworkAvailable()){
             Console.log(classID+"We have wifi right from the start");
             sendToDatabase(queuedPathsFromMemory);
+            sendToAWSDatabase(System.currentTimeMillis(), username, queuedPathsFromMemory);
 
             /*Reset variables*/
             userData.edit().putString("pathQueue", "").commit();
@@ -351,6 +355,19 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Console.log(classID+"Put array "+finalJSONArray+"in set, committed to SharedPrefs");
     }
 
+    public void sendToAWSDatabase(Long timestamp, String username, String json) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+
+        Date resultdate = new Date(timestamp);
+        String date = (sdf.format(resultdate));
+
+        Console.log(classID+"Calling send to database");
+        String[] params = {date, username, json};
+        DynamoDBTask dbTask = new DynamoDBTask();
+        dbTask.execute(params);
+    }
+
     public void sendToDatabase(String json){
         String url = "http://192.168.1.8:8888/";
         String[] params = {url, json};
@@ -364,6 +381,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         String currentPathsJSONstring = gson.toJson(currentPathsArray);
 
         sendToDatabase(queueFromMemory+currentPathsJSONstring);
+        sendToAWSDatabase(System.currentTimeMillis(), username, queueFromMemory+currentPathsJSONstring);
 
         queuedPathsFromMemory = "";
         dbPathArray.clear();

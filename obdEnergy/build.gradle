@@ -22,4 +22,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:+'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('src/main/libs/Gson.jar')
+    compile files('src/main/libs/aws-android-sdk-2.0.5-core.jar')
+    compile files('src/main/libs/aws-android-sdk-2.0.5-ddb.jar')
 }
