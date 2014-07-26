@@ -77,7 +77,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private double monthTreesNum = 0.0;
 
     private double adapterNum = 0;
-    private String adapterType = "CARBON";
     private ArrayList<Integer> imagelist;
 
     private boolean cloud = true;
@@ -114,29 +113,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
 
         imagelist = new ArrayList<Integer>();
-
-
-//        /*If the user has paths in the current session*/
-//        if(Profile.pathArray.size() > 0){
-//            Console.log(classID+"Paths in current session");
-////            for(Path p: Profile.pathArray){
-//                dayFuelNum += p.gallonsUsed;
-//                dayCarbonNum += p.carbonUsed;
-//                dayTreesNum += p.treesKilled;
-//
-//                weekFuelNum += p.gallonsUsed;
-//                weekCarbonNum += p.carbonUsed;
-//                weekTreesNum += p.treesKilled;
-//
-//                monthFuelNum += p.gallonsUsed;
-//                monthCarbonNum += p.carbonUsed;
-//                monthTreesNum += p.treesKilled;
-//            }
-//
-//            Console.log(classID+"Before parsing, day: "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum+" week "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum+" month "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
-//        }
-
-
 
 //        Console.log(classID+"Pieces are today: "+todayJSONArray);
 //        Console.log(classID+"Historical "+Profile.pathHistoryJSON);
@@ -333,13 +309,13 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         /*If the user has selected carbon*/
         else if(leaf && !cloud){
-            scale.setText("1 leaf per tree required");
+            scale.setText("1 leaf per tree used");
             if(day && !week && !month){
                 fuelUsed.setText(dayFuelNum + "");
 
                 carbonUsed.setText(dayCarbonNum + " kilos CO2");
-                treesUsed.setText(dayTreesNum + " trees required");
-                scale.setText("1 leaf per 0.1 tree required");
+                treesUsed.setText(dayTreesNum + " trees used");
+                scale.setText("1 leaf per 0.1 tree used");
                 adapterNum = (dayTreesNum);
                 imagelist = setImageArray(adapterNum, 2);
 
@@ -349,8 +325,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 fuelUsed.setText(weekFuelNum+"");
 
                 carbonUsed.setText(weekCarbonNum + " kilos CO2");
-                treesUsed.setText(weekTreesNum + " trees required");
-                scale.setText("1 leaf per 0.1 tree required");
+                treesUsed.setText(weekTreesNum + " trees used");
+                scale.setText("1 leaf per 0.1 tree used");
                 adapterNum = (weekTreesNum);
                 imagelist = setImageArray(adapterNum, 2);
 
@@ -359,8 +335,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             else if(!day && !week && month){
                 fuelUsed.setText(monthFuelNum+"");
                 carbonUsed.setText(monthCarbonNum + " kilos CO2");
-                treesUsed.setText(monthTreesNum + " trees required");
-                scale.setText("1 leaf per 0.1 tree required");
+                treesUsed.setText(monthTreesNum + " trees used");
+                scale.setText("1 leaf per 0.1 tree used");
                 adapterNum = (monthTreesNum);
                 imagelist = setImageArray(adapterNum, 2);
 //                Console.log(classID+"Leaf and month, send number and type "+adapterNum+" "+adapterType);
@@ -442,7 +418,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         fuelUsed.setText(dayFuelNum+"");
         carbonUsed.setText(dayCarbonNum + " kilos CO2");
-        treesUsed.setText(dayTreesNum + " trees required");
+        treesUsed.setText(dayTreesNum + " trees used");
 
         dayPressed =true;weekPressed = false;monthPressed = false;
         today.setTextColor(Color.parseColor("#A4C739"));
