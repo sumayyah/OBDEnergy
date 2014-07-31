@@ -24,7 +24,7 @@
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/fuel2"
+                android:src="@drawable/fuel4"
                 android:scaleType="fitXY"/>
         </LinearLayout>
         <LinearLayout
@@ -72,7 +72,7 @@
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/cloud_icon"
+                android:src="@drawable/cloud_icon2"
                 android:scaleType="fitXY"/>
         </LinearLayout>
 
@@ -120,7 +120,7 @@
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/leafcopy"
+                android:src="@drawable/leaf_copy2"
                 android:scaleType="fitXY"/>
         </LinearLayout>
 

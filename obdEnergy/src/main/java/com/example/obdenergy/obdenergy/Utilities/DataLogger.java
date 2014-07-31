@@ -19,8 +19,9 @@ public class DataLogger {
         Thread thread = new Thread() {
 
             public void run() {
+                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/carData");
 //                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/CarData/files");
-                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/storage/emulated/0/Android/carData");
+//                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/storage/emulated/0/Android/carData");
                 file.mkdirs();
 
                 String dataString = (System.currentTimeMillis()+"\n"+ data + "\n");
@@ -61,7 +62,8 @@ public class DataLogger {
         Thread thread = new Thread() {
 
             public void run() {
-                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/storage/emulated/0/Android/carConsoleData");
+                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/carConsoleData");
+//                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/storage/emulated/0/Android/carConsoleData");
                 file.mkdirs();
 
                 String dataString = (System.currentTimeMillis()+"\n"+ data + "\n");

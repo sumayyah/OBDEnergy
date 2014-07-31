@@ -56,7 +56,7 @@ public class InitActivity extends Activity implements View.OnClickListener{
 
         doneButton.setOnClickListener(this);
 
-        setDefaults();
+//        setDefaults();
 
     }
 
