@@ -4,251 +4,265 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-
-    <!--Fuel Used-->
-    <LinearLayout
-        android:id="@+id/fuelContainer"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_weight="3"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/spacerLayout"
-        >
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:layout_weight="2">
-
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/fuel4"
-                android:scaleType="fitXY"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_weight="3"
-            android:layout_height="150dp"
-            android:layout_gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/fuelData"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textSize="60sp"
-                android:textColor="#ddd"
-                android:layout_gravity="center_vertical"
-                android:text="100"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textColor="#ddd"
-                android:text="Gals"/>
-        </LinearLayout>
-    </LinearLayout>
-    <!--End Fuel Used-->
-
-    <!--Carbon Used-->
-    <LinearLayout
-        android:id="@+id/carbonContainer"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_weight="3"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fuelContainer"
-        >
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:layout_weight="2">
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/cloud_icon2"
-                android:scaleType="fitXY"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:layout_weight="3"
-            android:layout_gravity="center_vertical">
-            <TextView
-                android:id="@+id/carbonData"
-                android:layout_width="wrap_content"
+            <!--Fuel Used-->
+            <LinearLayout
+                android:id="@+id/fuelContainer"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_weight="3"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:padding="10dp"
-                android:textColor="#ddd"
-                android:textSize="60sp"
-                android:text="50"/>
-            <TextView
-                android:layout_width="wrap_content"
+                android:layout_below="@+id/spacerLayout"
+                >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:layout_weight="2">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/fuel4"
+                        android:scaleType="fitXY"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_weight="3"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/fuelData"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:textSize="60sp"
+                        android:textColor="#ddd"
+                        android:layout_gravity="center_vertical"
+                        android:text="100"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#ddd"
+                        android:text="Gals"/>
+                </LinearLayout>
+            </LinearLayout>
+            <!--End Fuel Used-->
+
+            <!--Carbon Used-->
+            <LinearLayout
+                android:id="@+id/carbonContainer"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_weight="3"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textColor="#ddd"
-                android:text="kg carbon"/>
-        </LinearLayout>
-    </LinearLayout>
-    <!--End Carbon Used-->
+                android:layout_below="@id/fuelContainer"
+                >
 
-    <!--Trees Killed-->
-    <LinearLayout
-        android:id="@+id/treesContainer"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_weight="3"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/treesContainer"
-        >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:layout_weight="2">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:layout_weight="2">
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/cloud_icon2"
+                        android:scaleType="fitXY"/>
+                </LinearLayout>
 
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/leaf_copy2"
-                android:scaleType="fitXY"/>
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="150dp"
+                    android:layout_weight="3"
+                    android:layout_gravity="center_vertical">
+                    <TextView
+                        android:id="@+id/carbonData"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:padding="10dp"
+                        android:textColor="#ddd"
+                        android:textSize="60sp"
+                        android:text="50"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#ddd"
+                        android:text="kg carbon"/>
+                </LinearLayout>
+            </LinearLayout>
+            <!--End Carbon Used-->
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:layout_weight="3"
-            android:layout_gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/metricData"
-                android:layout_width="wrap_content"
+            <!--Trees Killed-->
+            <LinearLayout
+                android:id="@+id/treesContainer"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_weight="3"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textSize="60sp"
-                android:layout_gravity="center_vertical"
-                android:textColor="#ddd"
-                android:text="50"/>
-            <TextView
-                android:layout_width="wrap_content"
+                android:layout_below="@id/treesContainer"
+                >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:layout_weight="2">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/leaf_copy2"
+                        android:scaleType="fitXY"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="150dp"
+                    android:layout_weight="3"
+                    android:layout_gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/metricData"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:textSize="60sp"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#ddd"
+                        android:text="50"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#ddd"
+                        android:text="trees required"/>
+                </LinearLayout>
+
+            </LinearLayout>
+            <!--End Trees Killed-->
+
+            <!--Average Speed-->
+            <LinearLayout
+                android:id="@+id/speedDataContainer"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textColor="#ddd"
-                android:text="trees required"/>
-        </LinearLayout>
+                android:layout_below="@id/treesContainer"
+                >
 
-    </LinearLayout>
-    <!--End Trees Killed-->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="right"
+                    android:layout_weight="2">
 
-    <!--Average Speed-->
-    <LinearLayout
-        android:id="@+id/speedDataContainer"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/treesContainer"
-        >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Avg Speed:"
+                        android:layout_marginRight="10dp"
+                        android:textColor="@android:color/white"/>
+                </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="right"
-            android:layout_weight="2">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:layout_gravity="center_vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Avg Speed:"
-            android:layout_marginRight="10dp"
-            android:textColor="@android:color/white"/>
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/avgSpeedNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="86"
+                        android:textSize="40sp"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#ddd"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#ddd"
+                        android:text="mph"/>
+                </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:layout_gravity="center_vertical">
+            </LinearLayout>
+            <!--End Average Speed-->
 
-            <TextView
-                android:id="@+id/avgSpeedNum"
-                android:layout_width="wrap_content"
+            <!--Average Speed-->
+            <LinearLayout
+                android:id="@+id/milesDataContainer"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="86"
-                android:textSize="40sp"
-                android:layout_gravity="center_vertical"
-                android:textColor="#ddd"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textColor="#ddd"
-                android:text="mph"/>
-        </LinearLayout>
+                android:layout_below="@id/treesContainer"
+                >
 
-    </LinearLayout>
-    <!--End Average Speed-->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="right"
+                    android:layout_weight="2">
 
-    <!--Average Speed-->
-    <LinearLayout
-        android:id="@+id/milesDataContainer"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/treesContainer"
-        >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mi. Driven:"
+                        android:layout_marginRight="10dp"
+                        android:textColor="@android:color/white"/>
+                </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="right"
-            android:layout_weight="2">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:layout_gravity="center_vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mi. Driven:"
-                android:layout_marginRight="10dp"
-                android:textColor="@android:color/white"/>
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/milesNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="86"
+                        android:textSize="40sp"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#eee"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="#eee"
+                        android:text="Mi"/>
+                </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:layout_gravity="center_vertical">
+            </LinearLayout>
+            <!--End Average Speed-->
 
-            <TextView
-                android:id="@+id/milesNum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="86"
-                android:textSize="40sp"
-                android:layout_gravity="center_vertical"
-                android:textColor="#eee"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textColor="#eee"
-                android:text="Mi"/>
-        </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
 
-    </LinearLayout>
-    <!--End Average Speed-->
+
+
 
 
 </LinearLayout>

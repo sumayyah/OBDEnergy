@@ -5,156 +5,175 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="USER SETUP"
-        android:layout_gravity="center"
-        android:padding="10dp"
-        android:textSize="30sp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:padding="3dp"
-        android:text="Please enter the following information:"/>
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-
-    <!--User input fields-->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name: "/>
-            <EditText
-                android:id="@+id/nameField"
+                android:text="USER SETUP"
+                android:layout_gravity="center"
+                android:padding="10dp"
+                android:textSize="30sp"/>
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Enter your (first) name"
-                android:layout_toRightOf="@+id/name"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+                android:layout_gravity="left"
+                android:padding="3dp"
+                android:text="Please enter the following information:"/>
+
+
+            <!--User input fields-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Name: "/>
+                    <EditText
+                        android:id="@+id/nameField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter your (first) name"
+                        android:layout_toRightOf="@+id/name"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/make"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Make: "/>
+                    <EditText
+                        android:id="@+id/makeField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter your car's make"
+                        android:layout_toRightOf="@+id/make"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/model"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Model: "
+                        />
+                    <EditText
+                        android:id="@+id/modelField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/model"
+                        android:hint="Enter your car's model"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/year"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Year: "
+                        />
+                    <EditText
+                        android:id="@+id/yearField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter the year of manufacture"
+                        android:layout_toRightOf="@+id/year"/>
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/capacity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fuel Tank Capacity: "
+                        />
+                    <EditText
+                        android:id="@+id/capacityField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="Gallons"
+                        android:layout_toRightOf="@+id/capacity"/>
+
+                </RelativeLayout>
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/make"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Make: "/>
-            <EditText
-                android:id="@+id/makeField"
+                android:text="Enter average miles per gallon in:"/>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Enter your car's make"
-                android:layout_toRightOf="@+id/make"/>
-            </RelativeLayout>
+                android:orientation="horizontal">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/model"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="City: "/>
+
+                <EditText
+                    android:id="@+id/cityField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="City mpg"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Highway: "/>
+
+                <EditText
+                    android:id="@+id/highwayField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Highway mpg"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/doneButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Model: "
-                />
-            <EditText
-                android:id="@+id/modelField"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/model"
-                android:hint="Enter your car's model"/>
-            </RelativeLayout>
+                android:text="DONE"
+                android:layout_gravity="center_horizontal"/>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/year"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Year: "
-                />
-            <EditText
-                android:id="@+id/yearField"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Enter the year of manufacture"
-                android:layout_toRightOf="@+id/year"/>
+            </LinearLayout>
 
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/capacity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fuel Tank Capacity: "
-                />
-            <EditText
-                android:id="@+id/capacityField"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Gallons"
-                android:layout_toRightOf="@+id/capacity"/>
 
-        </RelativeLayout>
-    </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enter average miles per gallon in:"/>
+        </ScrollView>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="City: "/>
-
-        <EditText
-            android:id="@+id/cityField"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="City mpg"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Highway: "/>
-
-        <EditText
-            android:id="@+id/highwayField"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Highway mpg"/>
-        </LinearLayout>
-
-    <Button
-        android:id="@+id/doneButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DONE"
-        android:layout_gravity="center_horizontal"/>
 
 
 </LinearLayout>
