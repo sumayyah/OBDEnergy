@@ -262,7 +262,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         /*If there is a queue and we have wifi, write to database*/
         if(!queuedPathsFromMemory.matches("") && isNetworkAvailable()){
             Console.log(classID+"We have wifi right from the start");
-            sendToDatabase(queuedPathsFromMemory);
             sendToAWSDatabase(System.currentTimeMillis(), username, queuedPathsFromMemory);
 
             /*Reset variables*/
@@ -380,7 +379,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Console.log(classID+"Concatenate DB data");
         String currentPathsJSONstring = gson.toJson(currentPathsArray);
 
-        sendToDatabase(queueFromMemory+currentPathsJSONstring);
         sendToAWSDatabase(System.currentTimeMillis(), username, queueFromMemory+currentPathsJSONstring);
 
         queuedPathsFromMemory = "";

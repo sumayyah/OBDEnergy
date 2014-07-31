@@ -39,14 +39,14 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:textSize="60sp"
-                android:textColor="#aaa"
+                android:textColor="#ddd"
                 android:layout_gravity="center_vertical"
                 android:text="100"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="#aaa"
+                android:textColor="#ddd"
                 android:text="Gals"/>
         </LinearLayout>
     </LinearLayout>
@@ -64,7 +64,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:layout_gravity="center_vertical"
             android:gravity="center"
             android:layout_weight="2">
@@ -87,14 +87,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
-                android:textColor="#aaa"
+                android:textColor="#ddd"
                 android:textSize="60sp"
                 android:text="50"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="#aaa"
+                android:textColor="#ddd"
                 android:text="kg carbon"/>
         </LinearLayout>
     </LinearLayout>
@@ -112,7 +112,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:layout_gravity="center_vertical"
             android:gravity="center"
             android:layout_weight="2">
@@ -137,13 +137,13 @@
                 android:padding="10dp"
                 android:textSize="60sp"
                 android:layout_gravity="center_vertical"
-                android:textColor="#aaa"
+                android:textColor="#ddd"
                 android:text="50"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="#aaa"
+                android:textColor="#ddd"
                 android:text="trees required"/>
         </LinearLayout>
 
@@ -188,12 +188,12 @@
                 android:text="86"
                 android:textSize="40sp"
                 android:layout_gravity="center_vertical"
-                android:textColor="#fff"/>
+                android:textColor="#ddd"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="#fff"
+                android:textColor="#ddd"
                 android:text="mph"/>
         </LinearLayout>
 
@@ -238,12 +238,12 @@
                 android:text="86"
                 android:textSize="40sp"
                 android:layout_gravity="center_vertical"
-                android:textColor="#fffe"/>
+                android:textColor="#eee"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="#fff"
+                android:textColor="#eee"
                 android:text="Mi"/>
         </LinearLayout>
 

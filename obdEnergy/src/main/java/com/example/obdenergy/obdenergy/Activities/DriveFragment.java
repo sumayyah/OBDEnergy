@@ -319,6 +319,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         switch (v.getId()) {
             case R.id.connectButton:
+                Console.log(classID+" CLICKED CONNECT");
                 Intent intent = new Intent(getActivity(), Devices.class);
                 getActivity().startActivityForResult(intent, REQUEST_CONNECT_DEVICE_SECURE);
                 break;
@@ -499,7 +500,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 listener.DriveFragmentDataComm(0);
                 return;
             }
-        }else if(command.equals(CHANGE_PROTOCOL)){ //TODO: this may pop up when the buffer returns the random empties - TEST
+        }else if(command.equals(CHANGE_PROTOCOL)){ //Not currently used - advanced functionality
             if(!bufferString.equals("OK")){
                 String message = "Failed to change protocol to ISO 9141-2. Accuracy of data not guaranteed.";
                 Console.showAlert(mainActivity, message);
@@ -511,7 +512,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             }else Console.log("Init failed");
         }
 
-        /*If we get 4 bytes of data returned*/ //TODO: test with different baud rates and or timeouts
+        /*If we get 4 bytes of data returned*/
         if(bufferString!="" && (bufferString.matches(fourByteNormal) || bufferString.matches(fourByteAbnormal))){
 
             bufferString.trim();
