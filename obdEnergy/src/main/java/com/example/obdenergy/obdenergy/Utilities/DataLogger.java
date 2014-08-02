@@ -20,15 +20,12 @@ public class DataLogger {
 
             public void run() {
                 File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/carData");
-//                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/CarData/files");
-//                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/storage/emulated/0/Android/carData");
+
                 file.mkdirs();
 
-                String dataString = (System.currentTimeMillis()+"\n"+ data + "\n");
+                String dataString = (System.currentTimeMillis()+"\n"+ getDate()+ "\n" + data + "\n");
 
-                File myfile = new File(file + "/" + "Log" + getDate() + ".txt");
-//                File myfile = new File("carData.txt");
-
+                File myfile = new File(file + "/" + "Log " + getDate() + ".txt");
 
                 if(myfile.exists() == true) //if file already exists, append more text to it
                 {
@@ -68,7 +65,7 @@ public class DataLogger {
 
                 String dataString = (System.currentTimeMillis()+"\n"+ data + "\n");
 
-                File myfile = new File(file + "/" + "Log" + getDate() + ".txt");
+                File myfile = new File(file + "/" + "Console Log" + getDate() + ".txt");
 
                 if(myfile.exists() == true) //if file already exists, append more text to it
                 {

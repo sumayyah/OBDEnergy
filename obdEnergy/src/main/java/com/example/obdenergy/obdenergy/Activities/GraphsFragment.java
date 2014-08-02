@@ -18,6 +18,7 @@ import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 import com.example.obdenergy.obdenergy.Utilities.GridAdapter;
 
 import org.json.JSONArray;
@@ -113,10 +114,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
 
         imagelist = new ArrayList<Integer>();
-//        Console.log(classID+"Pieces are today: "+todayJSONArray);
-//        Console.log(classID+"Historical "+Profile.pathHistoryJSON);
-//        String holderString = "[{\"initTimestamp\":\"1402414587670\", \"finalMAF\":655.35,\"treesKilled\":7, \"gallonsUsed\":3, \"carbonUsed\":61},{\"initTimestamp\":\"1401896187867\", \"finalMAF\":655.35,\"treesKilled\":1,\"carbonUsed\":5,\"initFuel\":0,\"gallonsUsed\":7,\"initMAF\":406.65,\"averageSpeed\":55.5,\"finalTimestamp\":\"1402365290\",\"finalFuel\":0}, {\"initTimestamp\":\"1402417236395\",\"carbonUsed\":9, \"initFuel\":0,\"initMAF\":406.65,\"finalFuel\":0,\"treesKilled\":3,\"finalMAF\":655.35,\"gallonsUsed\":6}]";
-
         treeList = new Integer[]{R.drawable.tree1leaf, R.drawable.tree2leaves,  R.drawable.tree3leaves,  R.drawable.tree4leaves,  R.drawable.tree5leaves,  R.drawable.tree6leaves,  R.drawable.tree7leaves,  R.drawable.tree8leaves,  R.drawable.tree9leaves,  R.drawable.tree10leaves};
 
         setDefaults();
@@ -127,7 +124,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Console.log(classID+"onCreate");
         setHasOptionsMenu(true);
 
         super.onCreate(savedInstanceState);
@@ -135,7 +131,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onAttach(Activity activity) {
-        Console.log(classID+"on attach");
         super.onAttach(activity);
         this.mainActivity = (MainActivity) activity;
     }
@@ -147,12 +142,10 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         dayStartRange = currentTime - secsInDay;
         weekStartRange = currentTime - secsInWeek;
 
-        Console.log(classID+"Called from Main and now parsing historical data ONCE");
         try { //Go ahead and parse all the previous paths
             parseJSON(new JSONArray(String.valueOf(Profile.pathHistoryJSON)));
 
         } catch (JSONException e) {
-            Console.log(classID+" failed to get JSON array");
             e.printStackTrace();
         }
 
@@ -160,9 +153,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     public void GraphsFragmentDataComm(Path p){
 
-        Console.log(classID+"Adding path, data before, day: "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum+" week "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum+" month "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
-
-        Console.log(classID+"Adding data, fuel carbon trees "+p.gallonsUsed+" "+p.carbonUsed+" "+p.treesKilled);
         monthFuelNum += p.gallonsUsed;
         monthCarbonNum += p.carbonUsed;
         monthTreesNum += p.treesKilled;
@@ -174,7 +164,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         dayFuelNum += p.gallonsUsed;
         dayCarbonNum += p.carbonUsed;
         dayTreesNum += p.treesKilled;
-        Console.log(classID+"Adding path, data after, day: "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum+" week "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum+" month "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
+        DataLogger.writeConsoleData(classID + "Path added, day: " + dayFuelNum + " " + dayCarbonNum + " " + dayTreesNum + " week " + weekFuelNum + " " + weekCarbonNum + " " + weekTreesNum + " month " + monthFuelNum + " " + monthCarbonNum + " " + monthTreesNum);
 
     }
 
@@ -259,11 +249,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             default:
                 break;
         }
-
-        Console.log(classID+"Number of whole images is "+wholenum+" and parts are "+decimalportion+" ie "+finaldecimal);
-//        gridAdapter = new GridAdapter(mainActivity, finalImages, "TREE");
-//        gridView.setAdapter(gridAdapter);
-
         return finalImages;
     }
 
@@ -279,7 +264,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 scale.setText("1 cloud per kilo of carbon");
                 imagelist = setImageArray(adapterNum, 1);
 
-//                Console.log(classID+"Cloud and day, send number and type "+adapterNum+" "+adapterType);
             }
             else if(!day && week && !month){
                 fuelUsed.setText(weekFuelNum+"");
@@ -289,7 +273,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 else {adapterNum = (weekCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
                 imagelist = setImageArray(adapterNum, 1);
 
-//                Console.log(classID+"Cloud and week send number and type "+adapterNum+" "+adapterType);
             }
             else if(!day && !week && month){
                 fuelUsed.setText(monthFuelNum+"");
@@ -299,9 +282,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 else {adapterNum = (monthCarbonNum/10); scale.setText("1 cloud for every 10 kilos of carbon");}
                 imagelist = setImageArray(adapterNum, 1);
 
-//                Console.log(classID+"Cloud and month, send number and type "+adapterNum+" "+adapterType);
             }
-            else Console.log(classID+"Wrong time bool for cloud");
+            else;
         }
 
         /*If the user has selected carbon*/
@@ -316,7 +298,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 adapterNum = (dayTreesNum);
                 imagelist = setImageArray(adapterNum, 2);
 
-//                Console.log(classID+"Leaf and day, send number and type "+adapterNum+" "+adapterType);
             }
             else if(!day && week && !month){
                 fuelUsed.setText(weekFuelNum+"");
@@ -326,8 +307,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 scale.setText("1 leaf per 0.1 tree used");
                 adapterNum = (weekTreesNum);
                 imagelist = setImageArray(adapterNum, 2);
-
-//                Console.log(classID+"Leaf and week, send number and type "+adapterNum+" "+adapterType);
             }
             else if(!day && !week && month){
                 fuelUsed.setText(monthFuelNum+"");
@@ -336,7 +315,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 scale.setText("1 leaf per 0.1 tree used");
                 adapterNum = (monthTreesNum);
                 imagelist = setImageArray(adapterNum, 2);
-//                Console.log(classID+"Leaf and month, send number and type "+adapterNum+" "+adapterType);
             }
             else Console.log(classID+"Wrong time bool for leaf");
         }
@@ -349,8 +327,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
     private void parseJSON(JSONArray jsonArray) throws JSONException {
 
-        Console.log(classID + "Parsing JSON "+jsonArray);
-
         DecimalFormat df = new DecimalFormat("#.00");
 
         Long objTimestamp;
@@ -361,7 +337,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         for(int i=0;i<jsonArray.length()-1;i++){
 
             if(jsonArray.isNull(i)){
-                Console.log(classID+"Array is null at index "+i);
                 continue;
             }
 
@@ -373,8 +348,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             carbonNum = obj.getDouble("carbonUsed");
             treesNum = obj.getDouble("treesKilled");
 
-            Console.log(classID+"Object "+i+" at "+objTimestamp+" Current time " + currentTime+" Data: fuel carbon trees "+fuelNum+" "+carbonNum+" "+treesNum);
-
             monthFuelNum += fuelNum;
             monthCarbonNum += carbonNum;
             monthTreesNum += treesNum;
@@ -385,7 +358,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 weekFuelNum += fuelNum;
                 weekCarbonNum += carbonNum;
                 weekTreesNum += treesNum;
-                Console.log(classID+" Week from "+weekStartRange+" to "+currentTime+" Data: fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
             }
 
             /*If in range, calculate data for the day*/
@@ -394,7 +366,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 dayFuelNum += fuelNum;
                 dayCarbonNum += carbonNum;
                 dayTreesNum += treesNum;
-                Console.log(classID+" Today from "+dayStartRange+" to "+currentTime+" Data: fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
             }
         }
 
@@ -429,10 +400,10 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     }
 
     private void printData(){
-        Console.log(classID+"Printing data now at "+currentTime);
-        Console.log("Day "+dayStartRange+" to "+currentTime+" fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
-        Console.log("Week "+weekStartRange+" to "+currentTime+" fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
-        Console.log("Month fuel carbon trees "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
+        DataLogger.writeConsoleData(classID+"Printing data now at "+currentTime);
+        DataLogger.writeConsoleData("Day "+dayStartRange+" to "+currentTime+" fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
+        DataLogger.writeConsoleData("Week "+weekStartRange+" to "+currentTime+" fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
+        DataLogger.writeConsoleData("Month fuel carbon trees "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
     }
 
 }

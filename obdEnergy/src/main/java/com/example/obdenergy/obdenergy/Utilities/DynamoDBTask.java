@@ -51,16 +51,14 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
             sendToDB();
         } catch (Exception e) {
             e.printStackTrace();
-            Console.log("doInBackground failed sendToDB");
+            DataLogger.writeConsoleData("Failed to write to database");
         }
         return null;
     }
 
     private void sendToDB() throws Exception {
-        Console.log("Send to DB");
 
         init();
-//        createTable();
         sendToTable();
 
     }
@@ -85,8 +83,6 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
         /*Set database in Northern California*/
         Region region = Region.getRegion(Regions.US_WEST_1);
         dbClient.setRegion(region);
-
-        Console.log("Initialized with credentials");
     }
 
     private void createTable() {
@@ -95,7 +91,6 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
                 .withReadCapacityUnits(5L)
                 .withWriteCapacityUnits(5L);
 
-        Console.log("Created provisioned throughput");
 
         CreateTableRequest request = new CreateTableRequest()
                 .withTableName(tablename)
@@ -111,7 +106,6 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
 
         dbClient.createTable(request);
 
-        Console.log("Created Table");
 
         waitForTableToActivate(tablename);
         getTableInformation();
@@ -122,27 +116,25 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
 
         try{
 
-//            Map<String, AttributeValue> item = newItem("July23_3:34_PM", "3 gallons of gas", "Shalini");
             Map<String, AttributeValue> item = newItem(timestamp, jsondata, username);
             PutItemRequest putItemRequest = new PutItemRequest(tablename, item);
             PutItemResult putItemResult = dbClient.putItem(putItemRequest);
-            Console.log("Result of put: "+putItemResult);
 
         }
         catch (AmazonServiceException ase) {
-            Console.log("Caught an AmazonServiceException, which means your request made it "
+            DataLogger.writeConsoleData("Caught an AmazonServiceException, which means your request made it "
                     + "to AWS, but was rejected with an error response for some reason.");
-            Console.log("Error Message:    " + ase.getMessage());
-            Console.log("HTTP Status Code: " + ase.getStatusCode());
-            Console.log("AWS Error Code:   " + ase.getErrorCode());
-            Console.log("Error Type:       " + ase.getErrorType());
-            Console.log("Request ID:       " + ase.getRequestId());
+            DataLogger.writeConsoleData("Error Message:    " + ase.getMessage());
+            DataLogger.writeConsoleData("HTTP Status Code: " + ase.getStatusCode());
+            DataLogger.writeConsoleData("AWS Error Code:   " + ase.getErrorCode());
+            DataLogger.writeConsoleData("Error Type:       " + ase.getErrorType());
+            DataLogger.writeConsoleData("Request ID:       " + ase.getRequestId());
             ase.printStackTrace();
         } catch (AmazonClientException ace) {
-            Console.log("Caught an AmazonClientException, which means the client encountered "
+            DataLogger.writeConsoleData("Caught an AmazonClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with AWS, "
                     + "such as not being able to access the network.");
-            Console.log("Error Message: " + ace.getMessage());
+            DataLogger.writeConsoleData("Error Message: " + ace.getMessage());
         }
 
     }
@@ -155,7 +147,6 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
         item.put("Data", new AttributeValue(data));
         item.put("Username", new AttributeValue(username));
 
-        Console.log("Created new items with "+timestamp+" "+username+" "+jsondata);
         return item;
     }
 
@@ -163,29 +154,21 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
 
         long startTime = System.currentTimeMillis();
         long endTime = startTime + (1 * 60 * 1000);
-        Console.log("Waiting for "+tablename+" to become ACTIVE till "+endTime);
 
 
         while (System.currentTimeMillis() < endTime) {
-            Console.log("Time is "+System.currentTimeMillis());
-            try {Thread.sleep(1000 * 2); Console.log("Sleeping");} catch (Exception e) {e.printStackTrace();}
+            try {Thread.sleep(1000 * 2); DataLogger.writeConsoleData("Sleeping");} catch (Exception e) {e.printStackTrace();}
             try {
-                Console.log("Starting try");
                 DescribeTableRequest request = new DescribeTableRequest().withTableName(tablename);
-                Console.log("request");
                 TableDescription tableDescription = dbClient.describeTable(request).getTable();
-                Console.log("Got description");
                 String tableStatus = tableDescription.getTableStatus();
-                Console.log("  - current state: " + tableStatus);
                 if (tableStatus.equals(TableStatus.ACTIVE.toString())) return;
             } catch (AmazonServiceException ase) {
-                Console.log("Caught!");
-//                if (ase.getErrorCode().equalsIgnoreCase("ResourceNotFoundException") == false) throw ase;
-                Console.log("Error Message:    " + ase.getMessage());
-                Console.log("HTTP Status Code: " + ase.getStatusCode());
-                Console.log("AWS Error Code:   " + ase.getErrorCode());
-                Console.log("Error Type:       " + ase.getErrorType());
-                Console.log("Request ID:       " + ase.getRequestId());
+                DataLogger.writeConsoleData("Error Message:    " + ase.getMessage());
+                DataLogger.writeConsoleData("HTTP Status Code: " + ase.getStatusCode());
+                DataLogger.writeConsoleData("AWS Error Code:   " + ase.getErrorCode());
+                DataLogger.writeConsoleData("Error Type:       " + ase.getErrorType());
+                DataLogger.writeConsoleData("Request ID:       " + ase.getRequestId());
             }
         }
 
@@ -196,7 +179,7 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
 
         TableDescription tableDescription = dbClient.describeTable(
                 new DescribeTableRequest().withTableName(tablename)).getTable();
-        Console.log("Name: " + tableDescription.getTableName() + " \n" +
+        DataLogger.writeConsoleData("Name: " + tableDescription.getTableName() + " \n" +
                 "Status: " + tableDescription.getTableStatus() + " \n" +
                 "Provisioned Throughput (read capacity units/sec): " + tableDescription.getProvisionedThroughput().getReadCapacityUnits() + " \n" +
                 "Provisioned Throughput (write capacity units/sec): " + tableDescription.getProvisionedThroughput().getWriteCapacityUnits());

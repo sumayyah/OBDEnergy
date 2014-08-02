@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 
 
 /**
@@ -33,13 +34,9 @@ public class MetricFragment extends Fragment {
     private String treesKilled = "0.0";
 
     private String classID = "MetricFragment ";
-    private String messageFromMain = "nothing";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancestate){
-
-        Console.log(classID + " creation");
-
         View view = inflater.inflate(R.layout.metrics_fragment, container, false);
 
         fuelData = (TextView)(view.findViewById(R.id.fuelData));
@@ -64,14 +61,11 @@ public class MetricFragment extends Fragment {
     }
 
     /*Data from Main is given before onCreateView - so it needs to be stored in a global for onCreateView to access later*/
-    public void MetricFragmentDataComm(String message){
-        Console.log(classID+" Main sent: "+message);
-        messageFromMain = message;
-    }
+
     public void MetricFragmentDataComm(String gallons, String carbonUsed, String treesKilled){
         this.gallons = gallons;
         this.carbonUsed = carbonUsed;
         this.treesKilled = treesKilled;
-        Console.log(classID+"Got gallons carbon trees "+this.gallons+" "+this.carbonUsed+" "+this.treesKilled);
+        DataLogger.writeConsoleData(classID + "Displaying gallons carbon trees " + this.gallons + " " + this.carbonUsed + " " + this.treesKilled);
     }
 }

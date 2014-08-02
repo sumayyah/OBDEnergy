@@ -56,19 +56,8 @@ public class InitActivity extends Activity implements View.OnClickListener{
 
         doneButton.setOnClickListener(this);
 
-//        setDefaults();
-
     }
 
-    private void setDefaults() {
-        nameField.setText("Sumayyah");
-        makeField.setText("Honda");
-        modelField.setText("Accord");
-        yearField.setText("1996");
-        capacityField.setText("15");
-        citympg.setText("22");
-        highwaympg.setText("33");
-    }
 
     @Override
     public void onClick(View v) {

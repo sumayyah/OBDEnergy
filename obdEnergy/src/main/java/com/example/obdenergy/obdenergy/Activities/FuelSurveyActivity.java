@@ -52,8 +52,6 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
 
             int selectedRadioButton = -1;
 
-            Console.log(classID+" Done Button clicked");
-
             selectedRadioButton = radioGroup.getCheckedRadioButtonId();
             /*Check that all radio buttons are checked*/
             if(selectedRadioButton == -1) {
@@ -71,20 +69,17 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
             String text = (String) radioButton.getText();
 
             if(text.equals("City")){
-                Console.log(classID+"City MPG is "+Profile.getCitympg());
                 mpg = Profile.getCitympg();
                 street = "city";
             }
             else if(text.equals("Highway")){
-                Console.log(classID+"Highway MPG is "+Profile.getHighwaympg());
                 mpg = Profile.getHighwaympg();
                 street = "highway";
             }
-            else Console.log(classID+" wrong radio button data "+text);
+            else;
 
             Double gallons = Calculations.getGallons(mpg, miles);
 
-            Console.log("User entered miles, mpg, gallons "+miles+" "+mpg+" "+gallons);
             miles = "10";
 
             Intent intent = new Intent(this, MetricFragment.class);

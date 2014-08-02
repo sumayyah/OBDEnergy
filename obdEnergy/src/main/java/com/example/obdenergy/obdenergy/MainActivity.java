@@ -116,7 +116,9 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         actionBar.addTab(Tab2);
         actionBar.addTab(Tab3);
 
+        /*Create GSON builder that can write static variables (Path needs static vars and methods)*/
         gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+
         dbPathArray = new ArrayList<Path>();
 
         /*If this is the first time running the app, get user data*/
@@ -141,7 +143,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 if (resultCode == Activity.RESULT_OK) {
                     driveFragment.setConnectValidators("Connecting...", true);
                     driveFragment.connectDevice(data, true);
-                    Console.log(classID+"Got connect request, sent off to drive");
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
@@ -161,7 +162,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                     driveFragment.setupChat();
                 } else {
                     // User did not enable Bluetooth or an error occurred
-//                    Console.log(classID+" BT not enabled");
                     finish();
                 }
         }
@@ -169,7 +169,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
     @Override
     public void DriveFragmentDataComm(int PID) {
-        Console.log(classID+" recieved PID "+ PID);
 
         driveFragment.confirmData(PID);
 
@@ -186,28 +185,24 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 if(path.isHighway())
                 {
                     gallons = Calculations.getGallons(miles, "Highway");
-                    Console.log(classID+"case 0 is highway");
                 }
                 else {
-                    Console.log(classID+"case 0 is city");
                     gallons = Calculations.getGallons(miles, "City");
                 }
-                Console.log(classID+"gallons with no data "+gallons);
                 if(gallons == 0.0 ) DriveFragmentDataComm(4);
 
                 return;
             case 47: //Using fuel level data
-                Console.log(classID+"With Fuel");
+                DataLogger.writeConsoleData(classID+"Calculations based on fuel");
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(16); //In case of errors or bad data, get backup algorithm
                     return;
                 }
-                Console.log(classID+" with Fuel");
                 break;
 
             case 16: //Using MAF data
-                Console.log(classID+" with MAF");
+                DataLogger.writeConsoleData(classID+" Calculations based on MAF");
                 gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
@@ -219,7 +214,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 startActivity(intent);
                 break;
             default:
-                Console.log(classID+" Create metric activity wrong PID");
                 break;
         }
 
@@ -236,22 +230,16 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             graphsFragment.GraphsFragmentDataComm(path);
             dbPathArray.add(path);
             if(isNetworkAvailable()){
-                Console.log(classID+"adding to db");
                 concatenateDBData(queuedPathsFromMemory, dbPathArray);
             }
 
         }
-        Profile.checkArray();
         metricFragment.MetricFragmentDataComm(String.valueOf(gallons), carbonUsed, String.valueOf(treesKilled));
     }
 
     @Override
     public void pathData() {
 
-    }
-
-    public void printMessage(String data){
-        Console.log(classID+"printing "+data);
     }
 
     private void createProfile(){
@@ -290,7 +278,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             graphsFragment.GraphsFragmentDataComm();
         } catch (JSONException e) {
             e.printStackTrace();
-            Console.log(classID + " Failed to convert string to JSON");
         }
     }
 
@@ -298,14 +285,9 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     protected void onStop() {
         super.onStop();
 
-        /*Create GSON builder that can write static variables (Path needs static vars and methods)*/
-//        Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 
-
-        Profile.cleanArray();
         Profile.checkArray();
         String jsonArrayString = gson.toJson(Profile.pathArray);
-        Console.log(classID+"Collected path "+jsonArrayString);
 
         JSONArray finalJSONArray = null;
 
@@ -322,36 +304,28 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             DataLogger.writeData("PATH: \n"+p.returnData());
         }
 
-        Console.log(classID+"Profile path history, json path "+Profile.pathHistoryJSON+" "+jsonPathArray);
-
-
         /*Check what exactly should be pushed into SharedPreferences, to avoid null data*/
         if(Profile.pathHistoryJSON== null && Profile.pathArray.size() ==0){
-            Console.log(classID+"No data to push to Shared prefs");
             return;
         }
         else if(Profile.pathHistoryJSON== null || Profile.pathHistoryJSON.length()==0){
             finalJSONArray = jsonPathArray;
-            Console.log(classID+"history is null");
         }
         else if(Profile.pathArray.size() ==0){
             finalJSONArray = Profile.pathHistoryJSON;
-            Console.log(classID+"Paths are null");
         } else finalJSONArray = Calculations.concatenateJSON(Profile.pathHistoryJSON, jsonPathArray);
 
         userData.edit().putString("Paths", finalJSONArray.toString()).commit();
-//        userData.edit().putString("Paths", "").commit(); /*For testing null strings purposes*/
 
+        DataLogger.writeConsoleData(classID+"Writing to local storage: "+finalJSONArray);
 
         if(isNetworkAvailable()) {
            concatenateDBData(queuedPathsFromMemory, dbPathArray);
         } else {
-            Console.log(classID+" no wifi :(((");
             String finalPaths = queuedPathsFromMemory+gson.toJson(dbPathArray);
             userData.edit().putString("pathQueue", finalPaths).commit();
         }
 
-        Console.log(classID+"Put array "+finalJSONArray+"in set, committed to SharedPrefs");
     }
 
     public void sendToAWSDatabase(Long timestamp, String username, String json) {
@@ -361,30 +335,20 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Date resultdate = new Date(timestamp);
         String date = (sdf.format(resultdate));
 
-        Console.log(classID+"Calling send to database");
         String[] params = {date, username, json};
         DynamoDBTask dbTask = new DynamoDBTask();
         dbTask.execute(params);
     }
 
-    public void sendToDatabase(String json){
-        String url = "http://192.168.1.8:8888/";
-        String[] params = {url, json};
-
-        HttpTask task = new HttpTask();
-        task.execute(params);
-    }
 
     private void concatenateDBData(String queueFromMemory, ArrayList<Path> currentPathsArray){
-        Console.log(classID+"Concatenate DB data");
         String currentPathsJSONstring = gson.toJson(currentPathsArray);
 
         sendToAWSDatabase(System.currentTimeMillis(), username, queueFromMemory+currentPathsJSONstring);
 
         queuedPathsFromMemory = "";
         dbPathArray.clear();
-        Console.log(classID+" Pushed to DB: "+queueFromMemory+currentPathsJSONstring);
-        Console.log(classID+" QUeue and DBArray "+queuedPathsFromMemory+ " "+dbPathArray.size());
+        DataLogger.writeConsoleData(classID+" Pushed to DB: "+queueFromMemory+currentPathsJSONstring);
     }
 
     public boolean isNetworkAvailable() {

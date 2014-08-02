@@ -20,8 +20,6 @@ public class Calculations {
     public static Double getGallons(double initFuel, double finalFuel, String tankCapacity){
         double gallons = 0.0;
         DecimalFormat df = new DecimalFormat("#.00");
-
-        Console.log("Calculations - initfuel, final fuel, tankcapacity"+initFuel+" "+finalFuel+" "+tankCapacity);
         int tankCapacityNum = Integer.parseInt(tankCapacity);
 
         double fuelVal = finalFuel - initFuel;
@@ -46,7 +44,6 @@ public class Calculations {
         }
 
         gallons = Double.valueOf(df.format(gallons));
-//        Console.log(classID+" MAF gallon calculation returns "+gallons);
 
         return gallons;
     }
@@ -80,6 +77,8 @@ public class Calculations {
         return gallons;
     }
 
+
+    /*Calculations of other parameters based on collected data*/
     public static String getCarbon(double gallonsUsed){
         String finalCarbon = "0.0";
         DecimalFormat df = new DecimalFormat("#.00");
@@ -88,11 +87,9 @@ public class Calculations {
         double carbon = multiplier*gallonsUsed;
 
         finalCarbon = String.valueOf(df.format(carbon));
-//        finalCarbon = tempString.length() > 4 ? tempString.substring(0,3): tempString;
 
         return finalCarbon;
     }
-
     public static Double getTrees(double gallonsUsed){
         DecimalFormat df = new DecimalFormat("#.00");
 
@@ -100,10 +97,8 @@ public class Calculations {
         double treesKilled = multiplier*gallonsUsed;
 
        treesKilled = Double.parseDouble(df.format(treesKilled));
-//        Console.log(classID+"Trees calculated "+treesKilled);
         return treesKilled;
     }
-
     public static Double getMAF(String val1, String val2){
         double value = 0.0;
 
@@ -111,10 +106,8 @@ public class Calculations {
         double byte2 = hexToInt(val2);
 
         value = ((byte1*256)+byte2)/100;
-//        Console.log(classID+" MAF is calculated "+value);
         return value;
     }
-
     public static Double getMiles(ArrayList<Integer> speedArray, ArrayList<Double> timeArray){
         Double finalMiles = 0.0;
         double secondsPassed = 0.0;
@@ -126,14 +119,11 @@ public class Calculations {
             double hoursPassed = secondsPassed/3600;
             double kilometers = speedArray.get(i)*hoursPassed;
             finalMiles += (0.621371*kilometers);
-//            Console.log("Path seconds, hours, speed, km, miles "+secondsPassed+" "+hoursPassed+" "+kilometers+" "+finalMiles);
         }
 
         finalMiles = Double.valueOf(df.format(finalMiles));
-//        Console.log(classID+"Miles travelled "+finalMiles);
         return finalMiles;
     }
-
     public static Double getAvgSpeed(ArrayList<Integer> speedArray){
 
         double averageSpeed = 0.0;
@@ -144,7 +134,6 @@ public class Calculations {
         }
         double temp = 0.621371*(total/speedArray.size());
         averageSpeed = Double.valueOf(df.format(temp));
-//        Console.log("Path calculated average speed is "+averageSpeed);
         return averageSpeed;
     }
 
@@ -167,19 +156,12 @@ public class Calculations {
                     array1.put(array2.getJSONObject(i));
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Console.log(classID + "Failed to concatenate JSON arrays");
                 }
             }
             return array1;
         }
     }
 
-    public static void checkArray(ArrayList<Path> pathArray){
-        int counter = 0;
-        for(Path p: pathArray){
-            Console.log("Path "+(++counter));
-            p.printData();
-        }
-    }
+
 
 }

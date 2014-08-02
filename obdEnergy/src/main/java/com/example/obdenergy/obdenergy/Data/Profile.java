@@ -28,9 +28,6 @@ public class Profile{
 
     public Profile(){};
 
-    public String getMake(){return make;}
-    public String getModel(){return model;}
-    public String getYear(){return year;}
     public static String getCapacity(){return capacity;}
     public static String getCitympg(){return citympg;}
     public static String getHighwaympg(){return highwaympg;}
@@ -49,23 +46,12 @@ public class Profile{
         Profile.highwaympg = highwaympg;}
 
 
-    public static void addToPathArray(Path p){
-        pathArray.add(p);
-        Console.log("Profile added path to array, size is "+pathArray.size());
-    }
-
-    public static String checkContents(){
-        String returnString = "Make "+make+" Model "+model+" Year "+year+" Capacity "+capacity+" CityMPG "+citympg+" HighwayMPG"+highwaympg;
-        return returnString;
-    }
+    public static void addToPathArray(Path p){pathArray.add(p);}
 
     public static boolean checkPath(Path p){
-        Console.log("profile checking path");
         if(p == null) {
-            Console.log("Profile: current Path is null");
             return false;
         } else if (pathArray.contains(p)){
-            Console.log("Profile: current Path is duplicate");
             return false;
         }
         else return true;
@@ -74,23 +60,6 @@ public class Profile{
         int counter = 0;
         for(Path p: pathArray){
             Console.log("Path "+(++counter));
-            p.printData();
-        }
-    }
-    public static void cleanArray(){
-
-        for(int i=0;i<pathArray.size()-1;i++){
-            if(pathArray.get(i) == null) Console.log("Profile: path at "+i+" is null");
-            else pathArray.get(i).printData();
-        }
-    }
-
-    public static void printPath(){
-        Console.log("Printing paths array");
-        int counter = 0;
-        for(Path p: pathArray){
-            counter++;
-            Console.log("Path "+counter);
             p.printData();
         }
     }

@@ -2,6 +2,7 @@ package com.example.obdenergy.obdenergy.Data;
 
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 import com.google.gson.Gson;
 
 import java.lang.reflect.Array;
@@ -44,15 +45,11 @@ public class Path implements Comparable<Path>{
         finalFuel = temp;
     }
 
-    public static void setInitTimestamp(String val){ initTimestamp = val;
-        Console.log("Set init timestamp " + val);}
-    public static void setFinalTimestamp(String val){ finalTimestamp = val;
-        Console.log("Set final timestamp "+val);}
-    //        public static void setStorageTime(Calendar val){storageTime = new StorageDate(val);}
+    public static void setInitTimestamp(String val){ initTimestamp = val;}
+    public static void setFinalTimestamp(String val){ finalTimestamp = val;}
     public static void addToSpeedArray(String val){
         int speedInt = Calculations.hexToInt(val);
         speedArray.add(speedInt);
-//        getAvgSpeed();
     }
     public static void addToMAFarray(String val1, String val2){
         double value = Calculations.getMAF(val1, val2);
@@ -76,19 +73,16 @@ public class Path implements Comparable<Path>{
 
     public static double getInitFuel(){return initFuel; }
     public static double getFinalFuel(){return finalFuel;}
-    public static double getInitMAF(){return initMAF;}
-    public static double getFinalMAF(){return finalMAF;}
-    public static String getfinalTime(){ return finalTimestamp; }
     public static String getInitTime(){return initTimestamp;}
 
 
     public void printData() {
-        Console.log("Name "+username);
-        Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF+" initTime "+initTimestamp+" finalTime "+finalTimestamp);
-        Console.log("Gallons "+gallonsUsed+", Carbon "+carbonUsed+", Trees "+treesKilled);
-        Console.log("Miles travelled "+milesTravelled+" average speed "+averageSpeed);
-        Console.log("Speed array is: "+printArray(speedArray));
-        Console.log("MAF array is: "+printArray(MAFarray));
+        DataLogger.writeConsoleData("Name " + username);
+        DataLogger.writeConsoleData("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF+" initTime "+initTimestamp+" finalTime "+finalTimestamp);
+        DataLogger.writeConsoleData("Gallons "+gallonsUsed+", Carbon "+carbonUsed+", Trees "+treesKilled);
+        DataLogger.writeConsoleData("Miles travelled "+milesTravelled+" average speed "+averageSpeed);
+        DataLogger.writeConsoleData("Speed array is: "+printArray(speedArray));
+        DataLogger.writeConsoleData("MAF array is: "+printArray(MAFarray));
     }
 
     public String returnData(){
@@ -113,15 +107,6 @@ public class Path implements Comparable<Path>{
             returnString += (" "+list.get(i));
         }
         return returnString;
-    }
-
-    @Override
-    public String toString(){
-        Gson gson = new Gson();
-        String speedArrayFromJSON = gson.toJson(speedArray);
-        String timeArrayFromJSON = gson.toJson(timeArray);
-
-        return "Path: [initFuel="+initFuel+", initMAF="+initMAF+", finalFuel="+finalFuel+", finalMAF="+finalMAF+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", initTimestamp="+initTimestamp+", finalTimestamp="+finalTimestamp+", gallonsUsed="+gallonsUsed+", carbonUsed="+carbonUsed+", treesKilled="+treesKilled+", averageSpeed="+averageSpeed+", speedArray="+speedArrayFromJSON+", timeArray="+timeArrayFromJSON+"]";
     }
 
     @Override

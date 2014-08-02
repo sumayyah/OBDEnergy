@@ -148,7 +148,6 @@ public class Devices extends Activity{
             Intent intent = new Intent();
             intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
             intent.putExtra(EXTRA_DEVICE_INFO, info);
-            Console.log("Put data in Devices bundle: " + info + " " + address);
 
             // Set result and finish this Activity
             setResult(Activity.RESULT_OK, intent);

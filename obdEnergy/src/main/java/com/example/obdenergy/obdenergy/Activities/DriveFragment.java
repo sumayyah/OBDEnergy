@@ -22,6 +22,7 @@ import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 
 /**
  * Created by sumayyah on 5/31/14.
@@ -94,7 +95,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private long timeSwapper = 0L;
     private long finalTime = 0L;
 
-    private Thread fuelThread;
     private Thread speedThread;
     private final Handler timeHandler = new Handler();
     private final Handler speedHandler = new Handler();
@@ -139,7 +139,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         /*Check if device supports Bluetooth*/
         if(BluetoothAdapter==null) {
             Console.showAlert(getActivity(), "Bluetooth not supported in device");
-            Console.log(classID + " Bluetooth is not supported in device.");
             getActivity().finish();
         }
 
@@ -167,7 +166,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         if (!BluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-//            Console.log(classID+" Bluetooth is not enabled, request sent");
         } else {
             if (ChatService == null) setupChat();
         }
@@ -184,7 +182,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         super.onResume();
 
         if (counter > 0 && start && !stop) {
-            Console.log(classID + "onResume");
             startButton.setVisibility(View.GONE);
             stopButton.setVisibility(View.VISIBLE);
         }
@@ -273,8 +270,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                     try {
                         Thread.sleep(2500);
                         if(maf && !speed){
-                            Console.log(classID+" MAF's turn");
-
                             speedHandler.post(new Runnable() {
 
                                 @Override
@@ -286,7 +281,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                             maf = false;
                             speed = true;
                         }else if (speed && !maf){
-                            Console.log(classID+" Speed's turn");
 
                             speedHandler.post(new Runnable() {
 
@@ -300,7 +294,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                             });
                             speed = false;
                             maf = true;
-                        }else Console.log(classID+" Something went wrong in speedThread");
+                        }else; //Some error occurred
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -319,7 +313,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         switch (v.getId()) {
             case R.id.connectButton:
-                Console.log(classID+" CLICKED CONNECT");
                 Intent intent = new Intent(getActivity(), Devices.class);
                 getActivity().startActivityForResult(intent, REQUEST_CONNECT_DEVICE_SECURE);
                 break;
@@ -354,7 +347,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 timeInProgress = 0L;
                 timeSwapper = 0L;
                 finalTime = 0L;
-                Console.log(classID + "Counter is " + counter);
 
                 stop = true;
                 start = false;
@@ -381,7 +373,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         /*Make sure we're connected*/
         if ((ChatService.getState() != BluetoothChatService.STATE_CONNECTED)) {
-            Console.log(classID + " Not connected");
             String msg = "No Bluetooth device connected. Please connect some Bluetooth device and retry.";
             Console.showAlert(mainActivity, msg);
             return;
@@ -394,7 +385,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             ChatService.write(toSend);
             WriteStringBuffer.setLength(0);
             command = message;
-            Console.log(classID+" Sent message: "+message);
         }
 
     }
@@ -404,11 +394,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         mainActivity.path = new Path();
         mainActivity.path.username = mainActivity.username;
 
-        Console.log(classID+"created new path");
-//        sendMessage(CHECK_PROTOCOL + "\r");
-
         /*Send request for initial fuel data*/
-//        sendMessage(FUEL_REQUEST + "\r");
         fuelDataGiven = false;
 
         startInstantReadings();
@@ -416,7 +402,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onStopPressed() {
-        Console.log(classID+"Stop pressed");
 
         timeHandler.removeCallbacks(timerThread);
         speedHandler.removeCallbacks(speedThread);
@@ -426,7 +411,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     }
 
     private void sendMAFRequest() {
-//        Console.log(classID+"sending MAF request");
         sendMessage(MAF_REQUEST + "\r");
     }
 
@@ -441,8 +425,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
                     switch (msg.arg1){
                         case BluetoothChatService.STATE_CONNECTED:
-                            Console.log(classID+"State connected");
-                            Console.log(classID + " Connected, calling onConnect");
                             connectStatus.setText("Connected to " + ConnectedDeviceName);
                             progressBar.setVisibility(View.GONE);
                             onConnect();
@@ -464,7 +446,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                     ConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                     break;
                 case MESSAGE_TOAST:
-//                    Console.log(TOAST);
                     break;
             }
         }
@@ -474,9 +455,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         byte[] readBuffer = (byte[]) msg.obj;
         String bufferString = new String(readBuffer, 0, msg.arg1);
-        Console.log(classID+"Command: "+command+" Message is "+bufferString);
+        DataLogger.writeConsoleData(classID+"Command: "+command+" Response is "+bufferString);
 
-        //TODO: recheck abnormal regexes
         String fourByteNormal="\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n?";
         String fourByteAbnormal="\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n? (\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n?)* \\s*\\r*\\n?";
         String threeByteNormal="\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?";
@@ -487,7 +467,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         if(command.equals(FUEL_REQUEST) && start){
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
                 fuelDataGiven = false;
-                Console.log(classID+"Start tried fuel and failed");
                 startInstantReadings();
                 sendMAFRequest();
                 return;
@@ -496,7 +475,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 //            checkProtocol(bufferString);
         }else if(command.equals(MAF_REQUEST) && start){
             if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){ //If second line of defense - MAF - doesn't work, just get data from user for now
-                Console.log(classID+"Start tried MAF and failed");
                 listener.DriveFragmentDataComm(0);
                 return;
             }
@@ -507,9 +485,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             }
         }else if(command.equals(INIT_REQUEST)){
             if(bufferString.equals("OK")){
-                Console.log(classID+" Init succeeded");
                 return;
-            }else Console.log("Init failed");
+            }
         }
 
         /*If we get 4 bytes of data returned*/
@@ -523,23 +500,20 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 String firstPart = bytes[2];
                 String secondPart = bytes[3];
                 String finalString = firstPart+secondPart;
-                Console.log(classID+" No null pieces! They're "+firstPart+" and "+secondPart+" makes "+finalString+" PID "+PID+" From "+bytes[1]);
 
                 switch(PID){
                     case 16: //MAF - airflow rate
-                        Console.log(classID + "MAF Fuel data recieved " + finalString);
+                        DataLogger.writeConsoleData(classID + "MAF Fuel data received " + finalString);
                         if(start && !stop){
                             mainActivity.path.addToMAFarray(firstPart, secondPart);
                         }else if(!start && stop){
-                            Console.log(classID+"MAF and STOP");
                             listener.DriveFragmentDataComm(PID);
-                        }else Console.log("Some other bool");
+                        }else;
                         break;
                     default:
-                        Console.log(classID+" switch case done got some other PID");
                         break;
                 }
-            } else Console.log("NUll pieces in first regex check :(");
+            } else;
         }
         /*If we get 3 bytes of data returned*/
 
@@ -555,29 +529,25 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 switch (PID){
                     case 47: //Fuel data
 
-                        Console.log(classID+" Fuel data recieved "+secondPart);
+                        DataLogger.writeConsoleData(classID+" Fuel data recieved "+secondPart);
                         if(start && !stop){
                             mainActivity.path.setInitFuel(secondPart);
-                            Console.log(classID+" set as initial fuel");
                         }else if(!start && stop){
                             mainActivity.path.setFinalFuel(secondPart);
-                            Console.log(classID+" set as final fuel");
                             listener.DriveFragmentDataComm(PID);
-                        }else Console.log("Some other bool");
+                        }else;
                         break;
 
                     case 13: //Speed data (KM/H)
-                        Console.log(classID+" Speed data recieved"+secondPart);
+                        DataLogger.writeConsoleData(classID+" Speed data recieved"+secondPart);
                         mainActivity.path.addToSpeedArray(secondPart);
                         break;
                 }
             }
         }
         else {
-            Console.log("Buffer string doesn't match regex, it's "+bufferString);
 
             if(stop) {
-                Console.log(classID+" No data calculated at all");
             }
 
         }
