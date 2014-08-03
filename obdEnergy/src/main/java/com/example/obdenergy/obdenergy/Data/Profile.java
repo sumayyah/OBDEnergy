@@ -56,12 +56,13 @@ public class Profile{
         }
         else return true;
     }
-    public static void checkArray(){
+    public static void printPathArray(){
         int counter = 0;
         for(Path p: pathArray){
             Console.log("Path "+(++counter));
             p.printData();
         }
     }
+
 
 }

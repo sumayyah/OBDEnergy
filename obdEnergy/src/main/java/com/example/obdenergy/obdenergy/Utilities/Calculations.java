@@ -26,7 +26,7 @@ public class Calculations {
         double percentage = (fuelVal/255);
         gallons = percentage*tankCapacityNum;
 
-        gallons = Double.valueOf(df.format(gallons));
+        gallons = Double.parseDouble(df.format(gallons));
 
         return gallons;
     }
@@ -43,7 +43,7 @@ public class Calculations {
             gallons += value;
         }
 
-        gallons = Double.valueOf(df.format(gallons));
+        gallons = Double.parseDouble(df.format(gallons));
 
         return gallons;
     }

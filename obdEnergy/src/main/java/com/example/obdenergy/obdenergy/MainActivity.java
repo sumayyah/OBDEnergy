@@ -194,9 +194,10 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 return;
             case 47: //Using fuel level data
                 DataLogger.writeConsoleData(classID+"Calculations based on fuel");
+
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
-                    DriveFragmentDataComm(16); //In case of errors or bad data, get backup algorithm
+                    DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
                     return;
                 }
                 break;
@@ -205,7 +206,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 DataLogger.writeConsoleData(classID+" Calculations based on MAF");
                 gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
-                    DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
+                    DriveFragmentDataComm(47); //In case of errors or bad data, get backup algorithm
                     return;
                 }
                 break;
@@ -228,12 +229,20 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         if(Profile.checkPath(path)){
             Profile.addToPathArray(path);
             graphsFragment.GraphsFragmentDataComm(path);
-            dbPathArray.add(path);
-            if(isNetworkAvailable()){
-                concatenateDBData(queuedPathsFromMemory, dbPathArray);
+
+            //If we have wifi, send this path along with any others queued, into database
+            if(isNetworkAvailable() && DBDataExists()){
+                Console.log(classID+"path done, wifi available, adding to db");
+                dbPathArray.add(path);
+                concatenateAndSendDBData(queuedPathsFromMemory, dbPathArray);
+            } //If we don't have wifi, save the path in the queue
+            else {
+                dbPathArray.add(path);
+                Console.log(classID+"path done, no wifi, pushing to array "+dbPathArray.size());
             }
 
         }
+        Profile.printPathArray();
         metricFragment.MetricFragmentDataComm(String.valueOf(gallons), carbonUsed, String.valueOf(treesKilled));
     }
 
@@ -248,8 +257,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         queuedPathsFromMemory = userData.getString("pathQueue", "");
 
         /*If there is a queue and we have wifi, write to database*/
-        if(!queuedPathsFromMemory.matches("") && isNetworkAvailable()){
-            Console.log(classID+"We have wifi right from the start");
+        if(DBDataExists() && isNetworkAvailable()){
+            Console.log(classID+"We have wifi right from the start, path queue is "+queuedPathsFromMemory);
             sendToAWSDatabase(System.currentTimeMillis(), username, queuedPathsFromMemory);
 
             /*Reset variables*/
@@ -274,7 +283,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         try {
             Profile.pathHistoryJSON = new JSONArray(pathStringArray);
-            Console.log(classID+"Path JSON array is "+Profile.pathHistoryJSON);
+            Console.log(classID+"Historical JSON array is "+Profile.pathHistoryJSON);
             graphsFragment.GraphsFragmentDataComm();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -286,7 +295,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         super.onStop();
 
 
-        Profile.checkArray();
+        Profile.printPathArray();
         String jsonArrayString = gson.toJson(Profile.pathArray);
 
         JSONArray finalJSONArray = null;
@@ -319,13 +328,17 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         DataLogger.writeConsoleData(classID+"Writing to local storage: "+finalJSONArray);
 
-        if(isNetworkAvailable()) {
-           concatenateDBData(queuedPathsFromMemory, dbPathArray);
+        /*Update the database, if there is data and if there is wifi.
+        If no wifi, concatenate all data and write to SharedPreferences*/
+
+        if(isNetworkAvailable() && DBDataExists()) {
+           concatenateAndSendDBData(queuedPathsFromMemory, dbPathArray);
         } else {
+
+            DataLogger.writeConsoleData(classID+" no wifi or no data -> no database update");
             String finalPaths = queuedPathsFromMemory+gson.toJson(dbPathArray);
             userData.edit().putString("pathQueue", finalPaths).commit();
         }
-
     }
 
     public void sendToAWSDatabase(Long timestamp, String username, String json) {
@@ -340,8 +353,17 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         dbTask.execute(params);
     }
 
+    public boolean DBDataExists(){
+        if (queuedPathsFromMemory.matches("") && dbPathArray.size() == 0){
+            return false;
+        }else{
+            Console.log(classID+"DB data exists");
+            return true;
+        }
+    }
 
-    private void concatenateDBData(String queueFromMemory, ArrayList<Path> currentPathsArray){
+
+    private void concatenateAndSendDBData(String queueFromMemory, ArrayList<Path> currentPathsArray){
         String currentPathsJSONstring = gson.toJson(currentPathsArray);
 
         sendToAWSDatabase(System.currentTimeMillis(), username, queueFromMemory+currentPathsJSONstring);
@@ -349,12 +371,15 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         queuedPathsFromMemory = "";
         dbPathArray.clear();
         DataLogger.writeConsoleData(classID+" Pushed to DB: "+queueFromMemory+currentPathsJSONstring);
+
     }
 
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        Console.log(classID+"Network ping: "+(activeNetworkInfo != null && activeNetworkInfo.isConnected()));
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
@@ -382,6 +407,14 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    public void sendToDatabase(String json){
+        String url = "http://192.168.1.8:8888/";
+        String[] params = {url, json};
+
+        HttpTask task = new HttpTask();
+        task.execute(params);
     }
 
 }

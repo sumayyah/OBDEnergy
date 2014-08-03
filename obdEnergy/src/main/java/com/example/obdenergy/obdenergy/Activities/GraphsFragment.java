@@ -231,7 +231,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
         switch(type){
             case 1: /*If carbon*/
-
+                Console.log(classID+"Carbon");
                 for(int i=0;i<wholenum;i++){
                     finalImages.add(R.drawable.cloud_icon);
                 }
@@ -239,12 +239,13 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
                 break;
             case 2: /*If trees*/
 
+                Console.log(classID+"Trees");
                 for(int i=0;i<wholenum;i++){
                     finalImages.add(treeList[9]);
                 }
-                if(decimalportion > 0){
+                if(decimalportion > 0 && finaldecimal > 0){
                     finalImages.add(treeList[finaldecimal - 1]);
-                }
+                } else finalImages.add(treeList[0]);
                 break;
             default:
                 break;
@@ -334,7 +335,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         double carbonNum;
         double treesNum;
 
-        for(int i=0;i<jsonArray.length()-1;i++){
+        for(int i=0;i<jsonArray.length();i++){
 
             if(jsonArray.isNull(i)){
                 continue;

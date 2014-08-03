@@ -37,6 +37,9 @@
         <activity android:name=".Activities.InfoActivity"
             android:theme="@android:style/Theme.Dialog">
         </activity>
+        <activity android:name=".Activities.FuelSurveyActivity"
+            android:theme="@android:style/Theme.Dialog">
+        </activity>
 
     </application>
 
