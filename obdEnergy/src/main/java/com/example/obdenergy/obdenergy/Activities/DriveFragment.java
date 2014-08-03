@@ -48,7 +48,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private boolean stop;
     private boolean maf = true;
     private boolean speed = false;
-    private boolean fuelDataGiven = true;
+    private boolean mafTaken = false;
 
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
@@ -279,7 +279,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
                                 @Override
                                 public void run() {
-                                    sendMAFRequest();
+                                    sendMessage(MAF_REQUEST + "\r");;
                                 }
                             });
 
@@ -405,13 +405,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         mainActivity.path.username = mainActivity.username;
 
         Console.log(classID+"created new path");
-//        sendMessage(CHECK_PROTOCOL + "\r");
 
-        /*Send request for initial fuel data*/
-//        sendMessage(FUEL_REQUEST + "\r");
-        fuelDataGiven = false;
-
-        startInstantReadings();
+        sendMessage(FUEL_REQUEST + "\r");
 
     }
 
@@ -421,14 +416,10 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         timeHandler.removeCallbacks(timerThread);
         speedHandler.removeCallbacks(speedThread);
 
-        if(fuelDataGiven) sendMessage(FUEL_REQUEST+"\r");
+        sendMessage(FUEL_REQUEST+"\r");
 
     }
 
-    private void sendMAFRequest() {
-//        Console.log(classID+"sending MAF request");
-        sendMessage(MAF_REQUEST + "\r");
-    }
 
     private final Handler BTHandler = new Handler(){
 
@@ -483,35 +474,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         String threeByteAbnormal="\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n? (\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\S*\\r?\\n?)* ";
 
 
-        /*If data returned is absent or in an unacceptable format*/
-        if(command.equals(FUEL_REQUEST) && start){
-            if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){
-                fuelDataGiven = false;
-                Console.log(classID+"Start tried fuel and failed");
-                startInstantReadings();
-                sendMAFRequest();
-                return;
-            }
-        }else if(command.equals(CHECK_PROTOCOL)){
-//            checkProtocol(bufferString);
-        }else if(command.equals(MAF_REQUEST) && start){
-            if(bufferString.equals("NO DATA") || bufferString.equals("ERROR")){ //If second line of defense - MAF - doesn't work, just get data from user for now
-                Console.log(classID+"Start tried MAF and failed");
-                listener.DriveFragmentDataComm(0);
-                return;
-            }
-        }else if(command.equals(CHANGE_PROTOCOL)){ //Not currently used - advanced functionality
-            if(!bufferString.equals("OK")){
-                String message = "Failed to change protocol to ISO 9141-2. Accuracy of data not guaranteed.";
-                Console.showAlert(mainActivity, message);
-            }
-        }else if(command.equals(INIT_REQUEST)){
-            if(bufferString.equals("OK")){
-                Console.log(classID+" Init succeeded");
-                return;
-            }else Console.log("Init failed");
-        }
-
         /*If we get 4 bytes of data returned*/
         if(bufferString!="" && (bufferString.matches(fourByteNormal) || bufferString.matches(fourByteAbnormal))){
 
@@ -532,7 +494,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                             mainActivity.path.addToMAFarray(firstPart, secondPart);
                         }else if(!start && stop){
                             Console.log(classID+"MAF and STOP");
-                            listener.DriveFragmentDataComm(PID);
+//                            listener.DriveFragmentDataComm(PID);
                         }else Console.log("Some other bool");
                         break;
                     default:
@@ -558,11 +520,13 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                         Console.log(classID+" Fuel data recieved "+secondPart);
                         if(start && !stop){
                             mainActivity.path.setInitFuel(secondPart);
-                            Console.log(classID+" set as initial fuel");
+                            Console.log(classID + " set as initial fuel");
+                            mafTaken = true;
+                            startInstantReadings();
                         }else if(!start && stop){
                             mainActivity.path.setFinalFuel(secondPart);
-                            Console.log(classID+" set as final fuel");
-                            listener.DriveFragmentDataComm(PID);
+                            Console.log(classID+" set as final fuel, calling Main Activity");
+                            listener.DriveFragmentDataComm(16);
                         }else Console.log("Some other bool");
                         break;
 
@@ -578,6 +542,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
             if(stop) {
                 Console.log(classID+" No data calculated at all");
+                listener.DriveFragmentDataComm(16);
             }
 
         }

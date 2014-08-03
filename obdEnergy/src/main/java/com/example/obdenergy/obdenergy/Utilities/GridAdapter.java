@@ -33,8 +33,6 @@ public class GridAdapter extends BaseAdapter {
         this.context = context;
 //        this.imageType = imageType;
         this.imageList = imageList;
-
-        Console.log("New gridadapter ");
     }
 
     @Override
@@ -65,7 +63,7 @@ public class GridAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        Console.log("Returning count " + imageList.size());
+//        Console.log("Returning count " + imageList.size());
 //        return imageNum;
         return imageList.size();
     }

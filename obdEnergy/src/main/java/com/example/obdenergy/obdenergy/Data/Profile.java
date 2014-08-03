@@ -70,29 +70,13 @@ public class Profile{
         }
         else return true;
     }
-    public static void checkArray(){
+    public static void printPathArray(){
         int counter = 0;
         for(Path p: pathArray){
             Console.log("Path "+(++counter));
             p.printData();
         }
     }
-    public static void cleanArray(){
 
-        for(int i=0;i<pathArray.size()-1;i++){
-            if(pathArray.get(i) == null) Console.log("Profile: path at "+i+" is null");
-            else pathArray.get(i).printData();
-        }
-    }
-
-    public static void printPath(){
-        Console.log("Printing paths array");
-        int counter = 0;
-        for(Path p: pathArray){
-            counter++;
-            Console.log("Path "+counter);
-            p.printData();
-        }
-    }
 
 }
