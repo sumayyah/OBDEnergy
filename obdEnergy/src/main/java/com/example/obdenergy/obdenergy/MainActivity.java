@@ -193,7 +193,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
                 return;
             case 47: //Using fuel level data
-                DataLogger.writeConsoleData(classID+"Calculations based on fuel");
+                Console.log(classID+"Calculations based on fuel");
 
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
@@ -203,7 +203,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 break;
 
             case 16: //Using MAF data
-                DataLogger.writeConsoleData(classID+" Calculations based on MAF");
+                Console.log(classID+" Calculations based on MAF");
                 gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(47); //In case of errors or bad data, get backup algorithm
@@ -326,7 +326,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         userData.edit().putString("Paths", finalJSONArray.toString()).commit();
 
-        DataLogger.writeConsoleData(classID+"Writing to local storage: "+finalJSONArray);
+        Console.log(classID+"Writing to local storage: "+finalJSONArray);
 
         /*Update the database, if there is data and if there is wifi.
         If no wifi, concatenate all data and write to SharedPreferences*/
@@ -335,7 +335,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
            concatenateAndSendDBData(queuedPathsFromMemory, dbPathArray);
         } else {
 
-            DataLogger.writeConsoleData(classID+" no wifi or no data -> no database update");
+            Console.log(classID+" no wifi or no data -> no database update");
             String finalPaths = queuedPathsFromMemory+gson.toJson(dbPathArray);
             userData.edit().putString("pathQueue", finalPaths).commit();
         }
@@ -370,7 +370,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         queuedPathsFromMemory = "";
         dbPathArray.clear();
-        DataLogger.writeConsoleData(classID+" Pushed to DB: "+queueFromMemory+currentPathsJSONstring);
+        Console.log(classID+" Pushed to DB: "+queueFromMemory+currentPathsJSONstring);
 
     }
 

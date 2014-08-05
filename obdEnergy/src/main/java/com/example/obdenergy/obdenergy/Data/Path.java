@@ -77,12 +77,12 @@ public class Path implements Comparable<Path>{
 
 
     public void printData() {
-        DataLogger.writeConsoleData("Name " + username);
-        DataLogger.writeConsoleData("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF+" initTime "+initTimestamp+" finalTime "+finalTimestamp);
-        DataLogger.writeConsoleData("Gallons "+gallonsUsed+", Carbon "+carbonUsed+", Trees "+treesKilled);
-        DataLogger.writeConsoleData("Miles travelled "+milesTravelled+" average speed "+averageSpeed);
-        DataLogger.writeConsoleData("Speed array is: "+printArray(speedArray));
-        DataLogger.writeConsoleData("MAF array is: "+printArray(MAFarray));
+        Console.log("Name " + username);
+        Console.log("Init fuel "+initFuel+" finalFuel "+finalFuel+" initMAF "+initMAF+" finalMAF "+finalMAF+" initTime "+initTimestamp+" finalTime "+finalTimestamp);
+        Console.log("Gallons "+gallonsUsed+", Carbon "+carbonUsed+", Trees "+treesKilled);
+        Console.log("Miles travelled "+milesTravelled+" average speed "+averageSpeed);
+        Console.log("Speed array is: "+printArray(speedArray));
+        Console.log("MAF array is: "+printArray(MAFarray));
     }
 
     public String returnData(){

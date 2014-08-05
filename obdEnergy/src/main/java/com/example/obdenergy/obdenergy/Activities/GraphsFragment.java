@@ -164,7 +164,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         dayFuelNum += p.gallonsUsed;
         dayCarbonNum += p.carbonUsed;
         dayTreesNum += p.treesKilled;
-        DataLogger.writeConsoleData(classID + "Path added, day: " + dayFuelNum + " " + dayCarbonNum + " " + dayTreesNum + " week " + weekFuelNum + " " + weekCarbonNum + " " + weekTreesNum + " month " + monthFuelNum + " " + monthCarbonNum + " " + monthTreesNum);
+        Console.log(classID + "Path added, day: " + dayFuelNum + " " + dayCarbonNum + " " + dayTreesNum + " week " + weekFuelNum + " " + weekCarbonNum + " " + weekTreesNum + " month " + monthFuelNum + " " + monthCarbonNum + " " + monthTreesNum);
 
     }
 
@@ -401,10 +401,10 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     }
 
     private void printData(){
-        DataLogger.writeConsoleData(classID+"Printing data now at "+currentTime);
-        DataLogger.writeConsoleData("Day "+dayStartRange+" to "+currentTime+" fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
-        DataLogger.writeConsoleData("Week "+weekStartRange+" to "+currentTime+" fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
-        DataLogger.writeConsoleData("Month fuel carbon trees "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
+        Console.log(classID+"Printing data now at "+currentTime);
+        Console.log("Day "+dayStartRange+" to "+currentTime+" fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
+        Console.log("Week "+weekStartRange+" to "+currentTime+" fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
+        Console.log("Month fuel carbon trees "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
     }
 
 }

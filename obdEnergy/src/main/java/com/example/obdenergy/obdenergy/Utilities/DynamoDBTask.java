@@ -51,7 +51,8 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
             sendToDB();
         } catch (Exception e) {
             e.printStackTrace();
-            DataLogger.writeConsoleData("Failed to write to database");
+            Console.log("Failed to write to database");
+            DataLogger.writeData("Failed to write to database");
         }
         return null;
     }
@@ -122,19 +123,30 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
 
         }
         catch (AmazonServiceException ase) {
-            DataLogger.writeConsoleData("Caught an AmazonServiceException, which means your request made it "
+            Console.log("Caught an AmazonServiceException, which means your request made it "
                     + "to AWS, but was rejected with an error response for some reason.");
-            DataLogger.writeConsoleData("Error Message:    " + ase.getMessage());
-            DataLogger.writeConsoleData("HTTP Status Code: " + ase.getStatusCode());
-            DataLogger.writeConsoleData("AWS Error Code:   " + ase.getErrorCode());
-            DataLogger.writeConsoleData("Error Type:       " + ase.getErrorType());
-            DataLogger.writeConsoleData("Request ID:       " + ase.getRequestId());
+            Console.log("Error Message:    " + ase.getMessage());
+            Console.log("HTTP Status Code: " + ase.getStatusCode());
+            Console.log("AWS Error Code:   " + ase.getErrorCode());
+            Console.log("Error Type:       " + ase.getErrorType());
+            Console.log("Request ID:       " + ase.getRequestId());
+            DataLogger.writeData("Caught an AmazonServiceException, which means your request made it "
+                    + "to AWS, but was rejected with an error response for some reason.");
+            DataLogger.writeData("Error Message:    " + ase.getMessage());
+            DataLogger.writeData("HTTP Status Code: " + ase.getStatusCode());
+            DataLogger.writeData("AWS Error Code:   " + ase.getErrorCode());
+            DataLogger.writeData("Error Type:       " + ase.getErrorType());
+            DataLogger.writeData("Request ID:       " + ase.getRequestId());
             ase.printStackTrace();
         } catch (AmazonClientException ace) {
-            DataLogger.writeConsoleData("Caught an AmazonClientException, which means the client encountered "
+            Console.log("Caught an AmazonClientException, which means the client encountered "
                     + "a serious internal problem while trying to communicate with AWS, "
                     + "such as not being able to access the network.");
-            DataLogger.writeConsoleData("Error Message: " + ace.getMessage());
+            Console.log("Error Message: " + ace.getMessage());
+            DataLogger.writeData("Caught an AmazonClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with AWS, "
+                    + "such as not being able to access the network.");
+            DataLogger.writeData("Error Message: " + ace.getMessage());
         }
 
     }
@@ -157,18 +169,23 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
 
 
         while (System.currentTimeMillis() < endTime) {
-            try {Thread.sleep(1000 * 2); DataLogger.writeConsoleData("Sleeping");} catch (Exception e) {e.printStackTrace();}
+            try {Thread.sleep(1000 * 2); Console.log("Sleeping");} catch (Exception e) {e.printStackTrace();}
             try {
                 DescribeTableRequest request = new DescribeTableRequest().withTableName(tablename);
                 TableDescription tableDescription = dbClient.describeTable(request).getTable();
                 String tableStatus = tableDescription.getTableStatus();
                 if (tableStatus.equals(TableStatus.ACTIVE.toString())) return;
             } catch (AmazonServiceException ase) {
-                DataLogger.writeConsoleData("Error Message:    " + ase.getMessage());
-                DataLogger.writeConsoleData("HTTP Status Code: " + ase.getStatusCode());
-                DataLogger.writeConsoleData("AWS Error Code:   " + ase.getErrorCode());
-                DataLogger.writeConsoleData("Error Type:       " + ase.getErrorType());
-                DataLogger.writeConsoleData("Request ID:       " + ase.getRequestId());
+                Console.log("Error Message:    " + ase.getMessage());
+                Console.log("HTTP Status Code: " + ase.getStatusCode());
+                Console.log("AWS Error Code:   " + ase.getErrorCode());
+                Console.log("Error Type:       " + ase.getErrorType());
+                Console.log("Request ID:       " + ase.getRequestId());
+                DataLogger.writeData("Error Message:    " + ase.getMessage());
+                DataLogger.writeData("HTTP Status Code: " + ase.getStatusCode());
+                DataLogger.writeData("AWS Error Code:   " + ase.getErrorCode());
+                DataLogger.writeData("Error Type:       " + ase.getErrorType());
+                DataLogger.writeData("Request ID:       " + ase.getRequestId());
             }
         }
 
@@ -179,7 +196,11 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
 
         TableDescription tableDescription = dbClient.describeTable(
                 new DescribeTableRequest().withTableName(tablename)).getTable();
-        DataLogger.writeConsoleData("Name: " + tableDescription.getTableName() + " \n" +
+        Console.log("Name: " + tableDescription.getTableName() + " \n" +
+                "Status: " + tableDescription.getTableStatus() + " \n" +
+                "Provisioned Throughput (read capacity units/sec): " + tableDescription.getProvisionedThroughput().getReadCapacityUnits() + " \n" +
+                "Provisioned Throughput (write capacity units/sec): " + tableDescription.getProvisionedThroughput().getWriteCapacityUnits());
+        DataLogger.writeData("Name: " + tableDescription.getTableName() + " \n" +
                 "Status: " + tableDescription.getTableStatus() + " \n" +
                 "Provisioned Throughput (read capacity units/sec): " + tableDescription.getProvisionedThroughput().getReadCapacityUnits() + " \n" +
                 "Provisioned Throughput (write capacity units/sec): " + tableDescription.getProvisionedThroughput().getWriteCapacityUnits());

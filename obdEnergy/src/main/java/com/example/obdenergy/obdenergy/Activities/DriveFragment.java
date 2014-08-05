@@ -451,7 +451,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         byte[] readBuffer = (byte[]) msg.obj;
         String bufferString = new String(readBuffer, 0, msg.arg1);
-        DataLogger.writeConsoleData(classID+"Command: "+command+" Response is "+bufferString);
+        Console.log(classID+"Command: "+command+" Response is "+bufferString);
 
         String fourByteNormal="\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n?";
         String fourByteAbnormal="\\s*[0-9A-Fa-f] [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n? (\\s*[0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2} [0-9A-Fa-f]{2}\\s*\\r*\\n?)* \\s*\\r*\\n?";
@@ -473,7 +473,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
                 switch(PID){
                     case 16: //MAF - airflow rate
-                        DataLogger.writeConsoleData(classID + "MAF Fuel data received " + finalString);
+                        Console.log(classID + "MAF Fuel data received " + finalString);
                         if(start && !stop){
                             mainActivity.path.addToMAFarray(firstPart, secondPart);
                         }else if(!start && stop){
@@ -499,7 +499,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 switch (PID){
                     case 47: //Fuel data
 
-                        DataLogger.writeConsoleData(classID+" Fuel data recieved "+secondPart);
+                        Console.log(classID+" Fuel data recieved "+secondPart);
                         if(start && !stop){
                             mainActivity.path.setInitFuel(secondPart);
                             mafTaken = true;
@@ -511,7 +511,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                         break;
 
                     case 13: //Speed data (KM/H)
-                        DataLogger.writeConsoleData(classID+" Speed data recieved"+secondPart);
+                        Console.log(classID+" Speed data recieved"+secondPart);
                         mainActivity.path.addToSpeedArray(secondPart);
                         break;
                 }
