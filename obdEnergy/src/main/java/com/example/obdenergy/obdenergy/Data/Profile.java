@@ -71,6 +71,7 @@ public class Profile{
         else return true;
     }
     public static void printPathArray(){
+        Console.log("Printing Path Array");
         int counter = 0;
         for(Path p: pathArray){
             Console.log("Path "+(++counter));

@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +14,7 @@ import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -22,6 +25,8 @@ import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+
+import static android.view.View.VISIBLE;
 
 /**
  * Created by sumayyah on 5/31/14.
@@ -48,7 +53,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private boolean stop;
     private boolean maf = true;
     private boolean speed = false;
-    private boolean mafTaken = false;
+    private boolean startReady = false;
 
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
@@ -72,9 +77,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private final String CHANGE_PROTOCOL = "ATSP3"; //Changes protocol to ISO 9141-2
     private final String AUTO_PROTOCOL = "ATSP0"; //Lets logger find closest protocol automatically
 
-    private final String USER_DATA_FILE = "MyCarData";
-
-
     private Button connectButton;
     private Button startButton;
     private Button stopButton;
@@ -84,6 +86,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
     private RelativeLayout greenRing;
     private RelativeLayout redRing;
+    private RelativeLayout greyRing;
 
     dataListener listener;
 
@@ -94,7 +97,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private long timeSwapper = 0L;
     private long finalTime = 0L;
 
-    private Thread fuelThread;
     private Thread speedThread;
     private final Handler timeHandler = new Handler();
     private final Handler speedHandler = new Handler();
@@ -126,13 +128,19 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
 
-
         connectStatus = (TextView) (view.findViewById(R.id.connectStatus));
         timer = (TextView) (view.findViewById(R.id.timer));
         progressBar = (ProgressBar) (view.findViewById(R.id.progressSpinner));
 
         greenRing = (RelativeLayout)(view.findViewById(R.id.ringLayoutGreen));
         redRing = (RelativeLayout)(view.findViewById(R.id.ringLayoutRed));
+        greyRing = (RelativeLayout)(view.findViewById(R.id.ringLayoutGrey));
+
+        /*Prevents app from going to sleep and disruptin communication*/
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        startReady = false;
+        timer.setVisibility(View.GONE);
 
         BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -167,7 +175,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         if (!BluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-//            Console.log(classID+" Bluetooth is not enabled, request sent");
         } else {
             if (ChatService == null) setupChat();
         }
@@ -186,7 +193,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         if (counter > 0 && start && !stop) {
             Console.log(classID + "onResume");
             startButton.setVisibility(View.GONE);
-            stopButton.setVisibility(View.VISIBLE);
+            stopButton.setVisibility(VISIBLE);
         }
 
     }
@@ -204,7 +211,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         connectStatus.setText(status);
         connectButton.setVisibility(View.GONE);
 
-        if (on) progressBar.setVisibility(View.VISIBLE);
+        if (on) progressBar.setVisibility(VISIBLE);
         else progressBar.setVisibility(View.GONE);
 
     }
@@ -233,6 +240,20 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         /*Send initial messages*/
         sendMessage("ATE0");
         sendMessage("" + "\r");
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Console.log(classID+"5 seconds! Setting active now");
+                startButton.setTextColor(Color.parseColor("#A4C739"));
+                greyRing.setVisibility(View.INVISIBLE);
+                greenRing.setVisibility(VISIBLE);
+                timer.setVisibility(VISIBLE);
+                startReady = true;
+
+            }
+        }, 2500);
 
     }
 
@@ -273,8 +294,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                     try {
                         Thread.sleep(2500);
                         if(maf && !speed){
-                            Console.log(classID+" MAF's turn");
-
                             speedHandler.post(new Runnable() {
 
                                 @Override
@@ -286,8 +305,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                             maf = false;
                             speed = true;
                         }else if (speed && !maf){
-                            Console.log(classID+" Speed's turn");
-
                             speedHandler.post(new Runnable() {
 
                                 @Override
@@ -319,18 +336,20 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         switch (v.getId()) {
             case R.id.connectButton:
-                Console.log(classID+" CLICKED CONNECT");
                 Intent intent = new Intent(getActivity(), Devices.class);
                 getActivity().startActivityForResult(intent, REQUEST_CONNECT_DEVICE_SECURE);
                 break;
             case R.id.startButton:
+
+                if(!startReady) break;
+
                 mainActivity.path.setInitTimestamp(timeString);
 
                 startButton.setVisibility(View.GONE);
-                stopButton.setVisibility(View.VISIBLE);
+                stopButton.setVisibility(VISIBLE);
 
                 greenRing.setVisibility(View.INVISIBLE);
-                redRing.setVisibility(View.VISIBLE);
+                redRing.setVisibility(VISIBLE);
 
                 startTime = SystemClock.uptimeMillis();
                 timeHandler.postDelayed(timerThread, 0);
@@ -354,15 +373,14 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 timeInProgress = 0L;
                 timeSwapper = 0L;
                 finalTime = 0L;
-                Console.log(classID + "Counter is " + counter);
 
                 stop = true;
                 start = false;
 
-                startButton.setVisibility(View.VISIBLE);
+                startButton.setVisibility(VISIBLE);
                 stopButton.setVisibility(View.GONE);
 
-                greenRing.setVisibility(View.VISIBLE);
+                greenRing.setVisibility(VISIBLE);
                 redRing.setVisibility(View.INVISIBLE);
 
                 onStopPressed();
@@ -411,7 +429,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onStopPressed() {
-        Console.log(classID+"Stop pressed");
+        Console.log(classID + "Stop pressed");
 
         timeHandler.removeCallbacks(timerThread);
         speedHandler.removeCallbacks(speedThread);
@@ -440,7 +458,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
                             connectStatus.setText("Connecting...");
-                            progressBar.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(VISIBLE);
                             connectButton.setVisibility(View.GONE);
                         case BluetoothChatService.STATE_LISTEN:
                         case BluetoothChatService.STATE_NONE:
@@ -521,11 +539,12 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                         if(start && !stop){
                             mainActivity.path.setInitFuel(secondPart);
                             Console.log(classID + " set as initial fuel");
-                            mafTaken = true;
                             startInstantReadings();
                         }else if(!start && stop){
                             mainActivity.path.setFinalFuel(secondPart);
-                            Console.log(classID+" set as final fuel, calling Main Activity");
+                            Console.log(classID + " set as final fuel, calling Main Activity");
+                            timeHandler.removeCallbacks(timerThread);
+                            speedHandler.removeCallbacks(speedThread);
                             listener.DriveFragmentDataComm(16);
                         }else Console.log("Some other bool");
                         break;

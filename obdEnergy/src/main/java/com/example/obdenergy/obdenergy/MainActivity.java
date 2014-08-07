@@ -232,21 +232,21 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         path.averageSpeed = Calculations.getAvgSpeed(path.speedArray);
         if(Profile.checkPath(path)){
+            Console.log(classID+"Path is ok, adding to array and DB");
             Profile.addToPathArray(path);
+            dbPathArray.add(path);
             graphsFragment.GraphsFragmentDataComm(path);
 
             //If we have wifi, send this path along with any others queued, into database
             if(isNetworkAvailable() && DBDataExists()){
                 Console.log(classID+"path done, wifi available, adding to db");
-                dbPathArray.add(path);
                 concatenateAndSendDBData(queuedPathsFromMemory, dbPathArray);
             } //If we don't have wifi, save the path in the queue
             else {
-                dbPathArray.add(path);
-                Console.log(classID+"path done, no wifi, pushing to array "+dbPathArray.size());
+                Console.log(classID+"path done, no wifi, keeping in array "+dbPathArray.size());
             }
 
-        }
+        } else Console.log(classID+"Path didn't check out");
         Profile.printPathArray();
         metricFragment.MetricFragmentDataComm(String.valueOf(gallons), carbonUsed, String.valueOf(treesKilled));
     }
@@ -303,6 +303,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     @Override
     protected void onStop() {
         super.onStop();
+        String finalPaths = "";
 
         /*Create GSON builder that can write static variables (Path needs static vars and methods)*/
 //        Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
@@ -354,7 +355,11 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
            concatenateAndSendDBData(queuedPathsFromMemory, dbPathArray);
         } else {
             Console.log(classID+" no wifi or no data -> no database update");
-            String finalPaths = queuedPathsFromMemory+gson.toJson(dbPathArray);
+
+            if(dbPathArray.size()> 0) { finalPaths = queuedPathsFromMemory+gson.toJson(dbPathArray);}
+            else { finalPaths = queuedPathsFromMemory;}
+
+            //TODO: this can be put in "if" above, and the "else" left blank, and finalPaths removed from function scope
             userData.edit().putString("pathQueue", finalPaths).commit();
         }
 
@@ -376,6 +381,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
     public boolean DBDataExists(){
         if (queuedPathsFromMemory.matches("") && dbPathArray.size() == 0){
+            Console.log(classID+"DB data doesn't exist");
             return false;
         }else{
             Console.log(classID+"DB data exists");

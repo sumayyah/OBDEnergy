@@ -55,7 +55,7 @@
         android:text="START"
         android:layout_centerInParent="true"
         android:textSize="50dp"
-        android:textColor="#A4C739"
+        android:textColor="#aaa"
         android:background="@android:color/transparent"
         />
     <RelativeLayout
@@ -63,10 +63,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@drawable/ring_green">
     </RelativeLayout>
-
     <RelativeLayout
         android:id="@+id/ringLayoutRed"
         android:layout_width="wrap_content"
@@ -74,6 +73,15 @@
         android:layout_centerInParent="true"
         android:visibility="gone"
         android:background="@drawable/ring_red">
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/ringLayoutGrey"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="visible"
+        android:background="@drawable/ring_grey">
     </RelativeLayout>
 
     <ProgressBar
@@ -101,6 +109,7 @@
         android:layout_below="@+id/ringLayoutGreen"
         android:layout_centerHorizontal="true"
         android:textSize="20sp"
+        android:visibility="gone"
         android:textColor="@android:color/white"
         android:text="00:00:00"/>
 </RelativeLayout>
