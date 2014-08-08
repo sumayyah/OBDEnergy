@@ -204,7 +204,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
             case 16: //Using MAF data
                 Console.log(classID+" Calculations based on MAF");
-                DataLogger.writeConsoleData(classID+"Calculations based on")
+                DataLogger.writeConsoleData(classID+"Calculations based on MAF");
                 gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(47); //In case of errors or bad data, get backup algorithm
