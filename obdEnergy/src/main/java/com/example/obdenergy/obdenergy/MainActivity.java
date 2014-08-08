@@ -169,7 +169,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
     @Override
     public void DriveFragmentDataComm(int PID) {
-
+        Console.log(classID+"Data received by main");
         driveFragment.confirmData(PID);
 
         String tankCapacity = Profile.getCapacity();
@@ -225,6 +225,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         path.carbonUsed = Double.parseDouble(carbonUsed);
         path.treesKilled = treesKilled;
 
+        Console.log(classID+"Path gallons carbon trees: "+path.gallonsUsed+" "+path.carbonUsed+" "+path.treesKilled);
+
         path.averageSpeed = Calculations.getAvgSpeed(path.speedArray);
         if(Profile.checkPath(path)){
             Profile.addToPathArray(path);
@@ -238,7 +240,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             } //If we don't have wifi, save the path in the queue
             else {
                 dbPathArray.add(path);
-                Console.log(classID+"path done, no wifi, pushing to array "+dbPathArray.size());
+                Console.log(classID+"Path done, no wifi, pushing to array "+dbPathArray.size());
             }
 
         }
@@ -264,7 +266,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             /*Reset variables*/
             userData.edit().putString("pathQueue", "").commit();
             queuedPathsFromMemory = "";
-        }
+        } else Console.log(classID+"No wifi onstart, path queue is "+queuedPathsFromMemory);
 
         String make = userData.getString("car_make", "");
         String model = userData.getString("car_model", "");
@@ -284,6 +286,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         try {
             Profile.pathHistoryJSON = new JSONArray(pathStringArray);
             Console.log(classID+"Historical JSON array is "+Profile.pathHistoryJSON);
+            DataLogger.writeConsoleData(classID+"Historical JSON array is "+Profile.pathHistoryJSON);
             graphsFragment.GraphsFragmentDataComm();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -293,9 +296,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     @Override
     protected void onStop() {
         super.onStop();
+        Console.log(classID+"On Stop");
 
-
-        Profile.printPathArray();
         String jsonArrayString = gson.toJson(Profile.pathArray);
 
         JSONArray finalJSONArray = null;
@@ -327,6 +329,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         userData.edit().putString("Paths", finalJSONArray.toString()).commit();
 
         Console.log(classID+"Writing to local storage: "+finalJSONArray);
+        DataLogger.writeConsoleData(classID+"Writing to local storage: "+finalJSONArray);
 
         /*Update the database, if there is data and if there is wifi.
         If no wifi, concatenate all data and write to SharedPreferences*/
@@ -351,10 +354,12 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         String[] params = {date, username, json};
         DynamoDBTask dbTask = new DynamoDBTask();
         dbTask.execute(params);
+        Console.log(classID+"Initialized DB data");
     }
 
     public boolean DBDataExists(){
         if (queuedPathsFromMemory.matches("") && dbPathArray.size() == 0){
+            Console.log(classID+"No DB data");
             return false;
         }else{
             Console.log(classID+"DB data exists");
@@ -417,4 +422,29 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         task.execute(params);
     }
 
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Console.log(classID+"On pause");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Console.log(classID+"On Resume");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Console.log(classID+"On Restart");
+    }
+
+    @Override
+    protected void onDestroy() {
+        Console.log(classID+"On Destroy");
+        super.onDestroy();
+    }
 }

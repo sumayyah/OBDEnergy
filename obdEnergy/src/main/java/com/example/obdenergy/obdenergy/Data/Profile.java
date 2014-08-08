@@ -2,9 +2,11 @@ package com.example.obdenergy.obdenergy.Data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.Utilities.Console;
+import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,9 +59,11 @@ public class Profile{
         else return true;
     }
     public static void printPathArray(){
+        DataLogger.writeConsoleData("Writing Path Array");
         int counter = 0;
         for(Path p: pathArray){
             Console.log("Path "+(++counter));
+            DataLogger.writeConsoleData("Path "+counter);
             p.printData();
         }
     }

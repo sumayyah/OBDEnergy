@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +13,7 @@ import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -85,6 +87,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
     private RelativeLayout greenRing;
     private RelativeLayout redRing;
+    private RelativeLayout greyRing;
 
     dataListener listener;
 
@@ -119,13 +122,16 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
 
         View view = inflater.inflate(R.layout.drive_fragment, container, false);
+
+        /*Prevent phone from sleeping when collecting data*/
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         connectButton = (Button) (view.findViewById(R.id.connectButton));
         startButton = (Button) (view.findViewById(R.id.startButton));
         stopButton = (Button) (view.findViewById(R.id.stopButton));
         connectButton.setOnClickListener(this);
-        startButton.setOnClickListener(this);
-        stopButton.setOnClickListener(this);
 
+        stopButton.setOnClickListener(this);
 
         connectStatus = (TextView) (view.findViewById(R.id.connectStatus));
         timer = (TextView) (view.findViewById(R.id.timer));
@@ -133,6 +139,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         greenRing = (RelativeLayout)(view.findViewById(R.id.ringLayoutGreen));
         redRing = (RelativeLayout)(view.findViewById(R.id.ringLayoutRed));
+        greyRing = (RelativeLayout)(view.findViewById(R.id.ringLayoutGrey));
 
         BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -174,13 +181,13 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
-
+        Console.log(classID+"On pause");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
+        Console.log(classID+"On resume");
         if (counter > 0 && start && !stop) {
             startButton.setVisibility(View.GONE);
             stopButton.setVisibility(View.VISIBLE);
@@ -223,6 +230,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         /*Initialize outgoing string buffer with null string*/
         WriteStringBuffer = new StringBuffer("");
+        Console.log(classID+"Set up chat");
 
     }
 
@@ -317,6 +325,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 getActivity().startActivityForResult(intent, REQUEST_CONNECT_DEVICE_SECURE);
                 break;
             case R.id.startButton:
+                Console.log(classID+"Start pressed");
                 mainActivity.path.setInitTimestamp(timeString);
 
                 startButton.setVisibility(View.GONE);
@@ -335,6 +344,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
                 break;
             case R.id.stopButton:
+                Console.log(classID+"Stop pressed");
                 mainActivity.path.setFinalTimestamp(timeString);
 
                 timeSwapper += timeInProgress;
@@ -370,7 +380,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
     public void sendMessage(String message) {
 
-
         /*Make sure we're connected*/
         if ((ChatService.getState() != BluetoothChatService.STATE_CONNECTED)) {
             String msg = "No Bluetooth device connected. Please connect some Bluetooth device and retry.";
@@ -393,8 +402,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         mainActivity.path = new Path();
         mainActivity.path.username = mainActivity.username;
-
-
         sendMessage(FUEL_REQUEST + "\r");
 
     }
@@ -403,7 +410,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         timeHandler.removeCallbacks(timerThread);
         speedHandler.removeCallbacks(speedThread);
-
         sendMessage(FUEL_REQUEST+"\r");
 
     }
@@ -499,7 +505,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 switch (PID){
                     case 47: //Fuel data
 
-                        Console.log(classID+" Fuel data recieved "+secondPart);
+                        Console.log(classID+"Engine Fuel data recieved "+secondPart);
                         if(start && !stop){
                             mainActivity.path.setInitFuel(secondPart);
                             mafTaken = true;

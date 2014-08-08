@@ -49,6 +49,7 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
         try {
 
             sendToDB();
+
         } catch (Exception e) {
             e.printStackTrace();
             Console.log("Failed to write to database");
@@ -120,6 +121,9 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
             Map<String, AttributeValue> item = newItem(timestamp, jsondata, username);
             PutItemRequest putItemRequest = new PutItemRequest(tablename, item);
             PutItemResult putItemResult = dbClient.putItem(putItemRequest);
+
+            Console.log("Sent to DB: "+jsondata);
+            DataLogger.writeConsoleData("Sent to DB: "+jsondata);
 
         }
         catch (AmazonServiceException ase) {
