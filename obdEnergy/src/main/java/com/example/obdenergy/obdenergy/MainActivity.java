@@ -98,7 +98,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         // Set up the action bar.
 
         ActionBar actionBar = getActionBar();
@@ -194,6 +193,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 return;
             case 47: //Using fuel level data
                 Console.log(classID+"Calculations based on fuel");
+                DataLogger.writeConsoleData(classID+"Calculations based on fuel");
 
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
@@ -204,6 +204,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
             case 16: //Using MAF data
                 Console.log(classID+" Calculations based on MAF");
+                DataLogger.writeConsoleData(classID+"Calculations based on")
                 gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(47); //In case of errors or bad data, get backup algorithm
@@ -228,22 +229,24 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Console.log(classID+"Path gallons carbon trees: "+path.gallonsUsed+" "+path.carbonUsed+" "+path.treesKilled);
 
         path.averageSpeed = Calculations.getAvgSpeed(path.speedArray);
+
         if(Profile.checkPath(path)){
+
+            Console.log(classID+"Path is ok, adding to array and DB");
             Profile.addToPathArray(path);
+            dbPathArray.add(path);
             graphsFragment.GraphsFragmentDataComm(path);
 
             //If we have wifi, send this path along with any others queued, into database
             if(isNetworkAvailable() && DBDataExists()){
                 Console.log(classID+"path done, wifi available, adding to db");
-                dbPathArray.add(path);
                 concatenateAndSendDBData(queuedPathsFromMemory, dbPathArray);
             } //If we don't have wifi, save the path in the queue
             else {
-                dbPathArray.add(path);
-                Console.log(classID+"Path done, no wifi, pushing to array "+dbPathArray.size());
+                Console.log(classID+"path done, no wifi, keeping in array "+dbPathArray.size());
             }
 
-        }
+        } else Console.log(classID+"Path didn't check out");
         Profile.printPathArray();
         metricFragment.MetricFragmentDataComm(String.valueOf(gallons), carbonUsed, String.valueOf(treesKilled));
     }
@@ -296,7 +299,10 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     @Override
     protected void onStop() {
         super.onStop();
+
         Console.log(classID+"On Stop");
+
+        String finalPaths = "";
 
         String jsonArrayString = gson.toJson(Profile.pathArray);
 
@@ -339,7 +345,11 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         } else {
 
             Console.log(classID+" no wifi or no data -> no database update");
-            String finalPaths = queuedPathsFromMemory+gson.toJson(dbPathArray);
+
+            if(dbPathArray.size()> 0) { finalPaths = queuedPathsFromMemory+gson.toJson(dbPathArray);}
+            else { finalPaths = queuedPathsFromMemory;}
+
+            //TODO: this can be put in "if" above, and the "else" left blank, and finalPaths removed from function scope
             userData.edit().putString("pathQueue", finalPaths).commit();
         }
     }
@@ -360,6 +370,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     public boolean DBDataExists(){
         if (queuedPathsFromMemory.matches("") && dbPathArray.size() == 0){
             Console.log(classID+"No DB data");
+
             return false;
         }else{
             Console.log(classID+"DB data exists");
@@ -375,8 +386,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         queuedPathsFromMemory = "";
         dbPathArray.clear();
-        Console.log(classID+" Pushed to DB: "+queueFromMemory+currentPathsJSONstring);
-
+        Console.log(classID+"Sent data to DB activity");
+        DataLogger.writeConsoleData(classID+"Sent data to DB activity");
     }
 
     public boolean isNetworkAvailable() {

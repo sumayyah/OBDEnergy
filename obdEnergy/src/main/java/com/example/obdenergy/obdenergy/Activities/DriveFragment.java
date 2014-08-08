@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.example.obdenergy.obdenergy.Utilities.DataLogger;
+
+import static android.view.View.VISIBLE;
 
 /**
  * Created by sumayyah on 5/31/14.
@@ -51,7 +54,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private boolean stop;
     private boolean maf = true;
     private boolean speed = false;
-    private boolean mafTaken = false;
+    private boolean startReady = false;
 
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
@@ -74,9 +77,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private final String INIT_REQUEST = "ATE0"; //Returns OK
     private final String CHANGE_PROTOCOL = "ATSP3"; //Changes protocol to ISO 9141-2
     private final String AUTO_PROTOCOL = "ATSP0"; //Lets logger find closest protocol automatically
-
-    private final String USER_DATA_FILE = "MyCarData";
-
 
     private Button connectButton;
     private Button startButton;
@@ -130,7 +130,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         startButton = (Button) (view.findViewById(R.id.startButton));
         stopButton = (Button) (view.findViewById(R.id.stopButton));
         connectButton.setOnClickListener(this);
-
+        startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
 
         connectStatus = (TextView) (view.findViewById(R.id.connectStatus));
@@ -140,6 +140,12 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         greenRing = (RelativeLayout)(view.findViewById(R.id.ringLayoutGreen));
         redRing = (RelativeLayout)(view.findViewById(R.id.ringLayoutRed));
         greyRing = (RelativeLayout)(view.findViewById(R.id.ringLayoutGrey));
+
+        /*Prevents app from going to sleep and disruptin communication*/
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        startReady = false;
+        timer.setVisibility(View.GONE);
 
         BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -190,7 +196,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         Console.log(classID+"On resume");
         if (counter > 0 && start && !stop) {
             startButton.setVisibility(View.GONE);
-            stopButton.setVisibility(View.VISIBLE);
+            stopButton.setVisibility(VISIBLE);
         }
 
     }
@@ -208,7 +214,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         connectStatus.setText(status);
         connectButton.setVisibility(View.GONE);
 
-        if (on) progressBar.setVisibility(View.VISIBLE);
+        if (on) progressBar.setVisibility(VISIBLE);
         else progressBar.setVisibility(View.GONE);
 
     }
@@ -238,6 +244,20 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         /*Send initial messages*/
         sendMessage("ATE0");
         sendMessage("" + "\r");
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Console.log(classID+"5 seconds! Setting active now");
+                startButton.setTextColor(Color.parseColor("#A4C739"));
+                greyRing.setVisibility(View.INVISIBLE);
+                greenRing.setVisibility(VISIBLE);
+                timer.setVisibility(VISIBLE);
+                startReady = true;
+
+            }
+        }, 2500);
 
     }
 
@@ -326,13 +346,15 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.startButton:
                 Console.log(classID+"Start pressed");
+                if(!startReady) break;
+
                 mainActivity.path.setInitTimestamp(timeString);
 
                 startButton.setVisibility(View.GONE);
-                stopButton.setVisibility(View.VISIBLE);
+                stopButton.setVisibility(VISIBLE);
 
                 greenRing.setVisibility(View.INVISIBLE);
-                redRing.setVisibility(View.VISIBLE);
+                redRing.setVisibility(VISIBLE);
 
                 startTime = SystemClock.uptimeMillis();
                 timeHandler.postDelayed(timerThread, 0);
@@ -361,10 +383,10 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 stop = true;
                 start = false;
 
-                startButton.setVisibility(View.VISIBLE);
+                startButton.setVisibility(VISIBLE);
                 stopButton.setVisibility(View.GONE);
 
-                greenRing.setVisibility(View.VISIBLE);
+                greenRing.setVisibility(VISIBLE);
                 redRing.setVisibility(View.INVISIBLE);
 
                 onStopPressed();
@@ -433,7 +455,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
                             connectStatus.setText("Connecting...");
-                            progressBar.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(VISIBLE);
                             connectButton.setVisibility(View.GONE);
                         case BluetoothChatService.STATE_LISTEN:
                         case BluetoothChatService.STATE_NONE:
@@ -510,8 +532,12 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                             mainActivity.path.setInitFuel(secondPart);
                             mafTaken = true;
                             startInstantReadings();
+
                         }else if(!start && stop){
                             mainActivity.path.setFinalFuel(secondPart);
+                            Console.log(classID + " set as final fuel, calling Main Activity");
+                            timeHandler.removeCallbacks(timerThread);
+                            speedHandler.removeCallbacks(speedThread);
                             listener.DriveFragmentDataComm(16);
                         }else Console.log("Some other bool");
                         break;

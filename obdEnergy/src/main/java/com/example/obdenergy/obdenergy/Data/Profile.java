@@ -60,6 +60,7 @@ public class Profile{
     }
     public static void printPathArray(){
         DataLogger.writeConsoleData("Writing Path Array");
+        Console.log("Printing Path Array");
         int counter = 0;
         for(Path p: pathArray){
             Console.log("Path "+(++counter));
