@@ -141,7 +141,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 if (resultCode == Activity.RESULT_OK) {
                     driveFragment.setConnectValidators("Connecting...", true);
                     driveFragment.connectDevice(data, true);
-                    Console.log(classID+"Got connect request, sent off to drive");
+                    Console.log(classID + "Got connect request, sent off to drive");
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
@@ -197,7 +197,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
                 return;
             case 47: //Using fuel level data - this should not be used, since MAF is primary calculator
-                Console.log(classID+"With Fuel");
+                Console.log(classID + "With Fuel");
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
@@ -207,7 +207,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 break;
 
             case 16: //Using MAF data
-                Console.log(classID+" with MAF");
+                Console.log(classID + " with MAF");
                 gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(47); //In case of errors or bad data, get backup algorithm
@@ -291,7 +291,10 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Profile.setHighwaympg(highway);
 
         try {
-            Profile.pathHistoryJSON = new JSONArray(pathStringArray);
+            /*If input is null, create an empty JSON array*/
+            if(pathStringArray.matches("")) Profile.pathHistoryJSON = new JSONArray();
+            else Profile.pathHistoryJSON = new JSONArray(pathStringArray);
+
             Console.log(classID+"Historical JSON array is "+Profile.pathHistoryJSON);
             graphsFragment.GraphsFragmentDataComm();
         } catch (JSONException e) {
@@ -394,7 +397,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Console.log(classID+"Concatenate DB data");
         String currentPathsJSONstring = gson.toJson(currentPathsArray);
 
-        sendToAWSDatabase(System.currentTimeMillis(), username, queueFromMemory+currentPathsJSONstring);
+        sendToAWSDatabase(System.currentTimeMillis(), username, queueFromMemory + currentPathsJSONstring);
 
         queuedPathsFromMemory = "";
         dbPathArray.clear();
@@ -406,7 +409,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
-        Console.log(classID+"Network ping: "+(activeNetworkInfo != null && activeNetworkInfo.isConnected()));
+        Console.log(classID + "Network ping: " + (activeNetworkInfo != null && activeNetworkInfo.isConnected()));
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 

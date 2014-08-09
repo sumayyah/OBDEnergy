@@ -22,7 +22,7 @@ public class Calculations {
         DecimalFormat df = new DecimalFormat("#.00");
 
         Console.log("Calculations - initfuel, final fuel, tankcapacity"+initFuel+" "+finalFuel+" "+tankCapacity);
-        int tankCapacityNum = Integer.parseInt(tankCapacity);
+        double tankCapacityNum = Double.parseDouble(tankCapacity);
 
         double fuelVal = finalFuel - initFuel;
         double percentage = (fuelVal/255);
