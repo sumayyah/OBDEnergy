@@ -20,7 +20,8 @@ public class Calculations {
     public static Double getGallons(double initFuel, double finalFuel, String tankCapacity){
         double gallons = 0.0;
         DecimalFormat df = new DecimalFormat("#.00");
-        int tankCapacityNum = Integer.parseInt(tankCapacity);
+
+        double tankCapacityNum = Double.parseDouble(tankCapacity);
 
         double fuelVal = finalFuel - initFuel;
         double percentage = (fuelVal/255);

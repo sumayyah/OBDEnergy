@@ -142,6 +142,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 if (resultCode == Activity.RESULT_OK) {
                     driveFragment.setConnectValidators("Connecting...", true);
                     driveFragment.connectDevice(data, true);
+                    Console.log(classID + "Got connect request, sent off to drive");
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
@@ -195,6 +196,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 Console.log(classID+"Calculations based on fuel");
                 DataLogger.writeConsoleData(classID+"Calculations based on fuel");
 
+
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
@@ -205,6 +207,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             case 16: //Using MAF data
                 Console.log(classID+" Calculations based on MAF");
                 DataLogger.writeConsoleData(classID+"Calculations based on MAF");
+
                 gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(47); //In case of errors or bad data, get backup algorithm
@@ -287,7 +290,10 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         Profile.setHighwaympg(highway);
 
         try {
-            Profile.pathHistoryJSON = new JSONArray(pathStringArray);
+            /*If input is null, create an empty JSON array*/
+            if(pathStringArray.matches("")) Profile.pathHistoryJSON = new JSONArray();
+            else Profile.pathHistoryJSON = new JSONArray(pathStringArray);
+
             Console.log(classID+"Historical JSON array is "+Profile.pathHistoryJSON);
             DataLogger.writeConsoleData(classID+"Historical JSON array is "+Profile.pathHistoryJSON);
             graphsFragment.GraphsFragmentDataComm();
@@ -382,7 +388,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     private void concatenateAndSendDBData(String queueFromMemory, ArrayList<Path> currentPathsArray){
         String currentPathsJSONstring = gson.toJson(currentPathsArray);
 
-        sendToAWSDatabase(System.currentTimeMillis(), username, queueFromMemory+currentPathsJSONstring);
+        sendToAWSDatabase(System.currentTimeMillis(), username, queueFromMemory + currentPathsJSONstring);
 
         queuedPathsFromMemory = "";
         dbPathArray.clear();
@@ -395,7 +401,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
-        Console.log(classID+"Network ping: "+(activeNetworkInfo != null && activeNetworkInfo.isConnected()));
+        Console.log(classID + "Network ping: " + (activeNetworkInfo != null && activeNetworkInfo.isConnected()));
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
