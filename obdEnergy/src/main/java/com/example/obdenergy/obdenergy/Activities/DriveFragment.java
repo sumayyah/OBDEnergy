@@ -424,7 +424,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         mainActivity.path = new Path();
         mainActivity.path.username = mainActivity.username;
-        sendMessage(FUEL_REQUEST + "\r");
+        startInstantReadings();
 
     }
 
@@ -432,7 +432,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         timeHandler.removeCallbacks(timerThread);
         speedHandler.removeCallbacks(speedThread);
-        sendMessage(FUEL_REQUEST+"\r");
 
     }
 
@@ -505,7 +504,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                         if(start && !stop){
                             mainActivity.path.addToMAFarray(firstPart, secondPart);
                         }else if(!start && stop){
-//                            listener.DriveFragmentDataComm(PID);
+                            listener.DriveFragmentDataComm(PID);
                         }else {}
                         break;
                     default:
@@ -530,20 +529,22 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                         Console.log(classID+"Engine Fuel data recieved "+secondPart);
                         if(start && !stop){
                             mainActivity.path.setInitFuel(secondPart);
-                            startInstantReadings();
 
                         }else if(!start && stop){
                             mainActivity.path.setFinalFuel(secondPart);
                             Console.log(classID + " set as final fuel, calling Main Activity");
                             timeHandler.removeCallbacks(timerThread);
                             speedHandler.removeCallbacks(speedThread);
-                            listener.DriveFragmentDataComm(16);
                         }else Console.log("Some other bool");
                         break;
 
                     case 13: //Speed data (KM/H)
                         Console.log(classID+" Speed data recieved"+secondPart);
                         mainActivity.path.addToSpeedArray(secondPart);
+
+                        /*Activate with MAF settings*/
+                        if(!start && stop) listener.DriveFragmentDataComm(16);
+
                         break;
                 }
             }
