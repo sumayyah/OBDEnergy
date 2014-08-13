@@ -120,7 +120,7 @@ public class Calculations {
         double secondsPassed = 0.0;
         DecimalFormat df = new DecimalFormat("#.00");
 
-        for(int i=0;i<=speedArray.size()-1;i++){
+        for(int i=0;i<speedArray.size();i++){
             if(i==0) secondsPassed = 0; /*Discard initial reading since speed at time 0 is negligible*/
             else secondsPassed = timeArray.get(i) -  timeArray.get(i-1);
             double hoursPassed = secondsPassed/3600;

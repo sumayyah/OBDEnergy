@@ -118,6 +118,7 @@ public class BluetoothChatService {
      */
     public synchronized void connect(BluetoothDevice device, boolean secure) {
 //        if (D) Console.log(classID +"connect to: " + device);
+        Console.log(classID+" recieved connect, with device and security "+device+" "+secure);
 
         // Cancel any thread attempting to make a connection
         if (mState == STATE_CONNECTING) {
@@ -131,6 +132,7 @@ public class BluetoothChatService {
         mConnectThread = new ConnectThread(device, secure);
         mConnectThread.start();
         setState(STATE_CONNECTING);
+        Console.log("Start connecting");
     }
 
     /**
@@ -140,7 +142,7 @@ public class BluetoothChatService {
      */
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice
             device, final String socketType) {
-//        if (D) Console.log(classID +"connected, Socket Type:" + socketType);
+        if (D) Console.log(classID +"connected, Socket Type:" + socketType);
 
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}

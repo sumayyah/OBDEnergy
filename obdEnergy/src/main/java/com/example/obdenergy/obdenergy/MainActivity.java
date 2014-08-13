@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.obdenergy.obdenergy.Activities.Devices;
 import com.example.obdenergy.obdenergy.Activities.DriveFragment;
 import com.example.obdenergy.obdenergy.Activities.FuelSurveyActivity;
 import com.example.obdenergy.obdenergy.Activities.GraphsFragment;
@@ -135,11 +136,19 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
 
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Intent x = data;
+        String address = x.getExtras().getString(Devices.EXTRA_DEVICE_ADDRESS);
+        String info = x.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
+        Console.log(classID+"On Activity Result: requestCode, resultCode, data: "+requestCode+" "+resultCode+" "+address+" "+info);
+
 
         switch (requestCode){
             case REQUEST_CONNECT_DEVICE_SECURE:
                 if (resultCode == Activity.RESULT_OK) {
                     driveFragment.setConnectValidators("Connecting...", true);
+                    Console.log(classID+"Connect device secure, sending to driveFragment");
                     driveFragment.connectDevice(data, true);
                     Console.log(classID + "Got connect request, sent off to drive");
                 }
