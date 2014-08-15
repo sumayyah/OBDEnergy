@@ -223,6 +223,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         // Get the device MAC address and info
         String address = data.getExtras().getString(Devices.EXTRA_DEVICE_ADDRESS);
         String info = data.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
+        Console.log(classID+"Recieved connect info from main");
         connectStatus.setText("Connected to: " + info);
 
         // Get the BluetoothDevice object
@@ -315,9 +316,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                                 @Override
                                 public void run() {
                                 sendMessage(SPEED_REQUEST + "\r");
-                                    Long time = System.currentTimeMillis() / 1000;
-                                    String timeString = time.toString();
-                                    mainActivity.path.addToTimeArray(timeString);
+
                                 }
                             });
                             speed = false;
@@ -544,6 +543,11 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                     case 13: //Speed data (KM/H)
                         Console.log(classID+" Speed data recieved"+secondPart);
                         mainActivity.path.addToSpeedArray(secondPart);
+
+                        /*Time array and speed array should be the same size*/
+                        Long time = System.currentTimeMillis() / 1000;
+                        String timeString = time.toString();
+                        mainActivity.path.addToTimeArray(timeString);
                         break;
                 }
             }

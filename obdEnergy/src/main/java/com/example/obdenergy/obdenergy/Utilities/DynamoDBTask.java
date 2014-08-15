@@ -160,7 +160,9 @@ public class DynamoDBTask extends AsyncTask<String, Void, Void> {
         Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
 
         item.put("Timestamp", new AttributeValue(timestamp));
-        item.put("Data", new AttributeValue(data));
+        
+        /*Not Data-index - this attribute will allow data of greater than 2KB*/
+        item.put("DataValue", new AttributeValue(data));
         item.put("Username", new AttributeValue(username));
 
         return item;
