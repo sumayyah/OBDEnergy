@@ -151,6 +151,7 @@ public class Devices extends Activity{
 
             // Set result and finish this Activity
             setResult(Activity.RESULT_OK, intent);
+            Console.log("Set Activity RESULT_OK, finishing Devices");
             finish();
         }
     };
