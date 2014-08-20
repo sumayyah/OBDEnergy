@@ -144,23 +144,17 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         super.onActivityResult(requestCode, resultCode, data);
 
         if(data.getExtras() != null){
-            Console.log(classID+"Intent data exists!");
             Intent x = data;
             String address = x.getExtras().getString(Devices.EXTRA_DEVICE_ADDRESS);
             String info = x.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
-            Console.log(classID+"On Activity Result: requestCode, resultCode, data: "+requestCode+" "+resultCode+" "+address+" "+info);
-        } else Console.log(classID+"Intent data doesn't exist");
-
-
+        } else {};
 
 
         switch (requestCode){
             case REQUEST_CONNECT_DEVICE_SECURE:
                 if (resultCode == Activity.RESULT_OK) {
                     driveFragment.setConnectValidators("Connecting...", true);
-                    Console.log(classID+"Connect device secure, sending to driveFragment");
                     driveFragment.connectDevice(data, true);
-                    Console.log(classID + "Got connect request, sent off to drive");
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
@@ -325,13 +319,14 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     @Override
     protected void onStop() {
         super.onStop();
-        Console.log(classID+"on Stop");
-        Console.log(classID+"State is "+ BluetoothChatService.getState());
+
+
+        /*If the app is still running, then don't update*/
+        if(DriveFragment.start && DriveFragment.startReady && !DriveFragment.stop ) {
+            return;
+        }
 
         String finalPaths = "";
-
-        /*Create GSON builder that can write static variables (Path needs static vars and methods)*/
-//        Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 
         Profile.printPathArray();
         String jsonArrayString = gson.toJson(Profile.pathArray);
@@ -472,21 +467,17 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     @Override
     protected void onPause() {
         super.onPause();
-        Console.log(classID+"on Pause");
-        Console.log(classID+"State is "+ BluetoothChatService.getState());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Console.log(classID+"on Resume");
-        Console.log(classID+"State is "+ BluetoothChatService.getState());
+
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Console.log(classID+"on Restart");
-        Console.log(classID+"State is "+ BluetoothChatService.getState());
+
     }
 }

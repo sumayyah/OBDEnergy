@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -50,11 +49,11 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private String command;
     private String deviceInfo;
 
-    private static boolean start;
-    private static boolean stop;
+    public static boolean start;
+    public static boolean stop;
     private boolean maf = true;
     private boolean speed = false;
-    private static boolean startReady = false;
+    public static boolean startReady = false;
 
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
@@ -189,28 +188,23 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Console.log(classID+"Save instance state");
     }
 
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        Console.log(classID+"Restore instance state");
     }
 
     @Override
     public void onPause() {
-        Console.log(classID+"On pause, startReady;start;stop "+startReady+";"+start+";"+stop);
         super.onPause();
 
     }
 
     @Override
     public void onResume() {
-        Console.log(classID+"On Resume startReady;start;stop "+startReady+";"+start+";"+stop);
 
         if(ChatService.getState() == BluetoothChatService.STATE_CONNECTED ){
-            Console.log(classID + "Still connected");
             connectStatus.setText("Connected to: "+deviceInfo);
             if(start && !stop && startReady)setUI(2);
             else if(!start && !stop && startReady) setUI(1);
@@ -272,8 +266,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Console.log(classID+"5 seconds! Setting active now");
-
                 setUI(1);
                 startReady = true;
 
@@ -444,7 +436,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onStopPressed() {
-        Console.log(classID + "Stop pressed");
 
         timeHandler.removeCallbacks(timerThread);
         speedHandler.removeCallbacks(speedThread);
@@ -465,8 +456,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
                     switch (msg.arg1){
                         case BluetoothChatService.STATE_CONNECTED:
-                            Console.log(classID+"State connected");
-                            Console.log(classID + " Connected, calling onConnect");
+
                             connectStatus.setText("Connected to " + ConnectedDeviceName);
                             progressBar.setVisibility(View.GONE);
                             onConnect();
@@ -499,7 +489,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
             /*No state, in waiting*/
             case 0:
-                Console.log(classID+"No state");
                 startButton.setTextColor(Color.parseColor("#AAAAAA"));
                 greyRing.setVisibility(View.VISIBLE);
                 greenRing.setVisibility(View.GONE);
@@ -507,7 +496,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 break;
             /*Start is ready to press*/
             case 1:
-                Console.log(classID+"Start ready case");
                 startButton.setVisibility(View.VISIBLE);
                 startButton.setTextColor(Color.parseColor("#A4C739"));
                 stopButton.setVisibility(View.GONE);
@@ -519,8 +507,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
             /*Stop is ready to press*/
             case 2:
-
-                Console.log(classID+"Stop ready case");
 
                 startButton.setVisibility(View.GONE);
                 stopButton.setVisibility(VISIBLE);
@@ -567,7 +553,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                         if(start && !stop){
                             mainActivity.path.addToMAFarray(firstPart, secondPart);
                         }else if(!start && stop){
-                            Console.log(classID+"MAF and STOP");
 //                            listener.DriveFragmentDataComm(PID);
                         }else Console.log("Some other bool");
                         break;
