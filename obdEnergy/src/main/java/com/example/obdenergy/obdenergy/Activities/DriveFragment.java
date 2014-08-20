@@ -48,12 +48,13 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private MainActivity mainActivity;
     private final String classID = "DriveFragment ";
     private String command;
+    private String deviceInfo;
 
-    private boolean start;
-    private boolean stop;
+    private static boolean start;
+    private static boolean stop;
     private boolean maf = true;
     private boolean speed = false;
-    private boolean startReady = false;
+    private static boolean startReady = false;
 
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
@@ -81,7 +82,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     private Button startButton;
     private Button stopButton;
     private TextView connectStatus;
-    private TextView timer;
+    private static TextView timer;
     private ProgressBar progressBar;
 
     private RelativeLayout greenRing;
@@ -119,6 +120,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        Console.log(classID+"on CreateView");
 
         View view = inflater.inflate(R.layout.drive_fragment, container, false);
         connectButton = (Button) (view.findViewById(R.id.connectButton));
@@ -139,7 +141,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         /*Prevents app from going to sleep and disruptin communication*/
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        startReady = false;
+
         timer.setVisibility(View.GONE);
 
         BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -157,6 +159,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onAttach(Activity activity) {
+        Console.log(classID+"on Attach");
+
         super.onAttach(activity);
 
         this.mainActivity = (MainActivity) activity;
@@ -169,6 +173,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onStart() {
+        Console.log(classID+"on Start");
+
         super.onStart();
 
          /*Check if Bluetooth is enabled. If not, present that option to the user*/
@@ -181,20 +187,39 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Console.log(classID+"Save instance state");
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Console.log(classID+"Restore instance state");
+    }
+
+    @Override
     public void onPause() {
+        Console.log(classID+"On pause, startReady;start;stop "+startReady+";"+start+";"+stop);
         super.onPause();
 
     }
 
     @Override
     public void onResume() {
-        super.onResume();
+        Console.log(classID+"On Resume startReady;start;stop "+startReady+";"+start+";"+stop);
 
-        if (counter > 0 && start && !stop) {
-            Console.log(classID + "onResume");
-            startButton.setVisibility(View.GONE);
-            stopButton.setVisibility(VISIBLE);
+        if(ChatService.getState() == BluetoothChatService.STATE_CONNECTED ){
+            Console.log(classID + "Still connected");
+            connectStatus.setText("Connected to: "+deviceInfo);
+            if(start && !stop && startReady)setUI(2);
+            else if(!start && !stop && startReady) setUI(1);
+            else if(!start && stop && startReady){setUI(1);}
+            else if(!startReady) onConnect();
+            else Console.log(classID+"Some wrong state data");
         }
+
+        super.onResume();
 
     }
 
@@ -222,6 +247,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         String info = data.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
         Console.log(classID+"Recieved connect info from main");
         connectStatus.setText("Connected to: " + info);
+        deviceInfo = info;
 
         // Get the BluetoothDevice object
         BluetoothDevice device = BluetoothAdapter.getRemoteDevice(address);
@@ -247,10 +273,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 Console.log(classID+"5 seconds! Setting active now");
-                startButton.setTextColor(Color.parseColor("#A4C739"));
-                greyRing.setVisibility(View.INVISIBLE);
-                greenRing.setVisibility(VISIBLE);
-                timer.setVisibility(VISIBLE);
+
+                setUI(1);
                 startReady = true;
 
             }
@@ -344,11 +368,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
                 mainActivity.path.setInitTimestamp(timeString);
 
-                startButton.setVisibility(View.GONE);
-                stopButton.setVisibility(VISIBLE);
-
-                greenRing.setVisibility(View.INVISIBLE);
-                redRing.setVisibility(VISIBLE);
+                setUI(2);
 
                 startTime = SystemClock.uptimeMillis();
                 timeHandler.postDelayed(timerThread, 0);
@@ -376,11 +396,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 stop = true;
                 start = false;
 
-                startButton.setVisibility(VISIBLE);
-                stopButton.setVisibility(View.GONE);
-
-                greenRing.setVisibility(VISIBLE);
-                redRing.setVisibility(View.INVISIBLE);
+                setUI(1);
 
                 onStopPressed();
 
@@ -477,6 +493,47 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             }
         }
     };
+
+    public void setUI(int caseNum){
+        switch (caseNum){
+
+            /*No state, in waiting*/
+            case 0:
+                Console.log(classID+"No state");
+                startButton.setTextColor(Color.parseColor("#AAAAAA"));
+                greyRing.setVisibility(View.VISIBLE);
+                greenRing.setVisibility(View.GONE);
+                timer.setVisibility(View.GONE);
+                break;
+            /*Start is ready to press*/
+            case 1:
+                Console.log(classID+"Start ready case");
+                startButton.setVisibility(View.VISIBLE);
+                startButton.setTextColor(Color.parseColor("#A4C739"));
+                stopButton.setVisibility(View.GONE);
+                greyRing.setVisibility(View.GONE);
+                redRing.setVisibility(View.GONE);
+                greenRing.setVisibility(VISIBLE);
+                timer.setVisibility(VISIBLE);
+                break;
+
+            /*Stop is ready to press*/
+            case 2:
+
+                Console.log(classID+"Stop ready case");
+
+                startButton.setVisibility(View.GONE);
+                stopButton.setVisibility(VISIBLE);
+
+                greenRing.setVisibility(View.GONE);
+                greyRing.setVisibility(View.GONE);
+                redRing.setVisibility(VISIBLE);
+                timer.setVisibility(VISIBLE);
+                break;
+            default:
+                break;
+        }
+    }
 
     private void readMessage(Message msg){
 

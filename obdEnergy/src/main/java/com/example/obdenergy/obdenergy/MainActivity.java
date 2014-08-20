@@ -22,6 +22,7 @@ import com.example.obdenergy.obdenergy.Activities.MetricFragment;
 import com.example.obdenergy.obdenergy.Activities.TabListener;
 import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
+import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.example.obdenergy.obdenergy.Utilities.DataLogger;
@@ -96,6 +97,10 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Console.log(classID+"on Create");
+        Console.log(classID+"State is "+ BluetoothChatService.getState());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -138,10 +143,15 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        Intent x = data;
-        String address = x.getExtras().getString(Devices.EXTRA_DEVICE_ADDRESS);
-        String info = x.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
-        Console.log(classID+"On Activity Result: requestCode, resultCode, data: "+requestCode+" "+resultCode+" "+address+" "+info);
+        if(data.getExtras() != null){
+            Console.log(classID+"Intent data exists!");
+            Intent x = data;
+            String address = x.getExtras().getString(Devices.EXTRA_DEVICE_ADDRESS);
+            String info = x.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
+            Console.log(classID+"On Activity Result: requestCode, resultCode, data: "+requestCode+" "+resultCode+" "+address+" "+info);
+        } else Console.log(classID+"Intent data doesn't exist");
+
+
 
 
         switch (requestCode){
@@ -315,6 +325,9 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     @Override
     protected void onStop() {
         super.onStop();
+        Console.log(classID+"on Stop");
+        Console.log(classID+"State is "+ BluetoothChatService.getState());
+
         String finalPaths = "";
 
         /*Create GSON builder that can write static variables (Path needs static vars and methods)*/
@@ -456,4 +469,24 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         task.execute(params);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Console.log(classID+"on Pause");
+        Console.log(classID+"State is "+ BluetoothChatService.getState());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Console.log(classID+"on Resume");
+        Console.log(classID+"State is "+ BluetoothChatService.getState());
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Console.log(classID+"on Restart");
+        Console.log(classID+"State is "+ BluetoothChatService.getState());
+    }
 }

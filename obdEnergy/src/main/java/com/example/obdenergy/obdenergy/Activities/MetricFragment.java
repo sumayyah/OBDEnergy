@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
+import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 
 
@@ -39,6 +40,7 @@ public class MetricFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancestate){
 
         Console.log(classID + " creation");
+        Console.log(classID+"State is "+ BluetoothChatService.getState());
 
         View view = inflater.inflate(R.layout.metrics_fragment, container, false);
 
@@ -72,6 +74,6 @@ public class MetricFragment extends Fragment {
         this.gallons = gallons;
         this.carbonUsed = carbonUsed;
         this.treesKilled = treesKilled;
-        Console.log(classID+"Got gallons carbon trees "+this.gallons+" "+this.carbonUsed+" "+this.treesKilled);
+        Console.log(classID + "Got gallons carbon trees " + this.gallons + " " + this.carbonUsed + " " + this.treesKilled);
     }
 }

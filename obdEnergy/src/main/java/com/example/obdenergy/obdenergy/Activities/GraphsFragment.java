@@ -17,6 +17,7 @@ import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
+import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.example.obdenergy.obdenergy.Utilities.GridAdapter;
 
@@ -86,6 +87,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private boolean monthPressed = false;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancestate){
+
+        Console.log(classID+"State is "+ BluetoothChatService.getState());
 
         View view = inflater.inflate(R.layout.graphs_fragment, container, false);
 
@@ -430,10 +433,10 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     }
 
     private void printData(){
-        Console.log(classID+"Printing data now at "+currentTime);
-        Console.log("Day "+dayStartRange+" to "+currentTime+" fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
-        Console.log("Week "+weekStartRange+" to "+currentTime+" fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
-        Console.log("Month fuel carbon trees "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
+        Console.log(classID + "Printing data now at " + currentTime);
+        Console.log("Day " + dayStartRange + " to " + currentTime + " fuel carbon trees " + dayFuelNum + " " + dayCarbonNum + " " + dayTreesNum);
+        Console.log("Week " + weekStartRange + " to " + currentTime + " fuel carbon trees " + weekFuelNum + " " + weekCarbonNum + " " + weekTreesNum);
+        Console.log("Month fuel carbon trees " + monthFuelNum + " " + monthCarbonNum + " " + monthTreesNum);
     }
 
 }
