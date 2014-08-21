@@ -22,6 +22,7 @@ import com.example.obdenergy.obdenergy.Activities.MetricFragment;
 import com.example.obdenergy.obdenergy.Activities.TabListener;
 import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
+import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Calculations;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.example.obdenergy.obdenergy.Utilities.DataLogger;
@@ -96,6 +97,10 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Console.log(classID+"on Create");
+        Console.log(classID+"State is "+ BluetoothChatService.getState());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -139,19 +144,18 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        Intent x = data;
-        String address = x.getExtras().getString(Devices.EXTRA_DEVICE_ADDRESS);
-        String info = x.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
-        Console.log(classID+"On Activity Result: requestCode, resultCode, data: "+requestCode+" "+resultCode+" "+address+" "+info);
+        if(data.getExtras() != null){
+            Intent x = data;
+            String address = x.getExtras().getString(Devices.EXTRA_DEVICE_ADDRESS);
+            String info = x.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
+        } else {};
 
 
         switch (requestCode){
             case REQUEST_CONNECT_DEVICE_SECURE:
                 if (resultCode == Activity.RESULT_OK) {
                     driveFragment.setConnectValidators("Connecting...", true);
-                    Console.log(classID+"Connect device secure, sending to driveFragment");
                     driveFragment.connectDevice(data, true);
-                    Console.log(classID + "Got connect request, sent off to drive");
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
@@ -315,7 +319,10 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     protected void onStop() {
         super.onStop();
 
-        Console.log(classID+"On Stop");
+        /*If the app is still running, then don't update*/
+        if(DriveFragment.start && DriveFragment.startReady && !DriveFragment.stop ) {
+            return;
+        }
 
         String finalPaths = "";
 
@@ -449,28 +456,25 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     }
 
 
-
     @Override
     protected void onPause() {
         super.onPause();
-        Console.log(classID+"On pause");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Console.log(classID+"On Resume");
+
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Console.log(classID+"On Restart");
     }
 
     @Override
     protected void onDestroy() {
-        Console.log(classID+"On Destroy");
         super.onDestroy();
+
     }
 }

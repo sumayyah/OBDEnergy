@@ -17,6 +17,7 @@ import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.Data.Profile;
 import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
+import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Console;
 import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 import com.example.obdenergy.obdenergy.Utilities.GridAdapter;
@@ -87,6 +88,8 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
     private boolean monthPressed = false;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancestate){
+
+        Console.log(classID+"State is "+ BluetoothChatService.getState());
 
         View view = inflater.inflate(R.layout.graphs_fragment, container, false);
 
