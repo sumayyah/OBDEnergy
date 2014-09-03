@@ -236,11 +236,11 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 break;
         }
 
-        String carbonUsed = Calculations.getCarbon(gallons);
+        Double carbonUsed = Calculations.getCarbon(gallons);
         Double treesKilled = Calculations.getTrees(gallons);
 
         path.gallonsUsed = gallons;
-        path.carbonUsed = Double.parseDouble(carbonUsed);
+        path.carbonUsed = carbonUsed;
         path.treesKilled = treesKilled;
 
         path.averageSpeed = Calculations.getAvgSpeed(path.speedArray);
@@ -261,7 +261,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
         } else Console.log(classID+"Path didn't check out");
         Profile.printPathArray();
-        metricFragment.MetricFragmentDataComm(String.valueOf(gallons), carbonUsed, String.valueOf(treesKilled));
+        metricFragment.MetricFragmentDataComm(String.valueOf(gallons), String.valueOf(carbonUsed), String.valueOf(treesKilled));
     }
 
     @Override

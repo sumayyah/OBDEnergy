@@ -80,14 +80,14 @@ public class Calculations {
         return gallons;
     }
 
-    public static String getCarbon(double gallonsUsed){
-        String finalCarbon = "0.0";
+    public static Double getCarbon(double gallonsUsed){
+        double finalCarbon = 0.0;
         DecimalFormat df = new DecimalFormat("#.00");
 
         double multiplier = 8.85; //Kilos of carbon per gallon of gas
         double carbon = multiplier*gallonsUsed;
 
-        finalCarbon = String.valueOf(df.format(carbon));
+        finalCarbon = Double.parseDouble((df.format(carbon)));
 //        finalCarbon = tempString.length() > 4 ? tempString.substring(0,3): tempString;
 
         return finalCarbon;

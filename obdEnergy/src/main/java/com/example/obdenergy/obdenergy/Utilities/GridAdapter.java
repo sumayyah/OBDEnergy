@@ -17,21 +17,12 @@ import java.util.ArrayList;
 public class GridAdapter extends BaseAdapter {
 
     private Context context;
-//    private int imageNum;
-//    private String imageType;
     private ArrayList<Integer> imageList;
 
-//    public GridAdapter(Context context, int imageNum, String imageType){
-//        this.context = context;
-//        this.imageNum = imageNum;
-//        this.imageType = imageType;
-//
-//        imageList = new String[]{"R.drawable.tree1leaf", "R.drawable.tree2leaves", "R.drawable.tree3leaves", "R.drawable.tree4leaves", "R.drawable.tree5leaves", "R.drawable.tree6leaves", "R.drawable.tree7leaves", "R.drawable.tree8leaves", "R.drawable.tree9leaves", "R.drawable.tree10leaves"};
-//    }
+
 
     public GridAdapter(Context context, ArrayList<Integer> imageList){
         this.context = context;
-//        this.imageType = imageType;
         this.imageList = imageList;
     }
 
@@ -50,12 +41,6 @@ public class GridAdapter extends BaseAdapter {
 
             imageView.setImageResource(imageList.get(position));
 
-//            if(imageType.equals("CARBON")){
-//                imageView.setImageResource(R.drawable.cloud_icon);
-//            }else if(imageType.equals("TREE")) {
-////                Console.log("setting leaf image at " + position+" with "+imageList.get(position));
-//                imageView.setImageResource(imageList.get(position));
-//            }
 
         return gridView;
 
