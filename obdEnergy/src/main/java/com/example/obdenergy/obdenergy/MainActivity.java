@@ -472,13 +472,11 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         super.onRestart();
 
     }
-<<<<<<< HEAD
 
     @Override
     protected void onDestroy() {
         Console.log(classID+"On Destroy");
         super.onDestroy();
     }
-=======
->>>>>>> origin/master
+
 }
