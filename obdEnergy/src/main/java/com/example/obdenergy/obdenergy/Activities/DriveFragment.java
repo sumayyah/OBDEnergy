@@ -563,7 +563,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         else if (!bufferString.equals("")&&(bufferString.matches(threeByteNormal) || bufferString.matches(threeByteAbnormal))){
 
             bufferString.trim();
-            String[] bytes = bufferString.split(" ");
+            String[] bytes = bufferString.split("\\s+"); //Removes any number of spaces
+
 
             if(((bytes[0]!=null) && (bytes[1]!=null) && (bytes[2]!=null))){
                 int PID = Integer.parseInt(bytes[1], 16);

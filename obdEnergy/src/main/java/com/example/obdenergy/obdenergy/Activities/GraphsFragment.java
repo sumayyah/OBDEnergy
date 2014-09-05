@@ -236,7 +236,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
             case 1: /*If carbon*/
                 Console.log(classID+"Carbon");
                 for(int i=0;i<wholenum;i++){
-                    finalImages.add(R.drawable.cloud_icon);
+                    finalImages.add(R.drawable.cloud_icon_green);
                 }
 
                 break;
@@ -413,6 +413,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         DataLogger.writeConsoleData("Day "+dayStartRange+" to "+currentTime+" fuel carbon trees "+dayFuelNum+" "+dayCarbonNum+" "+dayTreesNum);
         DataLogger.writeConsoleData("Week "+weekStartRange+" to "+currentTime+" fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
         DataLogger.writeConsoleData("Month fuel carbon trees "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
+
 
     }
 

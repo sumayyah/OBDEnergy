@@ -39,6 +39,7 @@ public class MetricFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancestate){
 
+
         View view = inflater.inflate(R.layout.metrics_fragment, container, false);
 
         fuelData = (TextView)(view.findViewById(R.id.fuelData));
@@ -70,5 +71,6 @@ public class MetricFragment extends Fragment {
         this.treesKilled = treesKilled;
         Console.log(classID + "Displaying gallons carbon trees " + this.gallons + " " + this.carbonUsed + " " + this.treesKilled);
         DataLogger.writeConsoleData(classID + "Displaying gallons carbon trees " + this.gallons + " " + this.carbonUsed + " " + this.treesKilled);
+
     }
 }
