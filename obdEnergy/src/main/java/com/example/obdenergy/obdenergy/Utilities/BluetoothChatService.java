@@ -46,7 +46,7 @@ public class BluetoothChatService {
     private AcceptThread mInsecureAcceptThread;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
-    private int mState;
+    private static int mState;
 
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
@@ -79,7 +79,7 @@ public class BluetoothChatService {
 
     /**
      * Return the current connection state. */
-    public synchronized int getState() {
+    public static synchronized int getState() {
         return mState;
     }
 
@@ -235,6 +235,7 @@ public class BluetoothChatService {
      * Indicate that the connection was lost and notify the UI Activity.
      */
     private void connectionLost() {
+        Console.log(classID+"Connection lost!");
         // Send a failure message back to the Activity
         Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
@@ -307,6 +308,7 @@ public class BluetoothChatService {
                                 // Either not ready or already connected. Terminate new socket.
                                 try {
                                     socket.close();
+                                    Console.log(classID+"Closed, either not ready or already connected");
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -321,6 +323,7 @@ public class BluetoothChatService {
         public void cancel() {
             try {
                 mmServerSocket.close();
+                Console.log(classID+"Closed, cancel called");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -386,6 +389,8 @@ public class BluetoothChatService {
                 // Close the socket
                 try {
                     mmSocket.close();
+                    Console.log(classID+"Closed, attempt in exception");
+
                 } catch (IOException e2) {
 
                 }
@@ -405,6 +410,7 @@ public class BluetoothChatService {
         public void cancel() {
             try {
                 mmSocket.close();
+                Console.log(classID+"Closed, cancel called in run()");
             } catch (IOException e) {
             }
         }
@@ -489,6 +495,7 @@ public class BluetoothChatService {
         public void cancel() {
             try {
                 mmSocket.close();
+                Console.log(classID+"Closed, called by cancel");
             } catch (IOException e) {
             }
         }

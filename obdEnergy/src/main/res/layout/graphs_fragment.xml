@@ -35,60 +35,12 @@
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
+
         <LinearLayout
-            android:id="@+id/navPanel"
+            android:id="@+id/timeTabs"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-
-            <RelativeLayout
-                android:id="@+id/cloudImageContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/cloudClicker"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@drawable/cloud_icon"
-                    android:clickable="true"
-                    android:layout_margin="10dp"
-                    android:layout_centerInParent="true"
-                    android:scaleType="fitXY"/>
-                <TextView
-                    android:id="@+id/carbonUsed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:layout_below="@id/cloudClicker"
-                    android:layout_marginLeft="10dp"
-                    android:text="22 kilos"/>
-                </RelativeLayout>
-
-
-            <RelativeLayout
-                android:id="@+id/leafImageContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/leafClicker"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@drawable/leafcopy"
-                    android:clickable="true"
-                    android:layout_margin="10dp"
-                    android:layout_centerInParent="true"
-                    android:scaleType="fitXY"/>
-                <TextView
-                    android:id="@+id/treesUsed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:layout_below="@id/leafClicker"
-                    android:layout_marginLeft="10dp"
-                    android:text="1 tree"/>
-                </RelativeLayout>
+            android:orientation="horizontal">
 
 
             <Button
@@ -123,16 +75,74 @@
                 android:layout_gravity="center"
                 android:text="month"/>
 
-        </LinearLayout>
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/carbonScale"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/iconTabs"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/carbonUsed"
-            android:textColor="@android:color/white"
-            android:layout_gravity="right"
-            android:text="1 cloud per kilo of carbon"/>
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/cloudImageContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/cloudClicker"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/cloud_icon"
+                    android:clickable="true"
+                    android:layout_margin="10dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="fitXY"/>
+                <TextView
+                    android:id="@+id/carbonUsed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:layout_below="@id/cloudClicker"
+                    android:layout_marginLeft="10dp"
+                    android:text="22 kilos"/>
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/leafImageContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/leafClicker"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/leafcopy"
+                    android:clickable="true"
+                    android:layout_margin="10dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="fitXY"/>
+                <TextView
+                    android:id="@+id/treesUsed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:layout_below="@id/leafClicker"
+                    android:layout_marginLeft="10dp"
+                    android:text="1 tree"/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/carbonScale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/carbonUsed"
+                android:textColor="@android:color/white"
+                android:layout_gravity="bottom"
+                android:text="1 cloud per kilo of carbon"/>
+
+            </LinearLayout>
+
+
 
         <LinearLayout
             android:id="@+id/displayPanel"
