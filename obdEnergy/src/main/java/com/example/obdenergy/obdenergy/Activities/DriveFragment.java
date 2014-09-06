@@ -208,6 +208,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
 
+
         if(ChatService.getState() == BluetoothChatService.STATE_CONNECTED ){
             connectStatus.setText("Connected to: "+deviceInfo);
             if(start && !stop && startReady)setUI(2);

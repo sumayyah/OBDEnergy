@@ -455,7 +455,6 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
         HttpTask task = new HttpTask();
         task.execute(params);
     }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -475,8 +474,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
     @Override
     protected void onDestroy() {
-        Console.log(classID+"On Destroy");
         super.onDestroy();
+
     }
 
 }

@@ -414,7 +414,6 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
         DataLogger.writeConsoleData("Week "+weekStartRange+" to "+currentTime+" fuel carbon trees "+weekFuelNum+" "+weekCarbonNum+" "+weekTreesNum);
         DataLogger.writeConsoleData("Month fuel carbon trees "+monthFuelNum+" "+monthCarbonNum+" "+monthTreesNum);
 
-
     }
 
 }

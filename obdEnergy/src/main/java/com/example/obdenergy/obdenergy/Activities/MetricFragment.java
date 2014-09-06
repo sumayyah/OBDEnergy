@@ -39,7 +39,6 @@ public class MetricFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstancestate){
 
-
         View view = inflater.inflate(R.layout.metrics_fragment, container, false);
 
         fuelData = (TextView)(view.findViewById(R.id.fuelData));
