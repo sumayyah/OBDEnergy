@@ -24,7 +24,6 @@ import com.example.obdenergy.obdenergy.MainActivity;
 import com.example.obdenergy.obdenergy.R;
 import com.example.obdenergy.obdenergy.Utilities.BluetoothChatService;
 import com.example.obdenergy.obdenergy.Utilities.Console;
-import com.example.obdenergy.obdenergy.Utilities.DataLogger;
 
 import static android.view.View.VISIBLE;
 
@@ -576,14 +575,14 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                         Console.log(classID+"Engine Fuel data recieved "+secondPart);
                         if(start && !stop){
                             mainActivity.path.setInitFuel(secondPart);
-                            startInstantReadings();
+//                            startInstantReadings(); //TODO: replace with instantaneous fuel readings array for accuracy
 
                         }else if(!start && stop){
                             mainActivity.path.setFinalFuel(secondPart);
                             Console.log(classID + " set as final fuel, calling Main Activity");
                             timeHandler.removeCallbacks(timerThread);
                             speedHandler.removeCallbacks(speedThread);
-                            listener.DriveFragmentDataComm(16);
+                            listener.DriveFragmentDataComm(47);
                         }else Console.log("Some other bool");
                         break;
 
@@ -604,7 +603,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
             if(stop) {
 
                 Console.log(classID+" No data calculated at all");
-                listener.DriveFragmentDataComm(16);
+                listener.DriveFragmentDataComm(47);
             }
 
         }
