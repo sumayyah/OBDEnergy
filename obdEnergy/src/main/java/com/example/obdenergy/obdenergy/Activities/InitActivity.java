@@ -104,7 +104,12 @@ public class InitActivity extends Activity implements View.OnClickListener{
             DataLogger.writeData("Car information: "+printData());
 
             Intent intent = new Intent();
-            setResult(Activity.RESULT_OK, intent);
+            if (getParent() == null) {
+                setResult(Activity.RESULT_OK, intent);
+            }
+            else {
+                getParent().setResult(Activity.RESULT_OK, intent);
+            }
 
             finish();
         }
