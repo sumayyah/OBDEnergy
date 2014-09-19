@@ -151,7 +151,12 @@ public class Devices extends Activity{
             Console.log("Put data in Devices bundle: " + info + " " + address);
 
             // Set result and finish this Activity
-            setResult(Activity.RESULT_OK, intent);
+            if (getParent() == null) {
+                setResult(Activity.RESULT_OK, intent);
+            }
+            else {
+                getParent().setResult(Activity.RESULT_OK, intent);
+            }
             Console.log("Set Activity RESULT_OK, finishing Devices");
             finish();
         }

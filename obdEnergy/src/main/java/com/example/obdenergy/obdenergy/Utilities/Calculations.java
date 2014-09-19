@@ -119,8 +119,9 @@ public class Calculations {
         Double finalMiles = 0.0;
         double secondsPassed = 0.0;
         DecimalFormat df = new DecimalFormat("#.00");
+        int size = speedArray.size()>timeArray.size() ? timeArray.size() : speedArray.size();
 
-        for(int i=0;i<speedArray.size();i++){
+        for(int i=0;i<size;i++){
             if(i==0) secondsPassed = 0; /*Discard initial reading since speed at time 0 is negligible*/
             else secondsPassed = timeArray.get(i) -  timeArray.get(i-1);
             double hoursPassed = secondsPassed/3600;
