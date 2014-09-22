@@ -224,7 +224,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
                 gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
-                    DriveFragmentDataComm(47); //In case of errors or bad data, get backup algorithm
+                    DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm - not fuel in this version
                     return;
                 }
                 break;
