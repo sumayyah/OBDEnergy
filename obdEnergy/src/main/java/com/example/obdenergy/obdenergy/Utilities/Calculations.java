@@ -1,6 +1,5 @@
 package com.example.obdenergy.obdenergy.Utilities;
 
-import com.example.obdenergy.obdenergy.Data.Path;
 import com.example.obdenergy.obdenergy.MainActivity;
 
 import org.json.JSONArray;
@@ -51,16 +50,14 @@ public class Calculations {
 
     /*Calculate gallons with user input*/
     public static Double getGallons(String mpg, String miles){
-        double gallons = 0.0;
+        double finalGallons = 0.0;
         DecimalFormat df = new DecimalFormat("#.00");
 
         double mpgNum = Double.parseDouble(mpg);
         double milesNum = Double.parseDouble(miles);
-        double finalGallons = milesNum/mpgNum;
+        if(mpgNum>0.0) finalGallons = milesNum/mpgNum;
 
-        gallons = Double.parseDouble(df.format(finalGallons));
-
-        return gallons;
+        return finalGallons;
     }
 
     /*Calculate gallons with array of instantaneous speed readings*/

@@ -193,10 +193,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-    }
+
 
     @Override
     public void onPause() {
@@ -307,25 +304,13 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
     private void startInstantReadings() {
 
-        /*This staggers speed and MAF readings because OBD can't handle both at once*/
+        /*This staggers speed readings because OBD can't handle both at once*/
         speedThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (!stop) {
                     try {
                         Thread.sleep(2500);
-                        if(maf && !speed){
-                            speedHandler.post(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    sendMessage(MAF_REQUEST + "\r");;
-                                }
-                            });
-
-                            maf = false;
-                            speed = true;
-                        }else if (speed && !maf){
 
                             speedHandler.post(new Runnable() {
 
@@ -337,7 +322,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                             });
                             speed = false;
                             maf = true;
-                        }else; //Some error occurred
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
