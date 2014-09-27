@@ -57,7 +57,7 @@ public class Calculations {
         double milesNum = Double.parseDouble(miles);
         if(mpgNum>0.0) finalGallons = milesNum/mpgNum;
 
-        return finalGallons;
+        return Double.parseDouble(df.format(finalGallons));
     }
 
     /*Calculate gallons with array of instantaneous speed readings*/
