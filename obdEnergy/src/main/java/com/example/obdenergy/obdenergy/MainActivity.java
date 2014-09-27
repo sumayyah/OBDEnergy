@@ -206,9 +206,11 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                     gallons = Calculations.getGallons(miles, "City");
                 }
                 Console.log(classID+"gallons with no data "+gallons);
-                if(gallons == 0.0 ) DriveFragmentDataComm(4);
-
-                return;
+                if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN ) {
+                    DriveFragmentDataComm(4);
+                    return;
+                }
+                break;
             case 47: //Using fuel level data - this should not be used, since MAF is primary calculator
                 Console.log(classID + "With Fuel");
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);

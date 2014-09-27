@@ -266,11 +266,10 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                setUI(1);
                 startReady = true;
-
+                setUI(1);
             }
-        }, 2500);
+        }, 2000);
 
     }
 
@@ -487,14 +486,14 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     public void setUI(int caseNum){
         switch (caseNum){
 
-            /*No state, in waiting*/
+            /*No state, in waiting - grey*/
             case 0:
                 startButton.setTextColor(Color.parseColor("#AAAAAA"));
                 greyRing.setVisibility(View.VISIBLE);
                 greenRing.setVisibility(View.GONE);
                 timer.setVisibility(View.GONE);
                 break;
-            /*Start is ready to press*/
+            /*Start is ready to press - green*/
             case 1:
                 startButton.setVisibility(View.VISIBLE);
                 startButton.setTextColor(Color.parseColor("#A4C739"));
@@ -505,7 +504,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                 timer.setVisibility(VISIBLE);
                 break;
 
-            /*Stop is ready to press*/
+            /*Stop is ready to press - red*/
             case 2:
 
                 startButton.setVisibility(View.GONE);
