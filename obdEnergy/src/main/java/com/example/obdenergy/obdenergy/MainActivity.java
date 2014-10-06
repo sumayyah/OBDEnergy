@@ -143,6 +143,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     public void onActivityResult(int requestCode, int resultCode, Intent data){
 
         super.onActivityResult(requestCode, resultCode, data);
+        Console.log(classID+"onActivityResult: req "+requestCode+" res "+resultCode);
+
 
         if(data.getExtras() != null){
             Intent x = data;
@@ -150,6 +152,10 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             String info = x.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
         } else {};
 
+        if(resultCode == 0 || resultCode == RESULT_CANCELED ){
+            Console.log(classID+"result cancelled");
+            return;
+        }
 
         switch (requestCode){
             case REQUEST_CONNECT_DEVICE_SECURE:
@@ -157,17 +163,18 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                     driveFragment.setConnectValidators("Connecting...", true);
                     Console.log(classID+"Connect device secure, sending to driveFragment");
                     driveFragment.connectDevice(data, true);
-                }
+                } else return;
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
 
                 if (resultCode == Activity.RESULT_OK) {
                     driveFragment.setConnectValidators("Connecting...", true);
                     driveFragment.connectDevice(data, false);
-                }
+                } else return;
                 break;
             case REQUEST_CREATE_PROFILE:
                 if(resultCode == Activity.RESULT_OK) createProfile();
+                else return;
                 break;
             case REQUEST_ENABLE_BT:
 
@@ -203,16 +210,20 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 else {
                     gallons = Calculations.getGallons(miles, "City");
                 }
-                if(gallons == 0.0 ) DriveFragmentDataComm(4);
-
-                return;
-            case 47: //Using fuel level data
+                Console.log(classID+"gallons with no data "+gallons);
+               if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN ) {
+                    Console.log(classID+"Datacomm gallons is "+gallons);
+                    DriveFragmentDataComm(4);
+                    return;
+                }
+                break;
+            case 47: //Using fuel level data - shouldn't happen here
                 Console.log(classID+"Calculations based on fuel");
                 DataLogger.writeConsoleData(classID+"Calculations based on fuel");
 
-
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
+                    Console.log(classID+"Datacomm gallons is "+gallons);
                     DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
                     return;
                 }
@@ -225,6 +236,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
                     DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm - not fuel in this version
+
                     return;
                 }
                 break;
@@ -464,6 +476,13 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     protected void onResume() {
         super.onResume();
 
+    }
+
+    //TODO: Check if resultCode errors are caused by back press
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Console.log(classID+"onBackPressed");
     }
 
     @Override
