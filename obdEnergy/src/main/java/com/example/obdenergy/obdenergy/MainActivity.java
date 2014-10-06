@@ -486,6 +486,13 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
     }
 
+    //TODO: Check if resultCode errors are caused by back press
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Console.log(classID+"onBackPressed");
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
