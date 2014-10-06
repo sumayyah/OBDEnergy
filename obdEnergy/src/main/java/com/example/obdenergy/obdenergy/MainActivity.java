@@ -203,13 +203,14 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 else {
                     gallons = Calculations.getGallons(miles, "City");
                 }
-                if(gallons == 0.0 ) DriveFragmentDataComm(4);
-
-                return;
+                if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN ) {
+                    DriveFragmentDataComm(4);
+                    return;
+                }
+                break;
             case 47: //Using fuel level data
                 Console.log(classID+"Calculations based on fuel");
                 DataLogger.writeConsoleData(classID+"Calculations based on fuel");
-
 
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {

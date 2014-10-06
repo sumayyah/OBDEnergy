@@ -1,7 +1,6 @@
 package com.example.obdenergy.obdenergy.Activities;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -26,6 +25,8 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
     private RadioButton radioButton;
     private Button doneButtonFSA;
     private final String USER_DATA_FILE = "MyCarData";
+
+    private MetricFragment metricFragment = new MetricFragment();
 
     Profile userProfile;
     SharedPreferences userData;
@@ -79,6 +80,10 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
             else;
 
             Double gallons = Calculations.getGallons(mpg, miles);
+            Double carbon = Calculations.getCarbon(gallons);
+            Double trees = Calculations.getTrees(gallons);
+
+            metricFragment.MetricFragmentDataComm(String.valueOf(gallons), String.valueOf(carbon), String.valueOf(trees));
 
             miles = "10";
 

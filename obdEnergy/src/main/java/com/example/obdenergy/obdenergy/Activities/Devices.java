@@ -150,7 +150,12 @@ public class Devices extends Activity{
             intent.putExtra(EXTRA_DEVICE_INFO, info);
 
             // Set result and finish this Activity
-            setResult(Activity.RESULT_OK, intent);
+            if (getParent() == null) {
+                setResult(Activity.RESULT_OK, intent);
+            }
+            else {
+                getParent().setResult(Activity.RESULT_OK, intent);
+            }
             Console.log("Set Activity RESULT_OK, finishing Devices");
             finish();
         }
