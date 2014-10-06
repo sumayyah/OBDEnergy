@@ -38,6 +38,8 @@ public class Devices extends Activity{
     private ProgressBar progressBar;
 
     private TextView status;
+    String info="";
+    String address="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,8 +143,8 @@ public class Devices extends Activity{
             BtAdapter.cancelDiscovery();
 
             // Get the device MAC address, which is the last 17 chars in the View
-            String info = ((TextView) v).getText().toString();
-            String address = info.substring(info.length() - 17);
+            info = ((TextView) v).getText().toString();
+            address = info.substring(info.length() - 17);
             //String address = "00:0D:18:A0:4E:35"; //FORCE OBD MAC Address
             // Create the result Intent and include the MAC address
             Intent intent = new Intent();

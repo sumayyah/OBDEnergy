@@ -142,6 +142,8 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
     public void onActivityResult(int requestCode, int resultCode, Intent data){
 
         super.onActivityResult(requestCode, resultCode, data);
+        Console.log(classID+"onActivityResult: req "+requestCode+" res "+resultCode);
+
 
         if(data.getExtras() != null){
             Intent x = data;
@@ -149,23 +151,28 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
             String info = x.getExtras().getString(Devices.EXTRA_DEVICE_INFO);
         } else {};
 
+        if(resultCode == 0 || resultCode == RESULT_CANCELED ){
+            Console.log(classID+"result cancelled");
+            return;
+        }
 
         switch (requestCode){
             case REQUEST_CONNECT_DEVICE_SECURE:
                 if (resultCode == Activity.RESULT_OK) {
                     driveFragment.setConnectValidators("Connecting...", true);
                     driveFragment.connectDevice(data, true);
-                }
+                } else return;
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
 
                 if (resultCode == Activity.RESULT_OK) {
                     driveFragment.setConnectValidators("Connecting...", true);
                     driveFragment.connectDevice(data, false);
-                }
+                } else return;
                 break;
             case REQUEST_CREATE_PROFILE:
                 if(resultCode == Activity.RESULT_OK) createProfile();
+                else return;
                 break;
             case REQUEST_ENABLE_BT:
 
@@ -207,6 +214,7 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 }
                 Console.log(classID+"gallons with no data "+gallons);
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN ) {
+                    Console.log(classID+"Datacomm gallons is "+gallons);
                     DriveFragmentDataComm(4);
                     return;
                 }
@@ -215,16 +223,17 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
                 Console.log(classID + "With Fuel");
                 gallons = Calculations.getGallons(path.getInitFuel(), path.getFinalFuel(), tankCapacity);
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
+                    Console.log(classID+"Datacomm gallons is "+gallons);
                     DriveFragmentDataComm(0); //In case of errors or bad data, get backup algorithm
                     return;
                 }
-                Console.log(classID+" with Fuel");
                 break;
 
             case 16: //Using MAF data
                 Console.log(classID + " with MAF");
                 gallons = Calculations.getGallons(path.MAFarray, 5.0); /*Based on 5 second intervals*/
                 if(gallons == 0.0 || gallons == Double.NEGATIVE_INFINITY || gallons == Double.POSITIVE_INFINITY || gallons == Double.NaN) {
+                    Console.log(classID+"Datacomm gallons is "+gallons);
                     DriveFragmentDataComm(47); //In case of errors or bad data, get backup algorithm
                     return;
                 }
