@@ -191,4 +191,10 @@ public class Devices extends Activity{
         }
     };
 
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        Console.log("Devices onBackPressed");
+    }
+
 }

@@ -558,7 +558,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
                         Console.log(classID+"Engine Fuel data recieved "+secondPart);
                         if(start && !stop){
                             mainActivity.path.setInitFuel(secondPart);
-//                            startInstantReadings(); //TODO: replace with instantaneous fuel readings array for accuracy
+                            startInstantReadings(); //TODO: replace with instantaneous fuel readings array for accuracy
 
                         }else if(!start && stop){
                             mainActivity.path.setFinalFuel(secondPart);

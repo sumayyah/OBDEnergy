@@ -414,6 +414,11 @@ public class MainActivity extends Activity implements DriveFragment.dataListener
 
 
     private void concatenateAndSendDBData(String queueFromMemory, ArrayList<Path> currentPathsArray){
+        Console.log(classID+"Checking paths!");
+        for(Path p: currentPathsArray){
+            p.printData();
+        }
+
         String currentPathsJSONstring = gson.toJson(currentPathsArray);
 
         sendToAWSDatabase(System.currentTimeMillis(), username, queueFromMemory + currentPathsJSONstring);
