@@ -27,8 +27,6 @@ public class FuelSurveyActivity extends Activity implements View.OnClickListener
     private final String USER_DATA_FILE = "MyCarData";
     private MetricFragment metricFragment = new MetricFragment();
 
-    private MetricFragment metricFragment = new MetricFragment();
-
     Profile userProfile;
     SharedPreferences userData;
 
