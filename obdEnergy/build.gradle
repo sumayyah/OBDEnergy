@@ -1,8 +1,8 @@
 apply plugin: 'android'
 
 android {
-    compileSdkVersion 17
-    buildToolsVersion '19.0.2'
+    compileSdkVersion 20
+    buildToolsVersion '19.1.0'
 
     defaultConfig {
         minSdkVersion 11
@@ -12,14 +12,14 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:appcompat-v7:20.+'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('src/main/libs/Gson.jar')
     compile files('src/main/libs/aws-android-sdk-2.0.5-core.jar')

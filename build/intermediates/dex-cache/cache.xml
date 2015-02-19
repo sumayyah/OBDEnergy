@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/build/intermediates/exploded-aar/com.android.support/support-v4/20.0.0/libs/internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d">
+        <dex dex="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/build/intermediates/pre-dexed/debug/internal_impl-20.0.0-7bf0a9453025552779cb39bd199730f0d1b3a6ee.jar" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/src/main/libs/aws-android-sdk-2.0.5-ddb.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="e4fc51ed3668bcff671c2f352bf3a6197179c077">
+        <dex dex="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/build/intermediates/pre-dexed/debug/aws-android-sdk-2.0.5-ddb-ed519b4ecf4f827c903608fbb265e72ac37a3988.jar" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/src/main/libs/Gson.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="973e832af433b44c3ed11c426f2f390b29f3f3f8">
+        <dex dex="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/build/intermediates/pre-dexed/debug/Gson-b7229a253b65575d76c777d9417ffa77db927f79.jar" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/src/main/libs/aws-android-sdk-2.0.5-core.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="ae50922f9570457df4a4a03ea7e2ef933c3266aa">
+        <dex dex="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/build/intermediates/pre-dexed/debug/aws-android-sdk-2.0.5-core-c3cff2fab0e7e0568eb030e25c54f236e0e623eb.jar" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/build/intermediates/exploded-aar/com.android.support/support-v4/20.0.0/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="8694693636ab36910c8100ce527c258ff3ebece0">
+        <dex dex="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/build/intermediates/pre-dexed/debug/classes-7eed014a6968d0a0a9f56e78ecf2b24d563b34ba.jar" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/build/intermediates/exploded-aar/com.android.support/appcompat-v7/20.0.0/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="f21927d22fe31889ecce94dd697a2e75b137e0ef">
+        <dex dex="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/build/intermediates/pre-dexed/debug/classes-445b3b365be1b356d78f4bb8f98b675ec097366a.jar" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/20.0.0/support-annotations-20.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="9d9013e9ff35fc3756411e62873c363c70c638fa">
+        <dex dex="/Users/sumayyah/Apps/OBDEnergy/obdEnergy/build/intermediates/pre-dexed/debug/support-annotations-20.0.0-a79d59887e37289c1f62f809a49689ed9bd9e97d.jar" />
+    </item>
+
+</items>
