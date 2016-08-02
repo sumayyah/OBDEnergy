@@ -1,0 +1,2 @@
+# OBDEnergy
+An app that allows regular cars to become "smart" - it provides users fuel efficiency feedback directly from their vehicle engines. It collects instantaneous engine data while driving and presents data in a readable format on conclusion of the drive. Users also have an option to view aggregate data over time, translated into understandable carbon metrics. Was used in a four-month period of beta testing and results were used to publish an academic paper for the Human Computer Interaction International Conference of 2015.
