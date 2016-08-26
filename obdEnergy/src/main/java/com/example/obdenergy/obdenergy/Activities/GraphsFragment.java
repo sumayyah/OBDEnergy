@@ -216,7 +216,7 @@ public class GraphsFragment extends Fragment implements View.OnClickListener{
 
                 cloudClicker.setImageDrawable(getResources().getDrawable(R.drawable.cloud_icon_green));
                 carbonUsed.setTextColor(Color.parseColor("#A4C739"));
-                leafClicker.setImageDrawable(getResources().getDrawable(R.drawable.leafcopy));
+                leafClicker.setImageDrawable(getResources().getDrawable(R.drawable.leaf_copy));
                 treesUsed.setTextColor(Color.WHITE);
                 displayData(dayPressed, weekPressed, monthPressed, cloud, leaf);
                 break;

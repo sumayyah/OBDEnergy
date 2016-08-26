@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -106,7 +108,8 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
     // String buffer for outgoing messages
     private static StringBuffer WriteStringBuffer;
     // Local Bluetooth adapter
-    static BluetoothAdapter BluetoothAdapter = null;
+    BluetoothAdapter bluetoothAdapter;
+    BluetoothManager bluetoothManager;
     // Member object for the chat services
     private static BluetoothChatService ChatService = null;
     public static final String DEVICE_NAME = "device_name";
@@ -143,15 +146,14 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         timer.setVisibility(View.GONE);
 
-        BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        /*Check if device supports Bluetooth*/
-        if(BluetoothAdapter==null) {
-            Console.showAlert(getActivity(), "Bluetooth not supported in device");
-            Console.log(classID + " Bluetooth is not supported in device.");
-            getActivity().finish();
-        }
-
+//        BluetoothAdapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
+//
+//        /*Check if device supports Bluetooth*/
+//        if(BluetoothAdapter==null) {
+//            Console.showAlert(getActivity(), "Bluetooth not supported in device");
+//            Console.log(classID + " Bluetooth is not supported in device.");
+//            getActivity().finish();
+//        }
 
         return view;
     }
@@ -166,8 +168,6 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         if (activity instanceof dataListener)
             listener = (dataListener) activity;
-        else {
-        }
     }
 
     @Override
@@ -177,11 +177,15 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         super.onStart();
 
          /*Check if Bluetooth is enabled. If not, present that option to the user*/
-        if (!BluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } else {
-            if (ChatService == null) setupChat();
+//        if (!BluetoothAdapter.isEnabled()) {
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//        } else {
+//            if (ChatService == null) setupChat();
+//        }
+//
+        if(checkBLEConnectionAndEnable() && ChatService == null) {
+            setupChat();
         }
     }
 
@@ -244,7 +248,7 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
         deviceInfo = info;
 
         // Get the BluetoothDevice object
-        BluetoothDevice device = BluetoothAdapter.getRemoteDevice(address);
+        BluetoothDevice device = bluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
         ChatService.connect(device, secure);
     }
@@ -612,5 +616,28 @@ public class DriveFragment extends Fragment implements View.OnClickListener {
 
         }
 
+    }
+
+    public boolean checkBLEConnectionAndEnable() {
+
+        bluetoothManager = (android.bluetooth.BluetoothManager) getActivity().getSystemService(getActivity().BLUETOOTH_SERVICE);
+        bluetoothAdapter = bluetoothManager.getAdapter();
+
+        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+            //Bluetooth is disabled
+            Intent enableBLEIntent = new Intent(bluetoothAdapter.ACTION_REQUEST_ENABLE);
+            (getActivity()).startActivity(enableBLEIntent);
+            Console.log("BLE Not enabled, starting intent");
+
+            return false;
+        }
+
+        if (!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Console.log("BLE Not supported");
+            Console.showAlert(getActivity(), "Sorry, this device does not support bluetooth");
+            getActivity().finish();
+            return false;
+        }
+        return true;
     }
 }

@@ -1,21 +1,16 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
-        <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
-    <!--</style>-->
-
     <style name="customTab" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:actionBarTabStyle">@style/customTab.ActionBar.Tab</item>
         <item name="android:actionBarTabTextStyle">@style/actionBarTabTextStyle</item>
         <item name="actionBarTabTextStyle">@style/actionBarTabTextStyle</item>
     </style>
 
-    <style name="customTab.ActionBar.Tab" parent="Widget.AppCompat.Base.ActionBar.TabView">
+    <style name="customTab.ActionBar.Tab" parent="Widget.AppCompat.ActionBar.TabView">
         <item name="android:background">@drawable/tab_background</item>
     </style>
 
-    <style name="actionBarTabTextStyle" parent="Widget.AppCompat.Base.ActionBar.TabText">
+    <style name="actionBarTabTextStyle" parent="Widget.AppCompat.ActionBar.TabText">
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">#fff</item>
     </style>

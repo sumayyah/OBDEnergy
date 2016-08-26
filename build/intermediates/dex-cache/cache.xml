@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/src/main/libs/Gson.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="973e832af433b44c3ed11c426f2f390b29f3f3f8">
+        <dex dex="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/build/intermediates/transforms/dex/debug/folders/1000/2/Gson_e9111674d078d994f7c8b71cabd5fd82fd208942/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/src/main/libs/aws-android-sdk-2.0.5-core.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="ae50922f9570457df4a4a03ea7e2ef933c3266aa">
+        <dex dex="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/build/intermediates/transforms/dex/debug/folders/1000/2/aws-android-sdk-2.0.5-core_8d2974d5139efbd27e81aabc2fea61f20701d73c/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="9370eb772cb1c86da9f0f2620cea984fa9a11e3d">
+        <dex dex="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_4d8dc5388bff4fd7eba25fe2cd78c4da808c68b2/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="fc00a4353eb772f27382adb559c35d7ae344347b">
+        <dex dex="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_c2e736455ede129a628157d1fa0bcc4516a0a4a4/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/build/intermediates/exploded-aar/com.android.support/appcompat-v7/19.0.0/jars/classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="eb69b5c2e53e59d82f7439f3217f46f9d98f0c89">
+        <dex dex="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-19.0.0_d5b2c32bc4b8bddc0363b33e5994139a06cb610c/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Library/Android/sdk/extras/android/m2repository/com/android/support/support-v4/19.0.0/support-v4-19.0.0.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="afee690af14bd2c32d400cdf78e746fd45c386fa">
+        <dex dex="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/build/intermediates/transforms/dex/debug/folders/1000/10/support-v4-19.0.0_ffcc95ddc0afef9bb99f66098da173688fda36b7/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/src/main/libs/aws-android-sdk-2.0.5-ddb.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="e4fc51ed3668bcff671c2f352bf3a6197179c077">
+        <dex dex="/Users/sumayyah/Work/Code/Sample_and_Reference_Projects/OBDEnergy/obdEnergy/build/intermediates/transforms/dex/debug/folders/1000/2/aws-android-sdk-2.0.5-ddb_62531b399af4f24f4383f1a28f76c02942ff7123/classes.dex" />
+    </item>
+
+</items>
